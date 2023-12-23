@@ -128,50 +128,115 @@
             @endif
           </div>
           <div class="col-md-4">
+            <label for="insurance_befor" class="mt-4">Insurance(B) (%) *</label>
+            {!! Form::text('cinsurance_beford', null, ['id' => 'insurance_befor','class' =>
+            'form-control','required','data-cell'=>"INSB1",'data-format'=>"0[.]00", 'onkeypress'=>"calculateFx()", 'onblur'=>"calculateFx()"
+            ]) !!}
+            @if ($errors->has('insurance_befor')) <span class="text-danger alert">{{ $errors->first('insurance_befor')
+              }}</span>
+            @endif
+          </div>
+          <div class="col-md-4">
+            <label for="insurance_befor_value" class="mt-4 text-xs">Insurance Value (B) *</label>
+            {!! Form::text('insurance_befor_value', null, ['id' => 'insurance_befor_value','class' =>
+            'form-control','required','data-cell'=>"INSBVAL1",'data-format'=>"0[.]00",'data-formula'=>"SUM(((U1/100)*(INSB1)))", 'readonly'
+            ]) !!}
+            
+          </div>
+          <div class="col-md-4">
+            <label for="clearing_befor" class="mt-4"> Clearing (%) (B)*</label>
+            {!! Form::text('clearing_befor', null, ['id' => 'clearing_befor','class' =>
+            'form-control','required','data-cell'=>"CLRB1",'data-format'=>"0[.]00", 'onkeypress'=>"calculateFx()", 'onblur'=>"calculateFx()"
+            ]) !!}
+            @if ($errors->has('clearing_befor')) <span class="text-danger alert">{{ $errors->first('clearing_befor')
+              }}</span>
+            @endif
+          </div>
+          <div class="col-md-4">
+            <label for="clearing_befor_value" class="mt-4 text-xs"> Clearing Value (B) *</label>
+            {!! Form::text('clearing_befor_value', null, ['id' => 'clearing_befor_value','class' =>
+            'form-control','required','data-cell'=>"CLRBVAL1",'data-format'=>"0[.]00",'data-formula'=>"SUM((((U1+INSBVAL1)/100)*(CLRB1)))", 'readonly'
+            ]) !!}
+            
+          </div>
+          <div class="col-md-4">
+            <label for="c_rate" class="mt-4">Converted Rate *</label>
+            
+            {!! Form::text('c_rate', null, ['id' => 'c_rate','class' =>
+            'form-control','required','data-cell'=>"CONVR1",'data-format'=>"0[.]00", 'onkeypress'=>"calculateFx()", 'onblur'=>"calculateFx()"
+            ]) !!}
+            @if ($errors->has('c_rate')) <span class="text-danger alert">{{ $errors->first('c_rate')
+              }}</span>
+            @endif
+          </div>
+          <div class="col-md-4">
+            <label for="duty_assesment_value" class="mt-4 text-xs"> Duty Assesment Value*</label>
+            {!! Form::text('duty_assesment_value', null, ['id' => 'duty_assesment_value','class' =>
+            'form-control','required','data-cell'=>"DUTYAVAL1",'data-format'=>"0[.]00",'data-formula'=>"SUM((U1+INSBVAL1+CLRBVAL1)*CONVR1)", 'readonly'
+            ]) !!}
+            
+          </div>
+          <div class="col-md-4">
             <label for="cd" class="mt-4">CD (%) *</label>
             {!! Form::text('cd', null, ['id' => 'cd','class' =>
-            'form-control','required','data-cell'=>"A1",'data-format'=>"0[.]00", 'onkeypress'=>"calculateFx()", 'onblur'=>"calculateFx()"
+            'form-control','required','data-cell'=>"CD1",'data-format'=>"0[.]00", 'onkeypress'=>"calculateFx()", 'onblur'=>"calculateFx()"
             ]) !!}
             @if ($errors->has('cd')) <span class="text-danger alert">{{ $errors->first('cd')
               }}</span>
             @endif
           </div>
           <div class="col-md-4">
+            <label for="cd_value" class="mt-4">CD Value (Total) *</label>
+            {!! Form::text('cd_value', null, ['id' => 'cd_value','class' =>
+            'form-control','required','data-cell'=>"CDVAL1",'data-format'=>"0[.]00",'data-formula'=>"SUM(((DUTYAVAL1/100)*(CD1)))", 'readonly'
+            ]) !!}
+            
+          </div>
+          <div class="col-md-4">
             <label for="rd" class="mt-4">RD  (%) *</label>
             {!! Form::text('rd', null, ['id' => 'rd','class' =>
-            'form-control','required','data-cell'=>"B1",'data-format'=>"0[.]00", 'onkeypress'=>"calculateFx()", 'onblur'=>"calculateFx()"
+            'form-control','required','data-cell'=>"RD1",'data-format'=>"0[.]00", 'onkeypress'=>"calculateFx()", 'onblur'=>"calculateFx()"
             ]) !!}
             @if ($errors->has('rd')) <span class="text-danger alert">{{ $errors->first('rd')
               }}</span>
             @endif
           </div>
           <div class="col-md-4">
-            <label for="cd_rd_value" class="mt-4">CD+RD Value (Total) *</label>
-            {!! Form::text('cd_rd_value', null, ['id' => 'rd','class' =>
-            'form-control','required','data-cell'=>"CDRD1",'data-format'=>"0[.]00",'data-formula'=>"SUM(U1,((U1/100)*(A1+B1)))", 'readonly'
+            <label for="rd_value" class="mt-4">RD Value (Total) *</label>
+            {!! Form::text('rd_value', null, ['id' => 'rd_value','class' =>
+            'form-control','required','data-cell'=>"RDVAL1",'data-format'=>"0[.]00",'data-formula'=>"SUM(((DUTYAVAL1/100)*(RD1)))", 'readonly'
+            ]) !!}
+            
+          </div>
+          <div class="col-md-4">
+            <label for="sd_value" class="mt-4">DAV+CD+RD</label>
+            {!! Form::text('sd_total', null, ['id' => 'sd_total','class' =>
+            'form-control','required','data-cell'=>"DAVCDRDTOTAL1",'data-format'=>"0[.]00",'data-formula'=>"SUM(DUTYAVAL1+CDVAL1+RDVAL1)", 'readonly'
             ]) !!}
             
           </div>
           <div class="col-md-4">
             <label for="sd" class="mt-4">SD  (%) *</label>
             {!! Form::text('sd', null, ['id' => 'sd','class' =>
-            'form-control','required','data-cell'=>"C1",'data-format'=>"0[.]00", 'onkeypress'=>"calculateFx()", 'onblur'=>"calculateFx()"
+            'form-control','required','data-cell'=>"SD1",'data-format'=>"0[.]00", 'onkeypress'=>"calculateFx()", 'onblur'=>"calculateFx()"
             ]) !!}
             @if ($errors->has('sd')) <span class="text-danger alert">{{ $errors->first('sd')
               }}</span>
             @endif
           </div>
+        
+          
           <div class="col-md-4">
             <label for="sd_value" class="mt-4">SD Value  (Total) *</label>
             {!! Form::text('sd_value', null, ['id' => 'sd_value','class' =>
-            'form-control','required','data-cell'=>"SDVALUE1",'data-format'=>"0[.]00",'data-formula'=>"SUM(CDRD1,((CDRD1/100)*(C1)))", 'readonly'
+            'form-control','required','data-cell'=>"SDVAL1",'data-format'=>"0[.]00",'data-formula'=>"SUM(((DAVCDRDTOTAL1/100)*SD1))", 'readonly'
             ]) !!}
             
           </div>
           <div class="col-md-4">
             <label for="vat" class="mt-4">Vat (%)*</label>
             {!! Form::text('vat', null, ['id' => 'vat','class' =>
-            'form-control','required','data-cell'=>"D1",'data-format'=>"0[.]0", 'onkeypress'=>"calculateFx()", 'onblur'=>"calculateFx()"
+            'form-control','required','data-cell'=>"VAT1",'data-format'=>"0[.]00", 'onkeypress'=>"calculateFx()", 'onblur'=>"calculateFx()"
             ]) !!}
             @if ($errors->has('vat')) <span class="text-danger alert">{{ $errors->first('vat')
               }}</span>
@@ -180,14 +245,14 @@
           <div class="col-md-4">
             <label for="vat_value" class="mt-4">Vat Value  (Total) *</label>
             {!! Form::text('vat_value', null, ['id' => 'vat_value','class' =>
-            'form-control','required','data-cell'=>"VATVALUE1",'data-format'=>"0[.]00",'data-formula'=>"SUM(SDVALUE1,((SDVALUE1/100)*(D1)))", 'readonly'
+            'form-control','required','data-cell'=>"VATVAL1",'data-format'=>"0[.]00",'data-formula'=>"SUM(((DAVCDRDTOTAL1/100)*VAT1))", 'readonly'
             ]) !!}
             
           </div>
           <div class="col-md-4">
             <label for="ait" class="mt-4">AIT (%) *</label>
             {!! Form::text('ait', null, ['id' => 'ait','class' =>
-            'form-control','required','data-cell'=>"F1",'data-format'=>"0[.]00", 'onkeypress'=>"calculateFx()", 'onblur'=>"calculateFx()"
+            'form-control','required','data-cell'=>"AIT1",'data-format'=>"0[.]00", 'onkeypress'=>"calculateFx()", 'onblur'=>"calculateFx()"
             ]) !!}
             @if ($errors->has('ait')) <span class="text-danger alert">{{ $errors->first('ait')
               }}</span>
@@ -196,14 +261,14 @@
           <div class="col-md-4">
             <label for="ait_value" class="mt-4">AIT Value  (Total) *</label>
             {!! Form::text('ait_value', null, ['id' => 'ait_value','class' =>
-            'form-control','required','data-cell'=>"AITVALUE1",'data-format'=>"0[.]00",'data-formula'=>"SUM(CDRD1,((CDRD1/100)*(F1)))", 'readonly'
+            'form-control','required','data-cell'=>"AITVAL1",'data-format'=>"0[.]00",'data-formula'=>"SUM(((DUTYAVAL1/100)*(AIT1)))", 'readonly'
             ]) !!}
             
           </div>
           <div class="col-md-4">
-            <label for="at" class="mt-4">AT *</label>
+            <label for="at" class="mt-4">AT (%) *</label>
             {!! Form::text('at', null, ['id' => 'at','class' =>
-            'form-control','required','data-cell'=>"G1",'data-format'=>"0[.]00", 'onkeypress'=>"calculateFx()", 'onblur'=>"calculateFx()"
+            'form-control','required','data-cell'=>"AT1",'data-format'=>"0[.]00", 'onkeypress'=>"calculateFx()", 'onblur'=>"calculateFx()"
             ]) !!}
             @if ($errors->has('at')) <span class="text-danger alert">{{ $errors->first('at')
               }}</span>
@@ -212,14 +277,14 @@
           <div class="col-md-4">
             <label for="at_value" class="mt-4">AT Value  (Total) *</label>
             {!! Form::text('at_value', null, ['id' => 'at_value','class' =>
-            'form-control','required','data-cell'=>"ATALUE1",'data-format'=>"0[.]00",'data-formula'=>"SUM(CDRD1,((CDRD1/100)*(G1)))", 'readonly'
+            'form-control','required','data-cell'=>"ATVAL1",'data-format'=>"0[.]00",'data-formula'=>"SUM((DAVCDRDTOTAL1/100)*(AT1))", 'readonly'
             ]) !!}
             
           </div>
           <div class="col-md-4">
             <label for="atv" class="mt-4">ATV *</label>
             {!! Form::text('atv', null, ['id' => 'atv','class' =>
-            'form-control','required','data-cell'=>"H1",'data-format'=>"0[.]00", 'onkeypress'=>"calculateFx()", 'onblur'=>"calculateFx()"
+            'form-control','required','data-cell'=>"ATV1",'data-format'=>"0[.]00", 'onkeypress'=>"calculateFx()", 'onblur'=>"calculateFx()"
             ]) !!}
             @if ($errors->has('atv')) <span class="text-danger alert">{{ $errors->first('atv')
               }}</span>
@@ -228,7 +293,7 @@
           <div class="col-md-4">
             <label for="atv_value" class="mt-4">ATV Value  (Total) *</label>
             {!! Form::text('atv_value', null, ['id' => 'atv_value','class' =>
-            'form-control','required','data-cell'=>"ATVALUE1",'data-format'=>"0[.]00",'data-formula'=>"SUM(CDRD1,((CDRD1/100)*(H1)))", 'readonly'
+            'form-control','required','data-cell'=>"ATVVAL1",'data-format'=>"0[.]00",'data-formula'=>"SUM((DAVCDRDTOTAL1/100)*(ATV1))", 'readonly'
             ]) !!}
             
           </div>
@@ -236,53 +301,81 @@
           <div class="col-md-4">
             <label for="total_duty" class="mt-4">Total Duty *</label>
             {!! Form::text('total_duty', null, ['id' => 'total_duty','class' =>
-            'form-control','readonly','data-cell'=>"I1",'data-format'=>"0[.]00", 'data-formula'=>"SUM(A1,B1,C1,D1,E1,F1,G1,H1)"
+            'form-control','readonly','data-cell'=>"I1",'data-format'=>"0[.]00", 'data-formula'=>"SUM(CD1,RD1,SD1,VAT1,AIT1,AT1,ATV1)"
             ]) !!}
             @if ($errors->has('total_duty')) <span class="text-danger alert">{{ $errors->first('total_duty')
               }}</span>
             @endif
           </div>
           <div class="col-md-4">
-            <label for="insurance" class="mt-4">Insurance *</label>
-            {!! Form::text('insurance', null, ['id' => 'insurance','class' =>
-            'form-control','required','data-cell'=>"J1",'data-format'=>"0[.]00", 'onkeypress'=>"calculateFx()", 'onblur'=>"calculateFx()"
+            <label for="insurance_after" class="mt-4">Insurance (A) *</label>
+            {!! Form::text('insurance_after', null, ['id' => 'insurance_after','class' =>
+            'form-control','required','data-cell'=>"INSUAFTR1",'data-format'=>"0[.]00", 'onkeypress'=>"calculateFx()", 'onblur'=>"calculateFx()"
             ]) !!}
-            @if ($errors->has('insurance')) <span class="text-danger alert">{{ $errors->first('insurance')
+            @if ($errors->has('insurance_after')) <span class="text-danger alert">{{ $errors->first('insurance_after')
               }}</span>
             @endif
           </div>
           <div class="col-md-4">
+            <label for="insurance_after_value" class="mt-4 text-xs">Insurance Value (A) *</label>
+            {!! Form::text('insurance_after_value', null, ['id' => 'insurance_after_value','class' =>
+            'form-control','required','data-cell'=>"INSUAFTRVAL1",'data-format'=>"0[.]00",'data-formula'=>"SUM(((DUTYAVAL1/100)*(INSUAFTR1)))", 'readonly'
+            ]) !!}
+            
+          </div>
+          <div class="col-md-4">
             <label for="bank_charge" class="mt-4">Bank Charge *</label>
             {!! Form::text('bank_charge', null, ['id' => 'bank_charge','class' =>
-            'form-control','required','data-cell'=>"K1",'data-format'=>"0[.]00", 'onkeypress'=>"calculateFx()", 'onblur'=>"calculateFx()"
+            'form-control','required','data-cell'=>"BNKCRG1",'data-format'=>"0[.]00", 'onkeypress'=>"calculateFx()", 'onblur'=>"calculateFx()"
             ]) !!}
             @if ($errors->has('bank_charge')) <span class="text-danger alert">{{ $errors->first('bank_charge')
               }}</span>
             @endif
           </div>
-    
           <div class="col-md-4">
-            <label for="clearing" class="mt-4">Clearing Charge *</label>
-            {!! Form::text('clearing', null, ['id' => 'clearing','class' =>
-            'form-control','required','data-cell'=>"L1",'data-format'=>"0[.]00", 'onkeypress'=>"calculateFx()", 'onblur'=>"calculateFx()"
+            <label for="bank_charge_value" class="mt-4 text-xs">Bank Charge Value (A) *</label>
+            {!! Form::text('bank_charge_value', null, ['id' => 'bank_charge_value','class' =>
+            'form-control','required','data-cell'=>"BNKCRGVAL1",'data-format'=>"0[.]00",'data-formula'=>"SUM(((DUTYAVAL1/100)*(BNKCRG1)))", 'readonly'
             ]) !!}
-            @if ($errors->has('clearing')) <span class="text-danger alert">{{ $errors->first('clearing')
+            
+          </div>
+          <div class="col-md-4">
+            <label for="clearing_after" class="mt-4"> Clearing (%) (A)*</label>
+            {!! Form::text('clearing_after', null, ['id' => 'clearing_after','class' =>
+            'form-control','required','data-cell'=>"CLRAFTR1",'data-format'=>"0[.]00", 'onkeypress'=>"calculateFx()", 'onblur'=>"calculateFx()"
+            ]) !!}
+            @if ($errors->has('clearing_after')) <span class="text-danger alert">{{ $errors->first('clearing_after')
               }}</span>
             @endif
           </div>
           <div class="col-md-4">
+            <label for="clearing_after_value" class="mt-4 text-xs"> Clearing Value (A) *</label>
+            {!! Form::text('clearing_after_value', null, ['id' => 'clearing_after_value','class' =>
+            'form-control','required','data-cell'=>"CLRAFTRVAL1",'data-format'=>"0[.]00",'data-formula'=>"SUM(((DUTYAVAL1/100)*(CLRAFTR1)))", 'readonly'
+            ]) !!}
+            
+          </div>
+     
+          <div class="col-md-4">
             <label for="carring" class="mt-4">Carring Charge *</label>
             {!! Form::number('carring', null, ['id' => 'carring','class' =>
-            'form-control','required','data-cell'=>"M1",'data-format'=>"0[.]00", 'onkeypress'=>"calculateFx()", 'onblur'=>"calculateFx()"
+            'form-control','required','data-cell'=>"CRRING1",'data-format'=>"0[.]00", 'onkeypress'=>"calculateFx()", 'onblur'=>"calculateFx()"
             ]) !!}
             @if ($errors->has('carring')) <span class="text-danger alert">{{ $errors->first('carring')
               }}</span>
             @endif
           </div>
           <div class="col-md-4">
-            <label for="lc_value" class="mt-4">Carring Charge *</label>
-            {!! Form::number('lc_value', null, ['id' => 'lc_value','class' =>
-            'form-control','required','data-cell'=>"N1",'data-format'=>"0[.]00", 'onkeypress'=>"calculateFx()", 'onblur'=>"calculateFx()"
+            <label for="carring_value" class="mt-4 text-xs"> Carring Value *</label>
+            {!! Form::text('carring_value', null, ['id' => 'carring_value','class' =>
+            'form-control','required','data-cell'=>"CRRINGVAL1",'data-format'=>"0[.]00",'data-formula'=>"SUM(((DUTYAVAL1/100)*(CRRING1)))", 'readonly'
+            ]) !!}
+            
+          </div>
+          <div class="col-md-4">
+            <label for="lc_value" class="mt-4">LC Value *</label>
+            {!! Form::text('lc_value', null, ['id' => 'lc_value','class' =>
+            'form-control','required','data-cell'=>"LCVAL1",'data-format'=>"0[.]00", 'onkeypress'=>"calculateFx()", 'onblur'=>"calculateFx()"
             ]) !!}
             @if ($errors->has('lc_value')) <span class="text-danger alert">{{ $errors->first('lc_value')
               }}</span>
@@ -291,7 +384,7 @@
           <div class="col-md-4">
             <label for="other_cost" class="mt-4">Other Cost *</label>
             {!! Form::text('other_cost', null, ['id' => 'other_cost','class' =>
-            'form-control','required','data-cell'=>"O1",'data-format'=>"0[.]00", 'onkeypress'=>"calculateFx()", 'onblur'=>"calculateFx()"
+            'form-control','required','data-cell'=>"OTR1",'data-format'=>"0[.]00", 'onkeypress'=>"calculateFx()", 'onblur'=>"calculateFx()"
             ]) !!}
             @if ($errors->has('other_cost')) <span class="text-danger alert">{{ $errors->first('other_cost')
               }}</span>
@@ -301,7 +394,7 @@
           <div class="col-md-4">
             <label for="purchase_price" class="mt-4">Purchase Price *</label>
             {!! Form::text('purchase_price', null, ['id' => 'purchase_price','class' =>
-            'form-control','readonly','data-cell'=>"P1",'data-format'=>"0[.]00",'data-formula'=>"SUM(U1,(((A1+B1)/U1)*100))" 
+            'form-control','readonly','data-cell'=>"PPRICE1",'data-format'=>"0[.]00",'data-formula'=>"SUM(CDVAL1+RDVAL1+SDVA1+AITVAL1+ATVAL1+ATVVAL1+VATVAL1+INSUAFTRVAL1+BNKCRGVAL1+CLRAFTRVAL1+CRRINGVAL1+LCVAL1+OTR1)" 
             ]) !!}
             @if ($errors->has('purchase_price')) <span class="text-danger alert">{{ $errors->first('purchase_price')
               }}</span>
