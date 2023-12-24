@@ -24,13 +24,7 @@ class Product extends Model
     public function brand(){
         return $this->belongsTo(Brand::class,'brand_id','id');
     }
-    public function category(){
-        return $this->belongsTo(Category::class);
-    }
-    public function subcategory(){
-        return $this->belongsTo(SubCategory::class)->withDefault();
-    }
-
+    
     public function shopcurrentstock(){
         return $this->hasMany(ShopCurrentStock::class);
     }

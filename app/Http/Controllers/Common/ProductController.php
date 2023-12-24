@@ -45,11 +45,11 @@ class ProductController extends Controller
             $User = $this->User;
 
             if ($User->user_type == 'Superadmin') {
-                $data = Product::with('brand', 'category', 'shopcurrentstock')->select('product_name', 'brand_id', 'category_id', 'unit', 'discount', 'purchase_price', 'sale_price', 'admin_id', 'id', 'status', 'path', 'photo', 'hs_code')->latest();
+                $data = Product::with('brand','shopcurrentstock')->select('product_name', 'brand_id',  'unit', 'discount', 'purchase_price', 'sale_price', 'admin_id', 'id', 'status', 'path', 'photo', 'hs_code')->latest();
             } elseif ($User->user_type == 'Admin') {
-                $data = Product::with('brand', 'category', 'shopcurrentstock')->whereadmin_id($this->User->id)->select('product_name', 'brand_id', 'category_id', 'unit', 'discount', 'purchase_price', 'sale_price', 'admin_id', 'id', 'status', 'path', 'photo', 'hs_code')->latest();
+                $data = Product::with('brand', 'shopcurrentstock')->whereadmin_id($this->User->id)->select('product_name', 'brand_id', 'unit', 'discount', 'purchase_price', 'sale_price', 'admin_id', 'id', 'status', 'path', 'photo', 'hs_code')->latest();
             } else {
-                $data = Product::with('brand', 'category', 'shopcurrentstock')->whereadmin_id($this->User->admin_id)->select('product_name', 'brand_id', 'category_id', 'unit', 'discount', 'purchase_price', 'sale_price', 'admin_id', 'id', 'status', 'path', 'photo', 'hs_code')->latest();
+                $data = Product::with('brand', 'shopcurrentstock')->whereadmin_id($this->User->admin_id)->select('product_name', 'brand_id', 'unit', 'discount', 'purchase_price', 'sale_price', 'admin_id', 'id', 'status', 'path', 'photo', 'hs_code')->latest();
             }
             if ($request->ajax()) {
 
@@ -213,7 +213,7 @@ class ProductController extends Controller
         $this->validate(
             $request,
             [
-                'category_id' => 'required|min:1|max:198',
+               
                 'weight_size' => 'required|min:1',
                 'unit' => 'required|min:1|max:300',
                 'brand_id' => 'required|min:1|max:190',
@@ -235,9 +235,7 @@ class ProductController extends Controller
                 'product_name.required' => "The Product name field is required",
                 'product_name.min' => "The Product name Minimum Length 1",
                 'product_name.max' => "The Product name Maximum Length 190",
-                'category_id.required' => "The Category name field is required",
-                'category_id.min' => "The Category Minimum Length 1",
-                'category_id.max' => "The Category Maximum Length 99999999",
+               
                 'purchase_price.required' => "The  Purchase Price name field is required",
                 'purchase_price.min' => "The Purchase Price Minimum Length 1",
                 'purchase_price.max' => "The Purchase Price  Maximum Length 99999999",
@@ -258,15 +256,46 @@ class ProductController extends Controller
             $product->weight_size = $request->weight_size;
             $product->hs_code = $request->hs_code;
             $product->slug = Generate::Slug($productFullName);
-            $product->category_id = $request->category_id;
-            $product->sub_category_id = $request->sub_category_id;
             $product->rack_number = $request->rack_number;
             $product->made_in = $request->made_in;
+           $product->vat = $request->vat;
+            $product->discount = $request->discount;
+            $product->unit_price = $request->unit_price ?: 0;
+            $product->insurance_before = $request->insurance_before ?: 0;
+            $product->insurance_before_value = $request->insurance_before_value ?: 0;
+            $product->clearing_before = $request->clearing_before ?: 0;
+            $product->clearing_before_value = $request->clearing_before_value ?: 0;
+            $product->convert_rate = $request->convert_rate ?: 0;
+            $product->duty_assessment_value = $request->duty_assessment_value ?: 0;
+            $product->cd = $request->cd ?: 0;
+            $product->cd_value = $request->cd_value ?: 0;
+            $product->rd = $request->rd ?: 0;
+            $product->rd_value = $request->rd_value ?: 0;
+            $product->cd_rd_total = $request->cd_rd_total ?: 0;
+            $product->sd = $request->sd ?: 0;
+            $product->sd_value = $request->sd_value ?: 0;
+            $product->vat = $request->vat ?: 0;
+            $product->vat_value = $request->vat_value ?: 0;
+            $product->ait = $request->ait ?: 0;
+            $product->ait_value = $request->ait_value ?: 0;
+            $product->at = $request->at ?: 0;
+            $product->at_value = $request->at_value ?: 0;
+            $product->atv = $request->atv ?: 0;
+            $product->atv_value = $request->atv_value ?: 0;
+            $product->total_duty = $request->total_duty ?: 0;
+            $product->insurance_after = $request->insurance_after ?: 0;
+            $product->insurance_after_value = $request->insurance_after_value ?: 0;
+            $product->bank_charge = $request->bank_charge ?: 0;
+            $product->bank_charge_value = $request->bank_charge_value ?: 0;
+            $product->clearing_after = $request->clearing_after ?: 0;
+            $product->clearing_after_value = $request->clearing_after_value ?: 0;
+            $product->carrying_charge = $request->carrying_charge ?: 0;
+            $product->carrying_value = $request->carrying_value ?: 0;
+            $product->lc_value = $request->lc_value ?: 0;
+            $product->other_cost = $request->other_cost ?: 0;
             $product->purchase_price = $request->purchase_price;
             $product->average_price = $request->purchase_price;
             $product->sale_price = $request->sale_price;
-            $product->vat = $request->vat;
-            $product->discount = $request->discount;
             $product->low_quantity = $request->low_quantity ?: 0;
             $product->expire_date = $request->expire_date;
             $product->created_user_id = $this->User->id;
@@ -337,11 +366,11 @@ class ProductController extends Controller
         try {
             $User = $this->User;
             if ($User->user_type == 'Superadmin') {
-                $data = Product::with('brand', 'category')->findOrFail(decrypt($id));
+                $data = Product::with('brand')->findOrFail(decrypt($id));
             } elseif ($User->user_type == 'Admin') {
-                $data = Product::with('brand', 'category')->whereadmin_id($this->User->id)->findOrFail(decrypt($id));
+                $data = Product::with('brand')->whereadmin_id($this->User->id)->findOrFail(decrypt($id));
             } else {
-                $data = Product::with('brand', 'category')->whereadmin_id($this->User->admin_id)->findOrFail(decrypt($id));
+                $data = Product::with('brand')->whereadmin_id($this->User->admin_id)->findOrFail(decrypt($id));
             }
             return view('backend.common.products.edit')->with('product', $data);
         } catch (\Exception $e) {
@@ -415,7 +444,7 @@ class ProductController extends Controller
         $this->validate(
             $request,
             [
-                'category_id' => 'required|min:1|max:198',
+                
                 'weight_size' => 'required|min:1',
                 'unit' => 'required|min:1|max:300',
                 'brand_id' => 'required|min:1|max:190',
@@ -437,9 +466,6 @@ class ProductController extends Controller
                 'product_name.required' => "The Product name field is required",
                 'product_name.min' => "The Product name Minimum Length 1",
                 'product_name.max' => "The Product name Maximum Length 190",
-                'category_id.required' => "The Category name field is required",
-                'category_id.min' => "The Category Minimum Length 1",
-                'category_id.max' => "The Category Maximum Length 99999999",
                 'purchase_price.required' => "The  Purchase Price name field is required",
                 'purchase_price.min' => "The Purchase Price Minimum Length 1",
                 'purchase_price.max' => "The Purchase Price  Maximum Length 99999999",
@@ -459,18 +485,48 @@ class ProductController extends Controller
             $product->weight_size = $request->weight_size;
             $product->hs_code = $request->hs_code;
             $product->slug = Generate::Slug($productFullName);
-            $product->category_id = $request->category_id;
-            $product->sub_category_id = $request->sub_category_id;
             $product->rack_number = $request->rack_number;
             $product->made_in = $request->made_in;
+           $product->vat = $request->vat;
+            $product->discount = $request->discount;
+            $product->unit_price = $request->unit_price ?: 0;
+            $product->insurance_before = $request->insurance_before ?: 0;
+            $product->insurance_before_value = $request->insurance_before_value ?: 0;
+            $product->clearing_before = $request->clearing_before ?: 0;
+            $product->clearing_before_value = $request->clearing_before_value ?: 0;
+            $product->convert_rate = $request->convert_rate ?: 0;
+            $product->duty_assessment_value = $request->duty_assessment_value ?: 0;
+            $product->cd = $request->cd ?: 0;
+            $product->cd_value = $request->cd_value ?: 0;
+            $product->rd = $request->rd ?: 0;
+            $product->rd_value = $request->rd_value ?: 0;
+            $product->cd_rd_total = $request->cd_rd_total ?: 0;
+            $product->sd = $request->sd ?: 0;
+            $product->sd_value = $request->sd_value ?: 0;
+            $product->vat = $request->vat ?: 0;
+            $product->vat_value = $request->vat_value ?: 0;
+            $product->ait = $request->ait ?: 0;
+            $product->ait_value = $request->ait_value ?: 0;
+            $product->at = $request->at ?: 0;
+            $product->at_value = $request->at_value ?: 0;
+            $product->atv = $request->atv ?: 0;
+            $product->atv_value = $request->atv_value ?: 0;
+            $product->total_duty = $request->total_duty ?: 0;
+            $product->insurance_after = $request->insurance_after ?: 0;
+            $product->insurance_after_value = $request->insurance_after_value ?: 0;
+            $product->bank_charge = $request->bank_charge ?: 0;
+            $product->bank_charge_value = $request->bank_charge_value ?: 0;
+            $product->clearing_after = $request->clearing_after ?: 0;
+            $product->clearing_after_value = $request->clearing_after_value ?: 0;
+            $product->carrying_charge = $request->carrying_charge ?: 0;
+            $product->carrying_value = $request->carrying_value ?: 0;
+            $product->lc_value = $request->lc_value ?: 0;
+            $product->other_cost = $request->other_cost ?: 0;
             $product->purchase_price = $request->purchase_price;
             $product->average_price = $request->purchase_price;
             $product->sale_price = $request->sale_price;
-            $product->vat = $request->vat;
-            $product->discount = $request->discount;
             $product->low_quantity = $request->low_quantity ?: 0;
             $product->expire_date = $request->expire_date;
-            $product->updated_user_id = $this->User->id;
             $product->sku = trim(Str::limit(Str::upper($request->product_name), 3, '')) . $request->weight_size . trim(Str::limit(Str::upper($request->unit), 2, ''));
             $product->admin_id = $adminId;
             $product->employee_id = $employeeId;

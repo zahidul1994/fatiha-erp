@@ -42,7 +42,6 @@ class CreateSuperAdmin extends Seeder
                 $profile->user_id = 1;
                 $profile->gender = 'Male';
                 $profile->refer_code = 'shop2023';
-
                 $profile->save();
                 $role = Role::create([
                     'name' => 'Superadmin1', 'admin_id' => 1
@@ -52,6 +51,26 @@ class CreateSuperAdmin extends Seeder
                 $role = Role::wherename('Superadmin1')->first();
                 $role->syncPermissions($permission);
             }
+
+            $admin = new User();
+            $admin->name = 'Admin';
+            $admin->user_type = 'Admin';
+            $admin->phone = '01739898766';
+            $admin->email = 'admin@gmail.com';
+            $admin->password = Hash::make('admin1234');
+            $admin->created_user_id = '1';
+            $admin->updated_user_id = '1';
+            $admin->status = '1';
+            $admin->save();
+
+            $profile = new Profile();
+            $profile->user_id = $admin->id;
+            $profile->gender = 'Male';
+            $profile->save();
+            $admin->assignRole('Superadmin');
+            $permission = Permission::pluck('name');
+            $role = Role::wherename('Superadmin')->first();
+            $role->syncPermissions($permission);
         } else {
             $superAdmin = User::first();
             $superAdmin->assignRole('Superadmin1');

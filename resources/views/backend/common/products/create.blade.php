@@ -3,23 +3,23 @@
 @push('css')
 <link href="{{ asset('backend/assets/select2/css/select2.min.css') }}" rel="stylesheet" />
 <style>
-      input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
 
-/* Firefox */
-input[type=number] {
-  -moz-appearance: textfield;
-}
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+
     .select2-selection__choice {
         background-color: var(--bs-gray-200);
         border: none !important;
         font-size: 12px;
         font-size: 0.85rem !important;
     }
-
 </style>
 @endpush
 @section('content')
@@ -38,13 +38,15 @@ input[type=number] {
                 <div class="card-body">
                     <div class="row">
                         @include('partial.formerror')
-                        {!! Form::open(['route' => Request::segment(1) . '.products.store', 'method' => 'POST','id'=>'productForm', 'files'
+                        {!! Form::open(['route' => Request::segment(1) . '.products.store', 'method' =>
+                        'POST','id'=>'productForm', 'files'
                         => true]) !!}
                         @include('backend.common.products.form')
                         <div class="text-center mt-3" id="inputform">
 
-                            <button type="submit" name="saveandback"  class="btn btn-info btn-sm ms-auto">Save & Back</button>
-                            <button type="submit"  class="btn btn-primary btn-sm ms-auto">Save</button>
+                            <button type="submit" name="saveandback" class="btn btn-info btn-sm ms-auto">Save &
+                                Back</button>
+                            <button type="submit" class="btn btn-primary btn-sm ms-auto">Save</button>
                         </div>
                         {!! Form::close() !!}
                     </div>
@@ -66,7 +68,9 @@ input[type=number] {
 <script>
     $('.select2').select2();
   $(document).ready(function () {
-   
+    $( "#productForm" ).on( "click", function() {
+        calculateFx()
+} );
   $('#image').change(function(event){
     let file=event.target.files[0];
             let reader = new FileReader();
@@ -130,6 +134,7 @@ input[type=number] {
 function calculateFx() {
   $form = $('#productForm').calx();
   $form.calx('update');
+//   console.log($form);
 }
 
 </script>

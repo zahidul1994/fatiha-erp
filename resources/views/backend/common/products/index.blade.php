@@ -125,9 +125,6 @@
                             data: 'image',
                             name: 'image'
                         },
-
-
-
                         {
                             data: 'unit',
                             name: 'unit'

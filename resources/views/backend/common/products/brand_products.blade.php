@@ -39,7 +39,6 @@
                                         <th>Barcode</th>
                                         <th>Photo</th>
                                         <th>Brand</th>
-                                        <th>Category</th>
                                         <th>Unit</th>
                                         <th>Discount %</th>
                                        <th>Sale Price</th>
@@ -57,7 +56,6 @@
                                         <th>Name</th>
                                         <th>Barcode</th>
                                         <th>Photo</th>
-                                        <th>Category</th>
                                         <th>Unit</th>
                                         <th>Discount %</th>
                                         <th style="text-align: left">Sale Price</th>
@@ -130,12 +128,6 @@
                             data: 'image',
                             name: 'image'
                         },
-
-                        {
-                            data: 'category.category_name',
-                            name: 'category.category_name'
-                        },
-
                         {
                             data: 'unit',
                             name: 'unit'
