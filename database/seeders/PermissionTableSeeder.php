@@ -14,6 +14,10 @@ class PermissionTableSeeder extends Seeder
               'barcode-create',
               'barcode-edit',
               'barcode-delete',
+              'broker-list',
+              'broker-create',
+              'broker-edit',
+              'broker-delete',
               'brand-list',
               'brand-create',
               'brand-edit',
@@ -64,12 +68,6 @@ class PermissionTableSeeder extends Seeder
               'purchase-create',
               'purchase-edit',
               'purchase-delete',
-
-              'purchase-return-list',
-              'purchase-return-create',
-              'purchase-return-edit',
-              'purchase-return-delete',
-
               'role-list',
               'role-create',
               'role-edit',
@@ -95,10 +93,7 @@ class PermissionTableSeeder extends Seeder
               'sale-create',
               'sale-edit',
               'sale-delete',
-              'sale-return-list',
-              'sale-return-create',
-              'sale-return-edit',
-              'sale-return-delete',
+             
               'stock-adjustment-list',
               'stock-adjustment-create',
               'stock-adjustment-edit',
@@ -115,17 +110,23 @@ class PermissionTableSeeder extends Seeder
               'damage-report',
               'expense-report',
               'damage-product-report',
-              'purchase-return-report',
-              'sale-return-report',
+                         
               'supplier-due-report',
               'customer-due-report',
               'activity-report',
               'loss-profit-report',
-
+              'warehouse-list',
+              'warehouse-create',
+              'warehouse-edit',
+              'warehouse-delete',
               'wallet-list',
               'wallet-create',
               'wallet-edit',
               'wallet-delete',
+              'work-order-list',
+              'work-order-create',
+              'work-order-edit',
+              'work-order-delete',
             );
             foreach($permission as $v) {
                 $newlist  = new Permission();

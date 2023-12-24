@@ -21,7 +21,8 @@ use App\Http\Controllers\Common\PurchaseReturnController;
 use App\Http\Controllers\Common\ProductDiscountController;
 use App\Http\Controllers\Common\StockAdjustmentController;
 use App\Http\Controllers\Common\ShopCurrentStockController;
-
+use App\Http\Controllers\Common\WorkOrderController;
+use App\Http\Controllers\Common\BrokerController;
 use App\Http\Controllers\Common\ReportController;
 
 
@@ -90,6 +91,12 @@ Route::get('customer-pdf/{id}', [CustomerController::class, 'customerPdf'])->nam
 Route::resource('customer-due', CustomerDueController::class);
 Route::get('customer-due-pdf/{id}', [CustomerDueController::class, 'customerDuePdf'])->name('customerDuePdf');
 
+##broker
+Route::resource('brokers', BrokerController::class);
+
+
+##work order
+Route::resource('work-orders', WorkOrderController::class);
 
 ##sale
 Route::resource('sales', SaleController::class);

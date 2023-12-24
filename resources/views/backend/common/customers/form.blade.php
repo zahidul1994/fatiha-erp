@@ -36,27 +36,7 @@
             @endif
         </div>
     </div>
-    @if (Request::segment(3)=='create')
-    <div class="col-md-6">
-        <div class="form-group">
-            <label for="due" class="form-control-label">Customer Previous Due </label>
-            {!! Form::number('due', null, ['id' => 'due', 'class' => 'form-control','step'=>'any','max'=>99999999]) !!}
-            @if ($errors->has('due'))
-            <span class="text-danger alert">{{ $errors->first('due') }}</span>
-            @endif
-        </div>
-    </div>
    
-    <div class="col-md-6">
-        <div class="form-group">
-            <label for="paid" class="form-control-label">Customer Previous Payment </label>
-            {!! Form::number('paid', null, ['id' => 'paid', 'class' => 'form-control','step'=>'any','max'=>99999999]) !!}
-            @if ($errors->has('paid'))
-            <span class="text-danger alert">{{ $errors->first('paid') }}</span>
-            @endif
-        </div>
-    </div>
-    @endif
     <div class="col-md-6">
         <div class="form-group">
             <label for="birth_date" class="form-control-label">Birth  Date</label>
@@ -65,17 +45,8 @@
             <span class="text-danger alert">{{ $errors->first('birth_date') }}</span>
             @endif
         </div>
-    </div>
+    </div>   
    
-    {{-- <div class="col-md-6">
-        <div class="form-group">
-            <label for="discount" class="form-control-label">discount (%) * </label>
-            {!! Form::select('discount',Helper::discoutPluckValue(),null, ['id' => 'discount','class' => 'form-control
-            select2','required'
-            ]) !!}
-            @if ($errors->has('discount')) <span class="text-danger alert">{{ $errors->first('discount') }}</span> @endif
-        </div>
-    </div> --}}
     <div class="col-md-6">
         <div class="form-group">
             <label for="status" class="form-control-label">Status * </label>

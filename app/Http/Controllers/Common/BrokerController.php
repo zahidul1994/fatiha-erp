@@ -3,8 +3,7 @@
 namespace App\Http\Controllers\Common;
 use PDF;
 use App\Helpers\Helper;
-use App\Models\Customer;
-use App\Models\CustomerDue;
+use App\Models\Broker;
 use Illuminate\Http\Request;
 use App\Helpers\ErrorTryCatch;
 use Illuminate\Validation\Rule;
@@ -15,7 +14,7 @@ use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Support\Facades\Auth;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
 
-class CustomerController extends Controller
+class BrokerController extends Controller
 {
      private $User;
     function __construct()
@@ -31,10 +30,10 @@ class CustomerController extends Controller
             return $next($request);
         });
 
-        $this->middleware('permission:customer-list', ['only' => ['index', 'show']]);
-        $this->middleware('permission:customer-create', ['only' => ['create', 'store']]);
-        $this->middleware('permission:customer-edit', ['only' => ['edit', 'update','updateStatus']]);
-        $this->middleware('permission:customer-delete', ['only' => ['destroy']]);
+        $this->middleware('permission:broker-list', ['only' => ['index', 'show']]);
+        $this->middleware('permission:broker-create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:broker-edit', ['only' => ['edit', 'update','updateStatus']]);
+        $this->middleware('permission:broker-delete', ['only' => ['destroy']]);
     }
     public function index(Request $request)
     {
@@ -43,11 +42,11 @@ class CustomerController extends Controller
             $User = $this->User;
 
             if ($User->user_type == 'Superadmin') {
-                $data = Customer::with('user')->latest();
+                $data = Broker::with('user')->latest();
             } elseif($User->user_type == 'Admin') {
-                $data = Customer::with('user')->whereadmin_id($this->User->id)->latest();
+                $data = Broker::with('user')->whereadmin_id($this->User->id)->latest();
             } else {
-                $data = Customer::with('user')->whereadmin_id($this->User->admin_id)->latest();
+                $data = Broker::with('user')->whereadmin_id($this->User->admin_id)->latest();
 
             }
             if ($request->ajax()) {
@@ -56,11 +55,11 @@ class CustomerController extends Controller
                     ->addIndexColumn()
                     ->addColumn('action', function ($data) use ($User) {
                         $btn = '';
-                        $btn = '<a href=' . route(request()->segment(1) . '.customers.show', (encrypt($data->id))) . ' class="btn btn-info btn-sm waves-effect" style="width:30px; padding: 5px"><i class="fa fa-eye"></i></a>';
+                        $btn = '<a href=' . route(request()->segment(1) . '.brokers.show', (encrypt($data->id))) . ' class="btn btn-info btn-sm waves-effect" style="width:30px; padding: 5px"><i class="fa fa-eye"></i></a>';
 
                     $btn .= '<a href=' . route(request()->segment(1) . '.customerPdf', (encrypt($data->id))) . ' class="btn btn-success btn-sm waves-effect" style="width:30px; padding: 5px;  margin-left:2px"><i class="fas fa-file-pdf"></i></a>';
                     if ($User->can('supplier-edit')) {
-                    $btn .= '<a href=' . route(request()->segment(1) . '.customers.edit', (encrypt($data->id))) . ' class="btn btn-warning btn-sm waves-effect" style="width:30px; padding: 5px;  margin-left:2px"><i class="fa fa-edit"></i></a>';
+                    $btn .= '<a href=' . route(request()->segment(1) . '.brokers.edit', (encrypt($data->id))) . ' class="btn btn-warning btn-sm waves-effect" style="width:30px; padding: 5px;  margin-left:2px"><i class="fa fa-edit"></i></a>';
                    }
                     $btn .= '</span>';
                     return $btn;
@@ -78,11 +77,11 @@ class CustomerController extends Controller
             }
             $breadcrumbs = [
                 ['link' => route(request()->segment(1) . '.dashboard'), 'name' => "Home"],
-                ['link' => route(request()->segment(1) . '.customers.index'), 'name' => "Customer"],
+                ['link' => route(request()->segment(1) . '.brokers.index'), 'name' => "Broker"],
                 ['name' => 'List'],
             ];
 
-            return view('backend.common.customers.index',compact('breadcrumbs'));
+            return view('backend.common.brokers.index',compact('breadcrumbs'));
         } catch (\Exception $e) {
             $response = ErrorTryCatch::createResponse(false, 500, 'Internal Server Error.', null);
             Toastr::error($response['message'], "Error");
@@ -100,10 +99,10 @@ class CustomerController extends Controller
     {
         $breadcrumbs = [
             ['link' => route(request()->segment(1) . '.dashboard'), 'name' => "Home"],
-            ['link' => route(request()->segment(1) . '.customers.index'), 'name' => "Customer"],
+            ['link' => route(request()->segment(1) . '.brokers.index'), 'name' => "Broker"],
             ['name' => 'Create'],
         ];
-        return view('backend.common.customers.create',compact('breadcrumbs'));
+        return view('backend.common.brokers.create',compact('breadcrumbs'));
     }
 
     /**
@@ -124,52 +123,51 @@ class CustomerController extends Controller
         $this->validate($request,
         [
 
-            'customer_name' => 'required|min:1|max:30',
+            'broker_name' => 'required|min:1|max:30',
            'address' => 'required|min:1|max:198',
         //    'discount' => 'required',
-            'customer_email' => 'max:198',
-           'customer_phone' => ['required','min:9',
-            'max:30.', Rule::unique('customers')->where(function ($query)use($adminId){
+            'broker_email' => 'max:198',
+           'broker_phone' => ['required','min:9',
+            'max:30.', Rule::unique('brokers')->where(function ($query)use($adminId){
                     return $query->where('admin_id', $adminId);
                 })
             ]
             ],
         [
 
-            'customer_phone.unique' => "The Customer phone field need to be unique",
-            'customer_phone.required' => "The Customer phone field is required",
-            'customer_phone.min' => "The Customer phone Minimum field length 9",
-            'customer_phone.max' => "The Customer phone Maximum field length 30",
-            'customer_name.required' => "The Customer name field is required",
-            'customer_email.max' => "The Customer email Maximum field length 190",
+            'broker_phone.unique' => "The Broker phone field need to be unique",
+            'broker_phone.required' => "The Broker phone field is required",
+            'broker_phone.min' => "The Broker phone Minimum field length 9",
+            'broker_phone.max' => "The Broker phone Maximum field length 30",
+            'broker_name.required' => "The Broker name field is required",
+            'broker_email.max' => "The Broker email Maximum field length 190",
 
         ]);
            try {
             DB::beginTransaction();
-            $customer = new Customer();
-            $customer->customer_name = $request->customer_name;
-            $customer->customer_phone = $request->customer_phone;
-            $customer->customer_email = $request->customer_email;
-            $customer->address = $request->address;
-            $customer->birth_date = $request->birth_date;
-          if($this->User->user_type=="Admin"){
-            $customer->admin_id = $this->User->id;
+            $broker = new Broker();
+            $broker->broker_name = $request->broker_name;
+            $broker->broker_phone = $request->broker_phone;
+            $broker->broker_email = $request->broker_email;
+            $broker->address = $request->address;
+            if($this->User->user_type=="Admin"){
+            $broker->admin_id = $this->User->id;
             $prefix = Helper::getAdmin(Auth::id())->invoice_slug;
            }else{
-            $customer->admin_id = $this->User->admin_id;
-            $customer->employee_id = $this->User->id;
+            $broker->admin_id = $this->User->admin_id;
+            $broker->employee_id = $this->User->id;
             $prefix = Helper::getAdmin(Auth::user()->admin_id)->invoice_slug;
            }
 
-          $customer->card_number = IdGenerator::generate(['table' => 'customers', 'field' => 'card_number', 'length' =>12, 'prefix' => $prefix, 'reset_on_prefix_change' => true]);
-          $customer->created_user_id = $this->User->id;
-           $customer->updated_user_id = $this->User->id;
-           $customer->status = $request->status;
-           $customer->save();
+          $broker->card_number = IdGenerator::generate(['table' => 'brokers', 'field' => 'card_number', 'length' =>12, 'prefix' => $prefix, 'reset_on_prefix_change' => true]);
+          $broker->created_user_id = $this->User->id;
+           $broker->updated_user_id = $this->User->id;
+           $broker->status = $request->status;
+           $broker->save();
           
             DB::commit();
-            Toastr::success("Customer Created Successfully", "Success");
-            return redirect()->route(request()->segment(1) . '.customers.index');
+            Toastr::success("Broker Created Successfully", "Success");
+            return redirect()->route(request()->segment(1) . '.brokers.index');
         } catch (\Exception $e) {
             DB::rollBack();
             $response = ErrorTryCatch::createResponse(false, 500, 'Internal Server Error.', null);
@@ -189,11 +187,11 @@ class CustomerController extends Controller
         try {
             $User = $this->User;
             if ($User->user_type == 'Admin') {
-                $data = Customer::with('customerdue')->whereadmin_id($User->id)->findOrFail(decrypt($id));
+                $data = Broker::with('customerdue')->whereadmin_id($User->id)->findOrFail(decrypt($id));
             } else {
-                $data = Customer::with('customerdue')->findOrFail(decrypt($id));
+                $data = Broker::with('customerdue')->findOrFail(decrypt($id));
             }
-            return view('backend.common.customers.show')->with('customer', $data);
+            return view('backend.common.brokers.show')->with('broker', $data);
         } catch (\Exception $e) {
             DB::rollBack();
             $response = ErrorTryCatch::createResponse(false, 500, 'Internal Server Error.', null);
@@ -214,15 +212,15 @@ class CustomerController extends Controller
         try {
             $User = $this->User;
             if ($User->user_type == 'Superadmin') {
-                $data = Customer::findOrFail(decrypt($id));
+                $data = Broker::findOrFail(decrypt($id));
             }
             elseif ($User->user_type == 'Admin') {
-                $data = Customer::whereadmin_id($User->id)->findOrFail(decrypt($id));
+                $data = Broker::whereadmin_id($User->id)->findOrFail(decrypt($id));
             }
              else {
-                $data = Customer::whereadmin_id($User->admin_id)->findOrFail(decrypt($id));
+                $data = Broker::whereadmin_id($User->admin_id)->findOrFail(decrypt($id));
             }
-            return view('backend.common.customers.edit')->with('customer', $data);
+            return view('backend.common.brokers.edit')->with('broker', $data);
         } catch (\Exception $e) {
             DB::rollBack();
             $response = ErrorTryCatch::createResponse(false, 500, 'Internal Server Error.', null);
@@ -242,47 +240,47 @@ class CustomerController extends Controller
               }
 
               $this->validate($request,[
-                  'customer_name' => 'required|min:1|max:30',
+                  'broker_name' => 'required|min:1|max:30',
                  'address' => 'required|min:1|max:198',
-                'customer_email' => 'max:198',
-                 'customer_phone' => ['required','min:9',
-                  'max:198', Rule::unique('customers')->ignore($id, 'id')->where(function ($query)use($adminId){
+                'broker_email' => 'max:198',
+                 'broker_phone' => ['required','min:9',
+                  'max:198', Rule::unique('brokers')->ignore($id, 'id')->where(function ($query)use($adminId){
                         return $query->where('admin_id',  $adminId);
                     })
                   ]
                   ],
               [
 
-                  'customer_phone.unique' => "The Customer phone field need to be unique",
-                  'customer_phone.required' => "The Customer phone field is required",
-                  'customer_phone.min' => "The Customer phone Minimum field length 9",
-                  'customer_phone.max' => "The Customer phone Maximum field length 30",
-                  'customer_name.required' => "The Customer name field is required",
-                  'customer_email.max' => "The Customer email Maximum field length 190",
+                  'broker_phone.unique' => "The Broker phone field need to be unique",
+                  'broker_phone.required' => "The Broker phone field is required",
+                  'broker_phone.min' => "The Broker phone Minimum field length 9",
+                  'broker_phone.max' => "The Broker phone Maximum field length 30",
+                  'broker_name.required' => "The Broker name field is required",
+                  'broker_email.max' => "The Broker email Maximum field length 190",
 
               ]);
 
         try {
             DB::beginTransaction();
-            $customer = Customer::find($id);
-            $customer->customer_name = $request->customer_name;
-            $customer->customer_phone = $request->customer_phone;
-            $customer->customer_email = $request->customer_email;
-            $customer->address = $request->address;
-            // $customer->discount = $request->discount;
-            $customer->birth_date = $request->birth_date;
+            $broker = Broker::find($id);
+            $broker->broker_name = $request->broker_name;
+            $broker->broker_phone = $request->broker_phone;
+            $broker->broker_email = $request->broker_email;
+            $broker->address = $request->address;
+            // $broker->discount = $request->discount;
+            $broker->birth_date = $request->birth_date;
            if($this->User->user_type=="Admin"){
-            $customer->admin_id = $this->User->id;
+            $broker->admin_id = $this->User->id;
            }else{
-            $customer->admin_id = $this->User->admin_id;
-            $customer->employee_id = $this->User->id;
+            $broker->admin_id = $this->User->admin_id;
+            $broker->employee_id = $this->User->id;
            }
-           $customer->updated_user_id = $this->User->id;
-           $customer->status = $request->status;
-           $customer->save();
+           $broker->updated_user_id = $this->User->id;
+           $broker->status = $request->status;
+           $broker->save();
             DB::commit();
-           Toastr::success("Customer Update Successfully", "Success");
-            return redirect()->route(request()->segment(1) . '.customers.index');
+           Toastr::success("Broker Update Successfully", "Success");
+            return redirect()->route(request()->segment(1) . '.brokers.index');
         } catch (\Exception $e) {
             DB::rollBack();
             $response = ErrorTryCatch::createResponse(false, 500, 'Internal Server Error.', null);
@@ -298,13 +296,13 @@ class CustomerController extends Controller
      * @param  \App\Models\Category   $category
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Customer  $customer)
+    public function destroy(Broker  $broker)
     {
         //
     }
     public function updateStatus(Request $request)
     {
-        $category = Customer::findOrFail($request->id);
+        $category = Broker::findOrFail($request->id);
         $category->status = $request->status;
         $category->updated_user_id = Auth::id();
         if ($category->save()) {
@@ -318,12 +316,12 @@ class CustomerController extends Controller
         try {
             $User = $this->User;
             if ($User->user_type == 'Admin') {
-                $customer = Customer::with('customerdue')->whereadmin_id($User->id)->findOrFail(decrypt($id));
+                $broker = Broker::with('customerdue')->whereadmin_id($User->id)->findOrFail(decrypt($id));
             } else {
-                $customer = Customer::with('customerdue')->findOrFail(decrypt($id));
+                $broker = Broker::with('customerdue')->findOrFail(decrypt($id));
             }
-            $pdf = PDF::loadView('backend.common.customers.pdf', compact('customer'));
-            return $pdf->stream('customer_' . now() . '.pdf');
+            $pdf = PDF::loadView('backend.common.brokers.pdf', compact('broker'));
+            return $pdf->stream('broker_' . now() . '.pdf');
 
         } catch (\Exception $e) {
             DB::rollBack();

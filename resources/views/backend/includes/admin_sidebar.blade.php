@@ -32,9 +32,18 @@
                     <span class="nav-link-text ms-1">Sales</span>
                 </a>
 
-                <div class="collapse {{Request::is(Request::segment(1) .'/sales*') ? 'show' : ''}}  {{Request::is(Request::segment(1) .'/sale-returns*') ? 'show' : ''}} "
+                <div class="collapse {{Request::is(Request::segment(1) .'/work-orders*') ? 'show' : ''}} {{Request::is(Request::segment(1) .'/sales*') ? 'show' : ''}}"
                     id="saleId">
                     <ul class="nav ms-4">
+                        @can('work-order-list')
+                        <li class="nav-item">
+                            <a class="nav-link {{Request::is(Request::segment(1) .'/work-orders*') ? 'active' : ''}}"
+                                href="{{route(Request::segment(1) . '.work-orders.index')}}">
+                                 <span class="sidenav-mini-icon">W </span>
+                                 <i class="ni ni-curved-next text-danger text-lg opacity-10"></i> <span class="sidenav-normal">Work Order </span>
+                            </a>
+                        </li>
+                        @endcan
                         @can('sale-list')
                         <li class="nav-item">
                             <a class="nav-link {{Request::is(Request::segment(1) .'/sales*') ? 'active' : ''}}"
@@ -43,16 +52,8 @@
                                 <i class="fa fa-cart-plus text-info text-lg opacity-10"></i> <span class="sidenav-normal">Sale </span>
                             </a>
                         </li>
-                        @endcan
-                        @can('sale-return-list')
-                        <li class="nav-item">
-                            <a class="nav-link {{Request::is(Request::segment(1) .'/sale-returns*') ? 'active' : ''}}"
-                                href="{{route(Request::segment(1) . '.sale-returns.index')}}">
-                                 <span class="sidenav-mini-icon">SR </span>
-                                 <i class="ni ni-curved-next text-danger text-lg opacity-10"></i> <span class="sidenav-normal">Sale Return </span>
-                            </a>
-                        </li>
-                        @endcan
+                        @endcan                      
+                        
                     </ul>
                 </div>
 
@@ -158,11 +159,21 @@
                     <div class="icon icon-shape icon-sm text-center d-flex align-items-center justify-content-center">
                         <i class="ni ni-shop text-primary text-lg opacity-10"></i>
                     </div>
-                    <span class="nav-link-text ms-1">Shops</span>
+                    <span class="nav-link-text ms-1">Warehouse </span>
                 </a>
-                <div class="collapse  {{Request::is(Request::segment(1) .'/shops*') ? 'show' : ''}} {{Request::is(Request::segment(1) .'/shop-current-stocks*') ? 'show' : ''}} {{Request::is(Request::segment(1) .'/stock-adjustments*') ? 'show' : ''}} {{Request::is(Request::segment(1) .'/product-discounts*') ? 'show' : ''}}"
+                <div class="collapse {{Request::is(Request::segment(1) .'/warehouses*') ? 'show' : ''}}  {{Request::is(Request::segment(1) .'/shops*') ? 'show' : ''}} {{Request::is(Request::segment(1) .'/shop-current-stocks*') ? 'show' : ''}} {{Request::is(Request::segment(1) .'/stock-adjustments*') ? 'show' : ''}} {{Request::is(Request::segment(1) .'/product-discounts*') ? 'show' : ''}}"
                     id="shops">
                     <ul class="nav ms-4">
+                        @can('warehouse-list')
+                        <li class="nav-item">
+                            <a class="nav-link {{Request::is(Request::segment(1) .'/warehouses*') ? 'active' : ''}}"
+                                href="{{route(Request::segment(1) . '.warehouses.index')}}">
+                                <span class="sidenav-mini-icon">S</span>
+                                <i class="fa fa-home text-info text-lg opacity-10"></i>
+                                <span class="sidenav-normal">Warehouse</span>
+                            </a>
+                        </li>
+                        @endcan
                         @can('product-list')
                         <li class="nav-item">
                             <a class="nav-link {{Request::is(Request::segment(1) .'/shops*') ? 'active' : ''}}"
@@ -258,7 +269,7 @@
                     </div>
                     <span class="nav-link-text ms-1">Customers</span>
                 </a>
-                <div class="collapse {{Request::is(Request::segment(1) .'/customers*') ? 'show' : ''}} {{Request::is(Request::segment(1) .'/customer-due*') ? 'show' : ''}} "
+                <div class="collapse {{Request::is(Request::segment(1) .'/customers*') ? 'show' : ''}} {{Request::is(Request::segment(1) .'/brokers*') ? 'show' : ''}} "
                     id="customers">
                     <ul class="nav ms-4">
 
@@ -274,13 +285,13 @@
                         </li>
                         @endcan
 
-                        @can('customer-due-list')
+                        @can('broker-list')
                         <li class="nav-item">
-                            <a class="nav-link {{Request::is(Request::segment(1) .'/customer-due*') ? 'active' : ''}}"
-                                href="{{route(Request::segment(1) . '.customer-due.index')}}">
+                            <a class="nav-link {{Request::is(Request::segment(1) .'/brokers*') ? 'active' : ''}}"
+                                href="{{route(Request::segment(1) . '.brokers.index')}}">
                                 <span class="sidenav-mini-icon">R </span>
                                 <i class="fa fa-edit text-info text-lg opacity-10"></i>
-                                <span class="sidenav-normal">Customer Due </span>
+                                <span class="sidenav-normal">Broker </span>
                             </a>
                             </a>
                         </li>

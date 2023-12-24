@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\WalletController;
 use App\Http\Controllers\Admin\ProfileController;
+use App\Http\Controllers\Admin\WarehouseController;
 use App\Http\Controllers\Admin\SetupController;
 Route::group([
   'as' => 'admin.',
@@ -25,6 +26,10 @@ Route::post('profile-update', [ProfileController::class, 'profilesUpdate'])->nam
 Route::post('password-update', [ProfileController::class, 'passwordUpdate'])->name('passwordUpdate');
 Route::post('software-rating', [ProfileController::class, 'softwareRating'])->name('softwareRating');
 
+##warehouse
+Route::resource('warehouses', WarehouseController::class);
+Route::post('warehouse-status', [WarehouseController::class, 'updateStatus'])->name('warehouseStatus');
+Route::get('warehouse-pdf/{id}', [WarehouseController::class, 'warehousePdf'])->name('warehousePdf');
 
 ##shop
 Route::resource('shops', ShopController::class);
