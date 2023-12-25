@@ -283,6 +283,16 @@ class Helper
             return Customer::wherestatus(1)->whereadmin_id(Auth::user()->admin_id)->pluck('customer_name', 'id');
         }
     }
+    public static function brokerPluckValue()
+    {
+        if (Auth::user()->user_type == 'SuperAdmin') {
+            return Customer::wherestatus(1)->pluck('customer_name', 'id');
+        } elseif (Auth::user()->user_type == 'Admin') {
+            return Customer::wherestatus(1)->whereadmin_id(Auth::id())->pluck('customer_name', 'id');
+        } else {
+            return Customer::wherestatus(1)->whereadmin_id(Auth::user()->admin_id)->pluck('customer_name', 'id');
+        }
+    }
     public static function getAveragePrice($productId, $price, $qty, $shop)
     {
 

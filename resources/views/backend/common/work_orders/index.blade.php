@@ -1,5 +1,5 @@
 @extends('backend.layouts.master')
-@section('title', 'Work Order')
+@section('title', 'Workorder')
 @push('css')
 <link rel="stylesheet" href="{{asset('backend/assets/js/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css')}}">
 <link rel="stylesheet" href="{{asset('backend/assets/js/plugins/datatables-responsive/css/responsive.bootstrap4.min.css')}}">
@@ -14,16 +14,16 @@
                     <div class="card-header pb-4">
                         <div class="d-lg-flex">
                             <div>
-                                <h5 class="mb-0">All Work Order</h5>
+                                <h5 class="mb-0">All Workorder</h5>
                                 <p class="text-sm mb-0">
-                                    Work Order data.
+                                    Workorder data.
                                 </p>
                             </div>
                             <div class="ms-auto my-auto mt-lg-0 mt-4">
                                 <div class="ms-auto my-auto">
                                     <a href="{{ route(Request::segment(1) . '.work-orders.create') }}"
-                                        class="btn bg-gradient-primary btn-sm mb-0">+&nbsp; New Work Order</a>
-                                        </div>
+                                        class="btn bg-gradient-primary btn-sm mb-0">+&nbsp; New Workorder</a>
+                            </div>
                         </div>
                     </div>
                     <div class="card-body px-0 pb-0">
@@ -36,10 +36,9 @@
                                         <th>Invoice</th>
                                         <th>Creator</th>
                                         <th>Supplier</th>
-                                        <th>Quantity</th>
-                                        <th>Discount</th>
-                                        <th>Total</th>
+                                        <th>Amount</th>
                                         <th>Paid</th>
+                                        <th>Status</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -51,12 +50,10 @@
                                         <th>Date</th>
                                         <th>Invoice</th>
                                         <th>Creator</th>
-                                        <th>Supplier</th>
-                                        <th  style="text-align: left"></th>
-                                        <th  style="text-align: left"></th>
-                                        <th  style="text-align: left"></th>
+                                        <th>Customer</th>
                                         <th style="text-align: left"></th>
-
+                                        <th style="text-align: left"></th>
+                                        <th>Status</th>
                                         <th>Action</th>
                                     </tr>
                                 </tfoot>
@@ -96,7 +93,7 @@
                         }
                     },
 
-                    ajax: "{{ route(Request::segment(1) . '.purchases.index') }}",
+                    ajax: "{{ route(Request::segment(1) . '.sales.index') }}",
                     columns: [{
                             data: 'DT_RowIndex',
                             orderable: false,
@@ -115,16 +112,8 @@
                             name: 'user.name'
                         },
                         {
-                            data: 'supplier.supplier_name',
-                            name: 'supplier.supplier_name'
-                        },
-                        {
-                            data: 'total_quantity',
-                            name: 'total_quantity'
-                        },
-                        {
-                            data: 'total_discount',
-                            name: 'total_discount'
+                            data: 'customer.customer_name',
+                            name: 'customer.customer_name'
                         },
                         {
                             data: 'grand_total',
@@ -136,6 +125,9 @@
                             name: 'paid'
                         },
 
+                        {
+                            data: 'status'
+                        },
 
                         {
                             data: 'action',
@@ -154,16 +146,6 @@
                     $(api.column(6, {
                         page: ''
                     }).footer()).html('' + api.column(6, {
-                        page: ''
-                    }).data().sum());
-                    $(api.column(7, {
-                        page: ''
-                    }).footer()).html('' + api.column(7, {
-                        page: ''
-                    }).data().sum());
-                    $(api.column(8, {
-                        page: ''
-                    }).footer()).html('' + api.column(8, {
                         page: ''
                     }).data().sum());
 

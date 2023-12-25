@@ -15,10 +15,7 @@ class Warehouse extends Model
 
     ];
    
-    public function user()
-    {
-        return $this->belongsTo(User::class, 'created_user_id');
-    }
+   
     public function shop(){
         return $this->hasMany(Shop::class);
     }
