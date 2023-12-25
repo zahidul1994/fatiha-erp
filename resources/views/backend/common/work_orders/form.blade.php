@@ -1,7 +1,7 @@
 
   <div class="row">
     <div class="col-12 col-sm-6">
-      <h5 class="font-weight-bolder mb-0">Work Form</h5>
+      <h5 class="font-weight-bolder mb-0">(Quotation) Form</h5>
     </div>
     <div class="col-12 col-sm-6 text-end page-custom-buttons pcb-desktop">
       <button class="btn bg-gradient-dark ms-auto mb-0 js-btn-next" type="submit" title="Save"><svg
@@ -75,10 +75,10 @@
           <div class="card-body pt-0 pr-0">
 
             <div class="d-flex mb-1">
-              <div class="w-25 pe-2 align-self-center">Vat & Dis</div>
+              <div class="w-25 pe-2 align-self-center">Vat</div>
               <div class="w-75 align-self-center">
                 <div class="row">
-                    <div class="col-md-6"> <input type="number" name="total_vat"  id="total_vat" class="form-control text-end py-1 px-1" readonly  data-format="0[.]00" data-formula="SUM(V1:V500)" step="any" min="0" max="99999999999999"></div>
+                    <div class="col-md-12"> <input type="number" name="total_vat"  id="total_vat" class="form-control text-end py-1 px-1" readonly  data-format="0[.]00" data-formula="SUM(V1:V500)" step="any" min="0" max="99999999999999"></div>
                     <div class="col-md-6"> <input type="number" name="product_total_discount"  id="product_total_discount" class="form-control text-end py-1 px-1"  data-cell="M1" data-format="0[.]00" data-formula="SUM(N1:N500)"  step="any" min="0" max="99999999999999" readonly></div>
                 </div>
               </div>
