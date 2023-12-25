@@ -14,7 +14,10 @@ class Warehouse extends Model
         'created_at' =>  'datetime:dS F, Y, H:i a',
 
     ];
-   
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'created_user_id');
+    }
    
     public function shop(){
         return $this->hasMany(Shop::class);

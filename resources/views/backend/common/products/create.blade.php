@@ -68,7 +68,12 @@
 <script>
     $('.select2').select2();
   $(document).ready(function () {
+    $( "#unit_price" ).on( "change", function() {
+    $('#govt_price').val(($('#unit_price').val()));
+        calculateFx()
+} );
     $( "#productForm" ).on( "click", function() {
+    
         calculateFx()
 } );
   $('#image').change(function(event){
