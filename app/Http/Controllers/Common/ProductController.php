@@ -246,7 +246,7 @@ class ProductController extends Controller
 
             ]
         );
-        try {
+        // try {
             DB::beginTransaction();
             $product = new Product();
             $product->product_name = $request->product_name;
@@ -261,6 +261,7 @@ class ProductController extends Controller
            $product->vat = $request->vat;
             $product->discount = $request->discount;
             $product->unit_price = $request->unit_price ?: 0;
+            $product->govt_price = $request->govt_price ?: 0;
             $product->insurance_before = $request->insurance_before ?: 0;
             $product->insurance_before_value = $request->insurance_before_value ?: 0;
             $product->clearing_before = $request->clearing_before ?: 0;
@@ -316,12 +317,12 @@ class ProductController extends Controller
                 Toastr::success("Product Created Successfully", "Success");
                 return redirect()->route(request()->segment(1) . '.products.index');
             }
-        } catch (\Exception $e) {
-            DB::rollBack();
-            $response = ErrorTryCatch::createResponse(false, 500, 'Internal Server Error.', null);
-            Toastr::error($response['message'], "Error");
-            return back();
-        }
+        // } catch (\Exception $e) {
+        //     DB::rollBack();
+        //     $response = ErrorTryCatch::createResponse(false, 500, 'Internal Server Error.', null);
+        //     Toastr::error($response['message'], "Error");
+        //     return back();
+        // }
     }
 
     /**
@@ -487,7 +488,7 @@ class ProductController extends Controller
             $product->slug = Generate::Slug($productFullName);
             $product->rack_number = $request->rack_number;
             $product->made_in = $request->made_in;
-           $product->vat = $request->vat;
+            $product->vat = $request->vat;
             $product->discount = $request->discount;
             $product->unit_price = $request->unit_price ?: 0;
             $product->insurance_before = $request->insurance_before ?: 0;
