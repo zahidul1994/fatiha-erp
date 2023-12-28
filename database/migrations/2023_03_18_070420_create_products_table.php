@@ -28,6 +28,7 @@ return new class extends Migration
             $table->string('slug')->nullable();
             $table->string('sku')->nullable();
             $table->float('unit_price',16,2)->default(0);
+            $table->float('govt_price',16,2)->default(0);
             $table->float('insurance_before',16,2)->default(0);
             $table->float('insurance_before_value',16,2)->default(0);
             $table->float('clearing_before',16,2)->default(0);

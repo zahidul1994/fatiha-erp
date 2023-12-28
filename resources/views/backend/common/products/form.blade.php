@@ -124,7 +124,7 @@ $setup= Helper::companySetup();
           <div class="col-md-4">
             <label for="convert_rate" class="mt-4">Converted Rate *</label>
 
-            {!! Form::text('convert_rate', 1?:null, ['id' => 'convert_rate','class' =>
+            {!! Form::text('convert_rate', null, ['id' => 'convert_rate','class' =>
             'form-control','required','data-cell'=>"CONVR1",'data-format'=>"0[.]00", 'keydown'=>"calculateFx()",
             'onblur'=>"calculateFx()"
             ]) !!}

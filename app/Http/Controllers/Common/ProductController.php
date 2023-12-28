@@ -261,6 +261,7 @@ class ProductController extends Controller
            $product->vat = $request->vat;
             $product->discount = $request->discount;
             $product->unit_price = $request->unit_price ?: 0;
+            $product->govt_price = $request->govt_price ?: 0;
             $product->insurance_before = $request->insurance_before ?: 0;
             $product->insurance_before_value = $request->insurance_before_value ?: 0;
             $product->clearing_before = $request->clearing_before ?: 0;
@@ -340,12 +341,13 @@ class ProductController extends Controller
         try {
             $User = $this->User;
             if ($User->user_type == 'Superadmin') {
-                $data = Product::with('brand', 'category')->findOrFail(decrypt($id));
+                $data = Product::with('brand')->findOrFail(decrypt($id));
             } elseif ($User->user_type == 'Admin') {
-                $data = Product::with('brand', 'category')->whereadmin_id($this->User->id)->findOrFail(decrypt($id));
+                $data = Product::with('brand')->whereadmin_id($this->User->id)->findOrFail(decrypt($id));
             } else {
-                $data = Product::with('brand', 'category')->whereadmin_id($this->User->admin_id)->findOrFail(decrypt($id));
+                $data = Product::with('brand')->whereadmin_id($this->User->admin_id)->findOrFail(decrypt($id));
             }
+            // dd($data);
             return view('backend.common.products.show', compact('breadcrumbs'))->with('product', $data);
         } catch (\Exception $e) {
             $response = ErrorTryCatch::createResponse(false, 500, 'Internal Server Error.', null);
@@ -490,6 +492,7 @@ class ProductController extends Controller
            $product->vat = $request->vat;
             $product->discount = $request->discount;
             $product->unit_price = $request->unit_price ?: 0;
+            $product->govt_price = $request->govt_price ?: 0;
             $product->insurance_before = $request->insurance_before ?: 0;
             $product->insurance_before_value = $request->insurance_before_value ?: 0;
             $product->clearing_before = $request->clearing_before ?: 0;
