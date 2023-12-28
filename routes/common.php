@@ -96,6 +96,7 @@ Route::resource('brokers', BrokerController::class);
 
 
 ##work order
+Route::post('find-work-order-product', [WorkOrderController::class, 'findWorkOrderProduct']);
 Route::resource('work-orders', WorkOrderController::class);
 
 ##sale

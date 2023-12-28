@@ -387,11 +387,11 @@ class ProductController extends Controller
         try {
             $User = $this->User;
             if ($User->user_type == 'Superadmin') {
-                $data = Product::with('brand', 'category')->findOrFail(decrypt($id));
+                $data = Product::with('brand')->findOrFail(decrypt($id));
             } elseif ($User->user_type == 'Admin') {
-                $data = Product::with('brand', 'category')->whereadmin_id($this->User->id)->findOrFail(decrypt($id));
+                $data = Product::with('brand')->whereadmin_id($this->User->id)->findOrFail(decrypt($id));
             } else {
-                $data = Product::with('brand', 'category')->whereadmin_id($this->User->admin_id)->findOrFail(decrypt($id));
+                $data = Product::with('brand')->whereadmin_id($this->User->admin_id)->findOrFail(decrypt($id));
             }
             return view('backend.common.products.duplicate')->with('product', $data);
         } catch (\Exception $e) {

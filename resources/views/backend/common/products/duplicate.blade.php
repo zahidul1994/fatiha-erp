@@ -28,7 +28,7 @@
                             @include('partial.formerror')
                             {!! Form::model($product, [
                                 'route' => [Request::segment(1) . '.products.store', $product->id],
-                                'method' => 'POST',
+                                'method' => 'POST','id'=>'productForm',
                                 'files' => true,
                             ]) !!}
                             @include('backend.common.products.form')
@@ -44,36 +44,25 @@
         </div>
     </div>
 @endsection
+@section('calx')
+<!-- calx -->
+<script src="{{ asset('backend/assets/js/jquery-calx-sample-2.2.8.min.js') }}"></script>
+@endsection
 @push('js')
 <script src="{{ asset('backend/assets/select2/js/select2.min.js') }}"></script>
 <!-- CKEditor init -->
 <script src="https://cdn.ckeditor.com/4.21.0/basic/ckeditor.js"></script>
 <script src="{{ asset('backend/assets/js/ckeditor-jquery.js') }}"></script>
 <script>
-    $('.select2').select2();
-    var catid = $('#category_id').val();
-    var subcategory = '{{$product->sub_category_id}}';
-$.ajax({
-        type: "GET",
-        url: url + '/get-sub-category/'+catid,
-        dataType: "JSON",
-        success:function(data) {
-         if(data){
-                  $.each(data, function(key, value){
-                    if(value.id==subcategory){
-                        $('#sub_category_id').append('<option value="'+value.id+'" selected>' + value.sub_category_name + '</option>');
-                       }else{
-                        $('#sub_category_id').append('<option value="'+value.id+'">' + value.sub_category_name + '</option>');
-
-                       }
-
-                    });
-                }
-
-            },
-    });
+   
   $(document).ready(function () {
-
+    $( "#unit_price" ).on( "change", function() {
+    $('#govt_price').val(($('#unit_price').val()));
+        calculateFx()
+});
+ $( "#productForm" ).on( "click", function() {
+        calculateFx()
+});
   $('#image').change(function(event){
     let file=event.target.files[0];
             let reader = new FileReader();
@@ -101,60 +90,44 @@ $.ajax({
          });
 
 //hs_code
-         $('#hs_code').blur(function() {
+$('#hsCode').blur(function() {
              $.ajax({
-               url: "{{ URL(Request::segment(1).'/check-product-hs_code') }}"+'/'+$(this).val(),
+                url: "{{ URL(Request::segment(1).'/check-product-hscode') }}"+'/'+$(this).val(),
                 method: "GET",
                 success: function(res) {
             if (res.success == false) {
-                    $('#hs_code').val('');
-                    $('#hs_code').css({'border-color':'red', 'box-shadow': '0 0 0 0.2rem rgb(255, 0, 0)'});
+                    $('#hsCode').val('');
+                    $('#hsCode').css({'border-color':'red', 'box-shadow': '0 0 0 0.2rem rgb(255, 0, 0)'});
                     alert('Barcode Number already exists, please add another Code !');
-                    $('#hs_code').focus();
+                    $('#hsCode').focus();
                 }
                 else{
-                $('#hs_code').css({'border-color':'#28a745', 'box-shadow': '0 0 0 0.2rem rgba(40, 167, 69, 0.25)'});
+                $('#hsCode').css({'border-color':'#28a745', 'box-shadow': '0 0 0 0.2rem rgba(40, 167, 69, 0.25)'});
                 }
             },
             error: function(err) {
-            $('#hs_code').css({'border-color':'red', 'box-shadow': '0 0 0 0.2rem rgb(255, 0, 0)'});
+            $('#hsCode').css({'border-color':'red', 'box-shadow': '0 0 0 0.2rem rgb(255, 0, 0)'});
             }
             })
         });
             // for random value
             var gRandLength = 9;
-            $('#barcodeBtn').click(function() {
+            $('#hsCodeBtn').click(function() {
                 var num = Math.floor(1 + (Math.random() * Math.pow(10, gRandLength)));
-                $('#hs_code').val(num);
+                $('#hsCode').val(num);
 
             });
 
-//category change
-$('#category_id').change(function(){
-
-  $('#sub_category_id').empty();
-
- var catid = $(this).val();
-$.ajax({
-        type: "GET",
-        url: url + '/get-sub-category/'+catid,
-        dataType: "JSON",
-        success:function(data) {
-         if(data){
-                  $.each(data, function(key, value){
-                       $('#sub_category_id').append('<option value="'+value.id+'">' + value.sub_category_name + '</option>');
-
-                    });
-                }
-
-            },
-    });
-  });
 
 
 
 });
 
+function calculateFx() {
+  $form = $('#productForm').calx();
+  $form.calx('update');
+;
+}
 
 </script>
 

@@ -56,6 +56,7 @@ class CreateSuperAdmin extends Seeder
             $admin->name = 'Admin';
             $admin->user_type = 'Admin';
             $admin->phone = '01739898766';
+            $admin->invoice_slug = 'fat';
             $admin->package_id = 1;
             $admin->email = 'admin@gmail.com';
             $admin->password = Hash::make('admin1234');
