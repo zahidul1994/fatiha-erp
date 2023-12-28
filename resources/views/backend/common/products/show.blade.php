@@ -20,7 +20,7 @@ $setup=Helper::adminSetup();
                         <div class="col-xl-4 col-lg-4 text-center">
                             
                             <img class="img-fluid border-radius-lg shadow-lg mx-auto"
-                                src="{{asset(@$product->path.'/'.@$product->photo)}}" alt="chair"
+                                src="{{asset(@$product->path.'/'.@$product->photo)}}" alt="{{$product->product_name}}"
                                 style="max-width: 180px !important">
                             <div class="my-gallery d-flex mt-4 pt-2">
                                 @php $info = " Id : $product->sku \n Product : $product->product_name \n Code :
