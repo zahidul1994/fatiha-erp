@@ -596,33 +596,35 @@ class WorkOrderController extends Controller
         }
         return 0;
     }
-    public function checkProductName($id)
+
+   
+    public function findWorkOrderProduct(Request $request)
     {
-        if (Auth::user()->user_type == "Admin") {
-            $purchase = WorkOrder::whereadmin_id(Auth::id())->whereproduct_name($id)->first();
-        } else {
-            $purchase = WorkOrder::whereadmin_id(Auth::user()->admin_id)->whereproduct_name($id)->first();
-        }
-        if ($purchase) {
-            return response()->json(['success' => false, 'message' => 'duplicate']);
-        } else {
-            return response()->json(['success' => true, 'message' => 'no duplicate']);
-        }
-    }
-    public function checkBarcode($id)
-    {
-        if (Auth::user()->user_type == "Admin") {
-            $purchase = WorkOrder::whereadmin_id(Auth::id())->wherebarcode($id)->first();
-        } else {
-            $purchase = WorkOrder::whereadmin_id(Auth::user()->admin_id)->wherebarcode($id)->first();
-        }
-        if ($purchase) {
-            return response()->json(['success' => false, 'message' => 'duplicate']);
-        } else {
-            return response()->json(['success' => true, 'message' => 'no duplicate']);
+        if ($request->has('term')) {
+            if (Auth::user()->user_type == 'Superadmin') {
+                $data = Product::wherestatus(1)->where(function ($query) use ($request) {
+                    $query->where('product_full_name', 'like', '%' . $request->term . '%')->orWhere('hs_code', 'like', '%' . $request->term . '%');
+                })->select('id', 'product_full_name', 'purchase_price', 'sale_price', 'hs_code', 'vat', 'sku', 'expire_date')->inRandomOrder()->take(20)->get();
+            } elseif (Auth::user()->user_type == 'Admin') {
+                $data = Product::whereadmin_id(Auth::id())->wherestatus(1)->where(function ($query) use ($request) {
+                    $query->where('product_full_name', 'like', '%' . $request->term . '%')->orWhere('hs_code', 'like', '%' . $request->term . '%');
+                })->select('id', 'product_full_name', 'purchase_price', 'sale_price', 'hs_code', 'vat', 'sku', 'expire_date')->inRandomOrder()->take(20)->get();
+            } else {
+
+                $data = Product::whereadmin_id(Auth::user()->admin_id)->wherestatus(1)->where(function ($query) use ($request) {
+                    $query->where('product_full_name', 'like', '%' . $request->term . '%')->orWhere('hs_code', 'like', '%' . $request->term . '%');
+                })->select('id', 'product_full_name', 'purchase_price', 'sale_price', 'hs_code', 'vat', 'sku', 'expire_date')->inRandomOrder()->take(20)->get();
+            }
+            $results = array();
+            foreach ($data as  $v) {
+                $results[] = ['id' => $v->id, 'value' => $v->product_full_name . ' (' . $v->hs_code . ')', 'price' => $v->purchase_price, 'saleprice' => $v->sale_price, 'averageprice' => $v->average_price, 'tax' => $v->vat, 'sku' => $v->sku, 'hs_code' => $v->hs_code, 'date' => $v->expire_date];
+            }
+
+            return response()->json($results);
         }
     }
 
+   
     public function purchasePdf($id)
     {
 

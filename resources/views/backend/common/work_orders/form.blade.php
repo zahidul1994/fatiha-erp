@@ -41,8 +41,8 @@
 
           </div>
           <div class="col-md-4 col-sm-1">
-            <label for="customer_id">Customer * </label>
-          {!! Form::select('customer_id',Helper::customerPluckValue(), Helper::adminSetup()->default_customer_id?:null, ['id' => 'customer_id', 'class' => 'form-control select2', 'tabindex' => 2]) !!}
+            <label for="customerId">Customer * </label>
+          {!! Form::select('customer_id',Helper::customerPluckValue(), Helper::adminSetup()->default_customer_id?:null, ['id' => 'customerId', 'class' => 'form-control select2', 'tabindex' => 2]) !!}
           </div>
           <div class="col-md-4 col-sm-1">
             <label for="borker_id">Broker * </label>
@@ -77,30 +77,14 @@
             <div class="d-flex mb-1">
               <div class="w-25 pe-2 align-self-center">Vat</div>
               <div class="w-75 align-self-center">
-                <div class="row">
-                    <div class="col-md-12"> <input type="number" name="total_vat"  id="total_vat" class="form-control text-end py-1 px-1" readonly  data-format="0[.]00" data-formula="SUM(V1:V500)" step="any" min="0" max="99999999999999"></div>
-                    <div class="col-md-6"> <input type="number" name="product_total_discount"  id="product_total_discount" class="form-control text-end py-1 px-1"  data-cell="M1" data-format="0[.]00" data-formula="SUM(N1:N500)"  step="any" min="0" max="99999999999999" readonly></div>
-                </div>
+              <div class="col-md-12"> <input type="number" name="total_vat"  id="total_vat" class="form-control text-end py-1 px-1" readonly  data-format="0[.]00" data-formula="SUM(V1:V500)" step="any" min="0" max="99999999999999"></div>
               </div>
             </div>
-            <div class="d-flex mb-1">
-              <div class="w-25 pe-2 align-self-center"> Extra D</div>
-              <div class="w-75 align-self-center">
-                <div class="row">
-                    <div class="col-md-6"><input type="number" name="other_discount"   onkeypress="getQty()"  onblur="getQty()" id="other_discount" class="form-control text-end py-1 px-1"  data-cell="L1" data-format="0[.]00"   step="any" min="0" max="99999999999999"></div>
-                    <div class="col-md-6"><input type="number" name="total_discount"  id="total_discount" class="form-control text-end py-1 px-1"  data-cell="O1" data-format="0[.]00"  data-format="0[.]00" data-formula="SUM(M1+L1)" value="0"  readonly  step="any" min="0" max="99999999999999"></div>
-                </div>
-
-               </div>
-            </div>
+            
             <div class="d-flex mb-1">
               <div class="w-25 pe-2 align-self-center">Paid A</div>
               <div class="w-75 align-self-center">
-                <div class="row">
-                    <div class="col-md-7">{!! Form::number('paid', null, ['id' => 'total_paid', 'class' => 'form-control text-end py-1 px-1','step'=>'any','min'=>0,'max'=>9999999999999, 'tabindex' => 8,  'onkeypress'=>"getQty()" ]) !!}</div>
-                    <div class="col-md-5"><input type="number" step="any" readonly name="extra_discount_percent" class="form-control text-end py-1 px-1" data-cell="Z1" data-format="0[.]00"></div>
-                </div>
-
+                    <div class="col-md-12">{!! Form::number('paid', null, ['id' => 'total_paid', 'class' => 'form-control text-end py-1 px-1','step'=>'any','min'=>0,'max'=>9999999999999, 'tabindex' => 8,  'onkeypress'=>"getQty()" ]) !!}</div>
                 </div>
             </div>
 

@@ -162,10 +162,9 @@
 
                $.ajax({
                 type: 'POST',
-               url: "{{ URL(Request::segment(1).'/find-shop-current-stock') }}",
+               url: "{{ URL(Request::segment(1).'/find-work-order-product') }}",
                data: {
-                term: request.term,
-                shop_id: $('#shop_id').val(),
+                term: request.term               
             },
             success: function (data) {
                 $(this).removeClass('ui-autocomplete-loading');
@@ -238,6 +237,12 @@
             });
     }
 });
+$( "#formReset" ).on( "click", function() {
+        calculateFx()
+});
+
+
+
 //clear
 $('#clear').click(function (e) {
   $('#formReset').get(0).reset();
@@ -256,57 +261,19 @@ $("#total_paid, other_discount").keyup(function() {
 
   });
 
-//paid save
-$('#paid').click(function (e) {
-e.preventDefault();
-if($('#total_paid').val()==0 && $('#payment_method').val() !=='Due'){
-  $('#total_paid').val($('#grand_total').val());
-}
 
-  $('#formReset').submit();
-});
 $('#print').click(function (e) {
 e.preventDefault();
-if($('#total_paid').val()==0 && $('#payment_method').val() !=='Due'){
-  $('#total_paid').val($('#grand_total').val());
-}
 
 $('.multisteps-form__content').append('<input type="hidden" name="print">');
   $('#formReset').submit();
 });
 
 
-$('#payment_method').change(function(){
-if($(this).val()=='Bkash'|| $(this).val()=='Nagad' || $(this).val()=='Rocket'){
-$('#MobileBankPayment').removeClass('d-none');
-$('#BankPayment').addClass('d-none');
-$('#total_paid').prop('readonly', false);
-}
-else if($(this).val()=='Bank'){
- $('#BankPayment').removeClass('d-none');
- $('#MobileBankPayment').addClass('d-none');
- $('#total_paid').prop('readonly', false);
-}
-else if($(this).val()=='Due'){
-  $('#total_paid').prop('readonly', true);
- $('#BankPayment').addClass('d-none');
- $('#MobileBankPayment').addClass('d-none');
-
-}
-else{
-  $('#total_paid').prop('readonly', false);
- $('#MobileBankPayment').addClass('d-none');
- $('#BankPayment').addClass('d-none');
-
-}
- });
-
-
-
 });
 
 //onkeyup
-function getQty() {
+function calculateFx() {
   $form = $('#dynamic').calx();
  $form.calx('getCell', 'G1').setFormula('SUM(F1:F5000)-(O1)');
   $form.calx('getCell', 'Z1').setFormula('L1/(SUM(Q1:Q5000))');
@@ -315,7 +282,7 @@ function getQty() {
 }
 //onkeyup
 function getVat() {
-  getQty()
+  calculateFx()
 }
 
 

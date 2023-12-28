@@ -1,8 +1,8 @@
 <?php
 
 namespace Database\Seeders;
-
 use App\Models\User;
+use App\Models\Setup;
 use App\Helpers\Helper;
 use App\Models\Profile;
 use Illuminate\Support\Str;
@@ -56,6 +56,8 @@ class CreateSuperAdmin extends Seeder
             $admin->name = 'Admin';
             $admin->user_type = 'Admin';
             $admin->phone = '01739898766';
+            $admin->invoice_slug = 'fat';
+            $admin->package_id = 1;
             $admin->email = 'admin@gmail.com';
             $admin->password = Hash::make('admin1234');
             $admin->created_user_id = '1';
@@ -67,9 +69,20 @@ class CreateSuperAdmin extends Seeder
             $profile->user_id = $admin->id;
             $profile->gender = 'Male';
             $profile->save();
-            $admin->assignRole('Superadmin');
+            $setup=new Setup();
+            $setup->admin_id=$admin->id;
+            $setup->company_name = 'Admin';
+            $setup->printing_logo='not-found.jpg';
+            $setup->company_logo = 'not-found.jpg';
+            $setup->web_address = 'sohibd.com';
+            $setup->office_phone='01912748597';
+            $setup->office_email='admin@gmail.com';
+            $setup->company_address='Dhaka';
+            $setup->description = 'Ki dor';
+            $setup->save();
+            $admin->assignRole('Superadmin1');
             $permission = Permission::pluck('name');
-            $role = Role::wherename('Superadmin')->first();
+            $role = Role::wherename('Superadmin1')->first();
             $role->syncPermissions($permission);
         } else {
             $superAdmin = User::first();

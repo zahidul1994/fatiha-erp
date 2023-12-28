@@ -246,7 +246,7 @@ class ProductController extends Controller
 
             ]
         );
-        try {
+        // try {
             DB::beginTransaction();
             $product = new Product();
             $product->product_name = $request->product_name;
@@ -317,12 +317,12 @@ class ProductController extends Controller
                 Toastr::success("Product Created Successfully", "Success");
                 return redirect()->route(request()->segment(1) . '.products.index');
             }
-        } catch (\Exception $e) {
-            DB::rollBack();
-            $response = ErrorTryCatch::createResponse(false, 500, 'Internal Server Error.', null);
-            Toastr::error($response['message'], "Error");
-            return back();
-        }
+        // } catch (\Exception $e) {
+        //     DB::rollBack();
+        //     $response = ErrorTryCatch::createResponse(false, 500, 'Internal Server Error.', null);
+        //     Toastr::error($response['message'], "Error");
+        //     return back();
+        // }
     }
 
     /**
@@ -388,11 +388,11 @@ class ProductController extends Controller
         try {
             $User = $this->User;
             if ($User->user_type == 'Superadmin') {
-                $data = Product::with('brand', 'category')->findOrFail(decrypt($id));
+                $data = Product::with('brand')->findOrFail(decrypt($id));
             } elseif ($User->user_type == 'Admin') {
-                $data = Product::with('brand', 'category')->whereadmin_id($this->User->id)->findOrFail(decrypt($id));
+                $data = Product::with('brand')->whereadmin_id($this->User->id)->findOrFail(decrypt($id));
             } else {
-                $data = Product::with('brand', 'category')->whereadmin_id($this->User->admin_id)->findOrFail(decrypt($id));
+                $data = Product::with('brand')->whereadmin_id($this->User->admin_id)->findOrFail(decrypt($id));
             }
             return view('backend.common.products.duplicate')->with('product', $data);
         } catch (\Exception $e) {
@@ -489,7 +489,7 @@ class ProductController extends Controller
             $product->slug = Generate::Slug($productFullName);
             $product->rack_number = $request->rack_number;
             $product->made_in = $request->made_in;
-           $product->vat = $request->vat;
+            $product->vat = $request->vat;
             $product->discount = $request->discount;
             $product->unit_price = $request->unit_price ?: 0;
             $product->govt_price = $request->govt_price ?: 0;

@@ -56,27 +56,7 @@
 <script src="{{ asset('backend/assets/js/ckeditor-jquery.js') }}"></script>
 <script>
     $('.select2').select2();
-    var catid = $('#category_id').val();
-    var subcategory = '{{$product->sub_category_id}}';
-$.ajax({
-        type: "GET",
-        url: url + '/get-sub-category/'+catid,
-        dataType: "JSON",
-        success:function(data) {
-         if(data){
-                  $.each(data, function(key, value){
-                    if(value.id==subcategory){
-                        $('#sub_category_id').append('<option value="'+value.id+'" selected>' + value.sub_category_name + '</option>');
-                       }else{
-                        $('#sub_category_id').append('<option value="'+value.id+'">' + value.sub_category_name + '</option>');
-
-                       }
-
-                    });
-                }
-
-            },
-    });
+   
   $(document).ready(function () {
     $( "#productForm" ).on( "click", function() {
         calculateFx()
