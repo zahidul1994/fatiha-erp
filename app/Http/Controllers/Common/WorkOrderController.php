@@ -154,6 +154,7 @@ class WorkOrderController extends Controller
            $broker = $request->broker_id;
             $date = date('Y-m-d');
             $workorder->customer_id = $customer;
+            $workorder->bin_no = $request->bin_no;
             $workorder->broker_id = $broker;
             $workorder->date = $request->date ?: $date;
             $workorder->total_vat = $request->total_vat;
@@ -533,7 +534,7 @@ class WorkOrderController extends Controller
             }
             $results = array();
             foreach ($data as  $v) {
-                $results[] = ['id' => $v->id, 'value' => $v->product_full_name . ' (' . $v->hs_code . ')', 'price' => $v->purchase_price, 'saleprice' => $v->sale_price, 'vat' => $v->vat, 'sku' => $v->sku, 'hs_code' => $v->hs_code];
+                $results[] = ['id' => $v->id, 'value' => $v->product_full_name . ' (' . $v->hs_code . ')', 'price' => $v->sale_price, 'saleprice' => $v->sale_price, 'vat' => $v->vat, 'sku' => $v->sku, 'hs_code' => $v->hs_code];
             }
 
             return response()->json($results);

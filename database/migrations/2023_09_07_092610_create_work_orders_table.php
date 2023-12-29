@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('date');
             $table->unsignedBigInteger('broker_id')->nullable();
             $table->unsignedBigInteger('customer_id')->nullable();
+            $table->string('bin_no')->nullable();
             $table->float('total_vat',16,2)->default(0);
             $table->float('sub_total',16,2)->default(0);
             $table->float('paid',16,2)->default(0);
