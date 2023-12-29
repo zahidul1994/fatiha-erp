@@ -128,6 +128,11 @@ class CustomerController extends Controller
            'address' => 'required|min:1|max:198',
         //    'discount' => 'required',
             'customer_email' => 'max:198',
+           'customer_email' => ['required','min:1',
+            'max:130.', Rule::unique('customers')->where(function ($query)use($adminId){
+                    return $query->where('admin_id', $adminId);
+                })
+            ],
            'customer_phone' => ['required','min:9',
             'max:30.', Rule::unique('customers')->where(function ($query)use($adminId){
                     return $query->where('admin_id', $adminId);
@@ -244,7 +249,11 @@ class CustomerController extends Controller
               $this->validate($request,[
                   'customer_name' => 'required|min:1|max:30',
                  'address' => 'required|min:1|max:198',
-                'customer_email' => 'max:198',
+                'customer_email' => ['required','min:1',
+            'max:130.', Rule::unique('customers')->ignore($id, 'id')->where(function ($query)use($adminId){
+                    return $query->where('admin_id', $adminId);
+                })
+            ],
                  'customer_phone' => ['required','min:9',
                   'max:198', Rule::unique('customers')->ignore($id, 'id')->where(function ($query)use($adminId){
                         return $query->where('admin_id',  $adminId);

@@ -12,4 +12,10 @@ class WorkOrder extends Model
     {
         return $this->belongsTo(User::class, 'created_user_id');
     }
+    public function customer(){
+        return $this->belongsTo(Customer::class);
+    }
+    public function workorderdetails(){
+        return $this->hasMany(WorkOrderDetails::class);
+    }
 }

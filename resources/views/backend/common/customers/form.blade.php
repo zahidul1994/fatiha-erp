@@ -20,8 +20,8 @@
     </div>
     <div class="col-md-12">
         <div class="form-group">
-            <label for="customer_email" class="form-control-label">Customer Email </label>
-            {!! Form::email('customer_email', null, ['id' => 'customer_email', 'class' => 'form-control']) !!}
+            <label for="customer_email" class="form-control-label">Customer Email *</label>
+            {!! Form::email('customer_email', null, ['id' => 'customer_email', 'class' => 'form-control','required']) !!}
             @if ($errors->has('customer_email'))
             <span class="text-danger alert">{{ $errors->first('customer_email') }}</span>
             @endif

@@ -96,8 +96,10 @@ Route::resource('brokers', BrokerController::class);
 
 
 ##work order
+
 Route::post('find-work-order-product', [WorkOrderController::class, 'findWorkOrderProduct']);
 Route::resource('work-orders', WorkOrderController::class);
+Route::get('work-order-pdf/{id}', [WorkOrderController::class, 'workOrderPdf'])->name('workOrderPdf');
 
 ##sale
 Route::resource('sales', SaleController::class);

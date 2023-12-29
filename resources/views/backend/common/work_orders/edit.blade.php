@@ -118,21 +118,21 @@
             <div class="card">
                 <div class="card-header pb-4">
                     <div class="d-flex align-items-center">
-                        <a href="{{ route(Request::segment(1) . '.sales.index') }}"
+                        <a href="{{ route(Request::segment(1) . '.work-orders.index') }}"
                             class="btn btn-primary btn-sm ms-auto">Back</a>
                     </div>
                 </div>
                 <div class="card-body">
                     <div class="row">
                         @include('partial.formerror')
-                        {!! Form::model($sale, [
-                        'route' => [Request::segment(1) . '.sales.update', $sale->id],
+                        {!! Form::model($workorder, [
+                        'route' => [Request::segment(1) . '.work-orders.update', $workorder->id],
                         'method' => 'PATCH',
                         'id' => 'formReset'
                         ]) !!}
                         <div class="row">
                             <div class="col-12 col-sm-6">
-                                <h5 class="font-weight-bolder mb-0">Sale Form</h5>
+                                <h5 class="font-weight-bolder mb-0">Work Order Form</h5>
                             </div>
                             <div class="col-12 col-sm-6 text-end page-custom-buttons pcb-desktop">
                                 <button class="btn bg-gradient-dark ms-auto mb-0 js-btn-next" type="submit"

@@ -391,14 +391,7 @@ $setup= Helper::companySetup();
             @endif
           </div>
 
-          <div class="col-md-4 d-none">
-            <label class="mt-4">Sale Price *</label>
-            {!! Form::hidden('sale_price', 0, ['id' => 'sale_price','class' =>
-            'form-control','required','step'=>'any','min'=>1, 'max'=>999999
-            ]) !!}
-            @if ($errors->has('sale_price')) <span class="text-danger alert">{{ $errors->first('sale_price') }}</span>
-            @endif
-          </div>
+          
 
         </div>
         <div class="row">
@@ -461,6 +454,14 @@ $setup= Helper::companySetup();
             @if ($errors->has('discount'))
             <span class="text-danger alert">{{ $errors->first('discount') }}</span>
 
+            @endif
+          </div>
+          <div class="col-12 mt-3">
+            <label for="discount" class="mt-4">Sale Price *</label>
+            {!! Form::text('sale_price', null, ['id' => 'sale_price','class' =>
+            'form-control','required','step'=>'any','min'=>1, 'max'=>999999
+            ]) !!}
+            @if ($errors->has('sale_price')) <span class="text-danger alert">{{ $errors->first('sale_price') }}</span>
             @endif
           </div>
           <div class="col-12 mt-3">

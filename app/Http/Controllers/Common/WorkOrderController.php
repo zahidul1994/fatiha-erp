@@ -48,19 +48,18 @@ class WorkOrderController extends Controller
         // try {
             $User = $this->User;
             if ($User->user_type == 'Superadmin') {
-                $data = WorkOrder::with('user')->latest();
+                $data = WorkOrder::with('user','customer')->latest();
             } elseif ($User->user_type == 'Admin') {
-                $data = WorkOrder::with('user')->whereadmin_id($this->User->id)->latest();
+                $data = WorkOrder::with('user','customer')->whereadmin_id($this->User->id)->latest();
             } else {
-                $data = WorkOrder::with('user')->whereadmin_id(Auth::user()->admin_id)->whereemployee_id($User->id)->latest();
+                $data = WorkOrder::with('user','customer')->whereadmin_id(Auth::user()->admin_id)->whereemployee_id($User->id)->latest();
             }
             if ($request->ajax()) {
                 return Datatables::of($data)
                     ->addIndexColumn()
                     ->addColumn('action', function ($data) use ($User) {
                         $btn = '<a href=' . route(request()->segment(1) . '.work-orders.show', (encrypt($data->id))) . ' class="btn btn-success btn-sm waves-effect" style="width:30px; padding: 5px"><i class="fa fa-eye"></i></a>';
-                        $btn .= '<a href=' . route(request()->segment(1) . '.purchasePdf', (encrypt($data->id))) . ' class="btn btn-info btn-sm waves-effect" style="width:30px; padding: 5px;  margin-left:2px"><i class="fas fa-file-pdf"></i></a>';
-                        $btn .= '<a href=' . route(request()->segment(1) . '.purchaseChalan', (encrypt($data->id))) . ' class="btn btn-primary btn-sm waves-effect" style="width:30px; padding: 5px;  margin-left:2px"><i class="fa fa-receipt"></i></a>';
+                        $btn .= '<a href=' . route(request()->segment(1) . '.workOrderPdf', (encrypt($data->id))) . ' class="btn btn-info btn-sm waves-effect" style="width:30px; padding: 5px;  margin-left:2px"><i class="fas fa-file-pdf"></i></a>';
                         $btn .= '<a href=' . route(request()->segment(1) . '.work-orders.edit', (encrypt($data->id))) . ' class="btn btn-warning btn-sm waves-effect" style="width:30px; padding: 5px;  margin-left:2px"><i class="fa fa-edit"></i></a>';
                         return $btn;
                     })
@@ -107,7 +106,7 @@ class WorkOrderController extends Controller
      */
     public function store(Request $request)
     {
-        $request->dd();
+       
         $this->validate(
             $request,
             [
@@ -139,7 +138,7 @@ class WorkOrderController extends Controller
             ]
         );
 
-        try {
+         try {
             DB::beginTransaction();
             $workorder = new WorkOrder();
             if (Auth::user()->user_type == 'Admin') {
@@ -158,7 +157,6 @@ class WorkOrderController extends Controller
             $workorder->broker_id = $broker;
             $workorder->date = $request->date ?: $date;
             $workorder->total_vat = $request->total_vat;
-            $workorder->reference = $request->reference;
             $workorder->total_quantity = $request->total_quantity ?: 0;
             $workorder->broker_bonus = $request->broker_bonus ?: 0;
             $workorder->grand_total = $request->total_amount;
@@ -175,9 +173,9 @@ class WorkOrderController extends Controller
                     $qty = $request->product_quantity[$i];
                     $total = $request->product_total_price[$i];
                     $productVat = $request->product_vat[$i];
-                   $productVatAmount = $request->product_vat_amount[$i];
+                    $productVatAmount = $request->product_vat_amount[$i];
                     $workorderDetail = new WorkOrderDetails();
-                    $workorderDetail->workorder_id = $workorder->id;
+                    $workorderDetail->work_order_id = $workorder->id;
                     $workorderDetail->admin_id = $workorder->admin_id;
                     $workorderDetail->product_id = $productId;
                     $workorderDetail->product_name = $name;
@@ -185,7 +183,7 @@ class WorkOrderController extends Controller
                     $workorderDetail->product_price = $price;
                     $workorderDetail->product_vat_amount = $productVatAmount;
                     $workorderDetail->product_vat = $productVat;
-                    $workorderDetail->total_price = $total;
+                    $workorderDetail->product_total_price = $total;
                     $workorderDetail->save();
                 }
             }
@@ -199,7 +197,7 @@ class WorkOrderController extends Controller
 
             DB::commit();
             if ($request->has('workorder')) {
-                Toastr::success("WorkOrder Created Successfully  Done. Add  Another WorkOrder", "Success");
+                Toastr::success("Work Order Created Successfully  Done. Add  Another Work Order", "Success");
                 return redirect()->back();
             } else {
                 Toastr::success("WorkOrder Created Successfully", "Success");
@@ -222,17 +220,17 @@ class WorkOrderController extends Controller
     public function show($id)
     {
 
-        try {
+         try {
             $User = $this->User;
             if ($User->user_type == 'Superadmin') {
-                $workorder = WorkOrder::with('shop', 'user', 'supplier', 'purchasedetails.product')->findOrFail(decrypt($id));
+                $workorder = WorkOrder::with('user','customer','workorderdetails')->findOrFail(decrypt($id));
             } elseif ($User->user_type == 'Admin') {
-                $workorder = WorkOrder::with('shop', 'user', 'supplier', 'purchasedetails.product')->whereadmin_id($this->User->id)->findOrFail(decrypt($id));
+                $workorder = WorkOrder::with('user','customer','workorderdetails')->whereadmin_id($this->User->id)->findOrFail(decrypt($id));
             } else {
-                $workorder = WorkOrder::with('shop', 'user', 'supplier', 'purchasedetails.product')->whereadmin_id($this->User->admin_id)->findOrFail(decrypt($id));
+                $workorder = WorkOrder::with('user','customer','workorderdetails')->whereadmin_id($this->User->admin_id)->findOrFail(decrypt($id));
             }
 
-            return view('backend.common.work-orders.show', compact('workorder'));
+            return view('backend.common.work_orders.show', compact('workorder'));
         } catch (\Exception $e) {
             $response = ErrorTryCatch::createResponse(false, 500, 'Internal Server Error.', null);
             Toastr::error($response['message'], "Error");
@@ -249,26 +247,23 @@ class WorkOrderController extends Controller
     public function edit($id)
     {
 
-        try {
+        // try {
             $User = $this->User;
             if ($User->user_type == 'Superadmin') {
-                $data = WorkOrder::with('shop', 'user', 'purchasedetails.product')->findOrFail(decrypt($id));
+                $data = WorkOrder::with('user','customer','workorderdetails')->findOrFail(decrypt($id));
             } elseif ($User->user_type == 'Admin') {
-                $data = WorkOrder::with('shop', 'user', 'purchasedetails.product')->whereadmin_id($this->User->id)->findOrFail(decrypt($id));
+                $data = WorkOrder::with('user','customer','workorderdetails')->whereadmin_id($this->User->id)->findOrFail(decrypt($id));
             } else {
-                $data = WorkOrder::with('shop', 'user', 'purchasedetails.product')->whereadmin_id($this->User->admin_id)->findOrFail(decrypt($id));
+                $data = WorkOrder::with('user','customer','workorderdetails')->whereadmin_id($this->User->admin_id)->findOrFail(decrypt($id));
             }
-            $paymentInfo = SupplierDue::wherepurchase_id($data->id)->first();
-            if (empty($paymentInfo)) {
-                $paymentInfo = [];
-            }
-            return view('backend.common.work-orders.edit', compact('paymentInfo'))->with('workorder', $data);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            $response = ErrorTryCatch::createResponse(false, 500, 'Internal Server Error.', null);
-            Toastr::error($response['message'], "Error");
-            return back();
-        }
+           
+            return view('backend.common.work_orders.edit')->with('workorder', $data);
+        // } catch (\Exception $e) {
+        //     DB::rollBack();
+        //     $response = ErrorTryCatch::createResponse(false, 500, 'Internal Server Error.', null);
+        //     Toastr::error($response['message'], "Error");
+        //     return back();
+        // }
     }
 
 
@@ -546,46 +541,26 @@ class WorkOrderController extends Controller
     }
 
    
-    public function purchasePdf($id)
-    {
+    public function workOrderPdf($id){
 
-         try {
+     try {
             $User = $this->User;
             if ($User->user_type == 'Superadmin') {
-                $workorder = WorkOrder::with('shop', 'user', 'supplier', 'purchasedetails')->findOrFail(decrypt($id));
+                $workorder = WorkOrder::with('user','customer','workorderdetails')->findOrFail(decrypt($id));
             } elseif ($User->user_type == 'Admin') {
-                $workorder = WorkOrder::with('shop', 'user', 'supplier', 'purchasedetails')->whereadmin_id($this->User->id)->findOrFail(decrypt($id));
+                $workorder = WorkOrder::with('user','customer','workorderdetails')->whereadmin_id($this->User->id)->findOrFail(decrypt($id));
             } else {
-                $workorder = WorkOrder::with('shop', 'user', 'supplier', 'purchasedetails')->whereadmin_id($this->User->admin_id)->findOrFail(decrypt($id));
+                $workorder = WorkOrder::with('user','customer','workorderdetails')->whereadmin_id($this->User->admin_id)->findOrFail(decrypt($id));
             }
 
-            $pdf = PDF::loadView('backend.common.work-orders.pdf', compact('workorder'));
-            return $pdf->stream('purchase_invoice_' . now() . '.pdf');
+            $pdf = PDF::loadView('backend.common.work_orders.pdf', compact('workorder'));
+            return $pdf->stream('work_order_invoice_' . now() . '.pdf');
         } catch (\Exception $e) {
             $response = ErrorTryCatch::createResponse(false, 500, 'Internal Server Error.', null);
             Toastr::error($response['message'], "Error");
             return back();
         }
     }
-    public function purchaseChalan($id)
-    {
-
-        try {
-            $User = $this->User;
-            if ($User->user_type == 'Superadmin') {
-                $workorder = WorkOrder::with('shop', 'user', 'supplier', 'purchasedetails')->findOrFail(decrypt($id));
-            } elseif ($User->user_type == 'Admin') {
-                $workorder = WorkOrder::with('shop', 'user', 'supplier', 'purchasedetails')->whereadmin_id($this->User->id)->findOrFail(decrypt($id));
-            } else {
-                $workorder = WorkOrder::with('shop', 'user', 'supplier', 'purchasedetails')->whereadmin_id($this->User->admin_id)->findOrFail(decrypt($id));
-            }
-
-            return view('backend.common.work-orders.chalan', compact('workorder'));
-        } catch (\Exception $e) {
-            $response = ErrorTryCatch::createResponse(false, 500, 'Internal Server Error.', null);
-            Toastr::error($response['message'], "Error");
-            return back();
-        }
-    }
+    
 
 }

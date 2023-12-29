@@ -19,9 +19,10 @@ return new class extends Migration
             $table->unsignedBigInteger('product_id');
             $table->string('product_name');
             $table->float('qty',16,2);
-            $table->float('product_price',16,2)->default(0);
             $table->float('product_vat',16,2)->default(0);
             $table->float('product_vat_amount',16,2)->default(0);
+            $table->float('product_price',16,2)->default(0);
+            $table->float('product_total_price',16,2)->default(0);
             $table->timestamps();
         });
     }

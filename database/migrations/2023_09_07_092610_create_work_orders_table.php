@@ -32,7 +32,7 @@ return new class extends Migration
             $table->bigInteger('created_user_id');
             $table->bigInteger('updated_user_id');
             $table->mediumText('description')->nullable();
-            $table->tinyInteger('status')->default(1);
+            $table->enum('status',['Quotation','WorkOrder','Reject'])->default('Quotation');
             $table->softDeletes();
             $table->timestamps();
         });

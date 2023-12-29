@@ -35,9 +35,9 @@
                                         <th>Date</th>
                                         <th>Invoice</th>
                                         <th>Creator</th>
-                                        <th>Supplier</th>
+                                        <th>Customer</th>
+                                        <th>Quantity</th>
                                         <th>Amount</th>
-                                        <th>Paid</th>
                                         <th>Status</th>
                                         <th>Action</th>
                                     </tr>
@@ -54,7 +54,8 @@
                                         <th style="text-align: left"></th>
                                         <th style="text-align: left"></th>
                                         <th>Status</th>
-                                        <th>Action</th>
+                                        <th>Action</th>                                       
+                                       
                                     </tr>
                                 </tfoot>
                             </table>
@@ -93,7 +94,7 @@
                         }
                     },
 
-                    ajax: "{{ route(Request::segment(1) . '.sales.index') }}",
+                    ajax: "{{ route(Request::segment(1) . '.work-orders.index') }}",
                     columns: [{
                             data: 'DT_RowIndex',
                             orderable: false,
@@ -116,15 +117,13 @@
                             name: 'customer.customer_name'
                         },
                         {
+                            data: 'total_quantity',
+                            name: 'total_quantity'
+                        },
+                        {
                             data: 'grand_total',
                             name: 'grand_total'
                         },
-
-                        {
-                            data: 'paid',
-                            name: 'paid'
-                        },
-
                         {
                             data: 'status'
                         },
