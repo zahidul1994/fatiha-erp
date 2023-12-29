@@ -103,7 +103,15 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="form-group col-md-3">
+                                <div class="form-group col-md-2">
+                                    <label for="default_converted_rate" class="form-control-label">Converted Rate *</label>
+                                    {!! Form::number('default_converted_rate',null, ['id' =>'default_converted_rate', 'class'
+                                    => 'form-control','required','step'=>'any']) !!}
+                                    @if ($errors->has('default_converted_rate'))
+                                    <span class="text-danger alert">{{ $errors->first('default_converted_rate') }}</span>
+                                    @endif
+                                </div>
+                                <div class="form-group col-md-2">
                                     <label for="sms_rate" class="form-control-label">SMS Rate *</label>
                                     {!! Form::text('sms_rate',null, ['id' =>'sms_rate', 'class'
                                     => 'form-control','disabled']) !!}
@@ -119,9 +127,9 @@
                                     <span class="text-danger alert">{{ $errors->first('sms_type') }}</span>
                                     @endif
                                 </div>
-                                <div class="col-md-6  input-field">
+                                <div class="col-md-4  input-field">
                                   <br>
-                                   Sending SMS Status For Sale  <br>
+                                   Sending SMS Status  <br>
                                     <p>
                                         <label>
                                             <input class="with-gap" name="sms_status" value="1" type="radio" {{

@@ -15,6 +15,7 @@ use App\Models\ShopCurrentStock;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\WorkOrderDetails;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Support\Facades\Auth;
 use App\Notifications\Usernotification;
@@ -106,26 +107,24 @@ class WorkOrderController extends Controller
      */
     public function store(Request $request)
     {
-
+        $request->dd();
         $this->validate(
             $request,
             [
-                'shop_id' => 'required',
-                'supplier_id' => 'required|min:1|max:198',
-                'payment_method' => 'required|min:1|max:300',
-                'paid' => 'max:99999999',
-                'total_amount' => 'required|numeric|between:1,99999999',
+                'customer_id' => 'required',
+                'convert_rate' => 'required|min:1',
+                'total_vat' => 'required|numeric|between:1,9999999999999',
+                'total_amount' => 'required|numeric|between:1,9999999999999',
                 'product_id.*' => 'required',
                 'product_quantity.*' => 'required',
-                'product_price.*' => 'required|numeric|between:1,99999999',
+                'product_price.*' => 'required|numeric|between:1,9999999999999',
                 'product_total_price' => 'required',
 
             ],
 
             [
 
-                'shop_id.required' => "The Shop name field is required",
-                'supplier_id.required' => "The Supplier name field is required",
+                'customer_id.required' => "The Customer name field is required",
                 'payment_method.required' => "The Payment Method name field is required",
                 'paid.max' => "The WorkOrder name Maximum Length 190",
                 'total_amount.required' => "The Total amount name field is required",
@@ -142,142 +141,64 @@ class WorkOrderController extends Controller
 
         try {
             DB::beginTransaction();
-            $purchase = new WorkOrder();
+            $workorder = new WorkOrder();
             if (Auth::user()->user_type == 'Admin') {
-                $purchase->admin_id  = Auth::id();
+                $workorder->admin_id  = Auth::id();
                 $prefix = Helper::getAdmin(Auth::id())->invoice_slug;
             } else {
-                $purchase->admin_id  = Auth::user()->admin_id;
-                $purchase->employee_id  = Auth::id();
+                $workorder->admin_id  = Auth::user()->admin_id;
+                $workorder->employee_id  = Auth::id();
                 $prefix = Helper::getAdmin(Auth::user()->admin_id)->invoice_slug;
             }
-            $purchase->invoice_no = IdGenerator::generate(['table' => 'work-orders', 'field' => 'invoice_no', 'length' => 8, 'prefix' => $prefix, 'reset_on_prefix_change' => true]);
-            $shop = $request->shop_id;
-            $supplier = $request->supplier_id;
+            $workorder->invoice_no = IdGenerator::generate(['table' => 'work_orders', 'field' => 'invoice_no', 'length' => 8, 'prefix' => $prefix, 'reset_on_prefix_change' => true]);
+           $customer = $request->customer_id;
+           $broker = $request->broker_id;
             $date = date('Y-m-d');
-            $purchase->shop_id = $shop;
-            $purchase->supplier_id = $supplier;
-            $purchase->date = $request->date ?: $date;
-            $purchase->total_vat = $request->total_vat;
-            $purchase->reference = $request->reference;
-            $purchase->total_quantity = $request->total_quantity ?: 0;
-            $purchase->extra_discount_percent = $request->extra_discount_percent ?: 0;
-            $purchase->total_discount = $request->total_discount ?: 0;
-            $purchase->sub_total = ($request->total_amount) - (($purchase->total_vat) + ($request->total_discount));
-            $purchase->payment_method = $request->payment_method;
-            $purchase->paid = $request->paid ?: 0;
-            $purchase->due = ($request->total_amount) - ($purchase->paid);
-            $purchase->grand_total = $request->total_amount;
-            $purchase->description = $request->description;
-            $purchase->created_user_id = $this->User->id;
-            $purchase->updated_user_id = $this->User->id;
-            $purchase->save();
-            if ($purchase) {
-                $purchaseProducts = $request->product_id;
-                for ($i = 0; $i < count($purchaseProducts); $i++) {
+            $workorder->customer_id = $customer;
+            $workorder->broker_id = $broker;
+            $workorder->date = $request->date ?: $date;
+            $workorder->total_vat = $request->total_vat;
+            $workorder->reference = $request->reference;
+            $workorder->total_quantity = $request->total_quantity ?: 0;
+            $workorder->broker_bonus = $request->broker_bonus ?: 0;
+            $workorder->grand_total = $request->total_amount;
+            $workorder->description = $request->description;
+            $workorder->created_user_id = $this->User->id;
+            $workorder->updated_user_id = $this->User->id;
+            $workorder->save();
+            if ($workorder) {
+                $products = $request->product_id;
+                for ($i = 0; $i < count($products); $i++) {
                     $productId = $request->product_id[$i];
                     $price = $request->product_price[$i];
                     $name = $request->product_name[$i];
                     $qty = $request->product_quantity[$i];
                     $total = $request->product_total_price[$i];
                     $productVat = $request->product_vat[$i];
-                    $expireDate = $request->product_expire_date[$i];
-                    $productVatAmount = $request->product_vat_amount[$i];
-                    $product = Product::find($productId);
-                    $purchaseDetail = new PurchaseDetails();
-                    $purchaseDetail->purchase_id = $purchase->id;
-                    $purchaseDetail->admin_id = $purchase->admin_id;
-                    $purchaseDetail->product_id = $productId;
-                    $purchaseDetail->product_name = $name;
-                    $purchaseDetail->qty =  $qty;
-                    $purchaseDetail->average_purchase_price = $product->average_price;
-                    $purchaseDetail->purchase_price = $price;
-                    $purchaseDetail->vat_percent = $productVat;
-                    $purchaseDetail->vat_amount = $productVatAmount;
-                    $purchaseDetail->product_expire_date = $expireDate;
-                    $purchaseDetail->total_price = $total;
-                    $purchaseDetail->save();
-                    $checkShop = ShopCurrentStock::whereproduct_id($productId)->whereshop_id($shop)->first();
-                    if ($checkShop) {
-                        $checkShop->increment('stock_qty', $qty);
-                        $checkShop->product_name = $product->product_name;
-                        $checkShop->sku = $product->sku;
-                        $checkShop->barcode = $product->barcode;
-                        $checkShop->last_purchase_price = $product->purchase_price;
-                        $checkShop->last_sale_price = $product->sale_price;
-                        $checkShop->last_purchase_discount = $product->discount;
-                        $checkShop->discount = $product->discount;
-                        $checkShop->last_purchase_vat = $product->vat;
-                        $checkShop->expire_date = $expireDate;
-                        $checkShop->save();
-                    } else {
-                        $checkShop = new ShopCurrentStock();
-                        if (Auth::user()->user_type == 'Admin') {
-                            $checkShop->admin_id = Auth::id();
-                        } else {
-                            $checkShop->admin_id = Auth::user()->admin_id;
-                        }
-                        $checkShop->shop_id = $shop;
-                        $checkShop->product_id = $productId;
-                        $checkShop->product_name = $product->product_name;
-                        $checkShop->sku = $product->sku;
-                        $checkShop->barcode = $product->barcode;
-                        $checkShop->stock_qty = $qty;
-                        $checkShop->last_purchase_price = $product->purchase_price;
-                        $checkShop->last_sale_price = $product->sale_price;
-                        $checkShop->last_purchase_discount = $product->discount;
-                        $checkShop->discount = $product->discount;
-                        $checkShop->last_purchase_vat = $product->vat;
-                        $checkShop->expire_date = $expireDate;
-                        $checkShop->save();
-                    }
-                    $average_purchase_price = 0;
-                    $average_purchase_price = Helper::getAveragePrice($productId, $price, $qty, $shop);
-                    $product->average_price = $average_purchase_price;
-                    $product->save();
-                }
-
-                $supplierDue = new SupplierDue();
-                $supplierDue->supplier_id =  $supplier;
-                $supplierDue->purchase_id =  $purchase->id;
-                $supplierDue->payment_method =  $request->payment_method;
-                $supplierDue->phone_number = $request->phone_number;
-                $supplierDue->transaction_number = $request->transaction_number;
-                $supplierDue->bank_name = $request->bank_name;
-                $supplierDue->bank_account_number = $request->bank_account_number;
-                $supplierDue->paid = $request->paid ?: 0;
-                $supplierDue->due = $purchase->sub_total;
-                $supplierDue->note = 'WorkOrder Invoice';
-                if ($this->User->user_type == "Admin") {
-                    $supplierDue->admin_id = $this->User->id;
-                    $prefix = Helper::getAdmin(Auth::id())->invoice_slug;
-                } else {
-                    $supplierDue->admin_id = $this->User->admin_id;
-                    $supplierDue->employee_id = $this->User->id;
-                    $prefix = Helper::getAdmin(Auth::user()->admin_id)->invoice_slug;
-                }
-                $supplierDue->invoice_no = IdGenerator::generate(['table' => 'supplier_dues', 'field' => 'invoice_no', 'length' => 8, 'prefix' => $prefix, 'reset_on_prefix_change' => true]);
-                $supplierDue->created_user_id = $this->User->id;
-                $supplierDue->updated_user_id = $this->User->id;
-                $supplierDue->save();
-                if($supplierDue){
-                $supplier=Supplier::find($supplier);
-                $supplier->total_due += $supplierDue->due;
-                $supplier->total_paid += $supplierDue->paid;
-                $supplier->total_balance += $supplierDue->due-$supplierDue->paid;
-                $supplier->save();
+                   $productVatAmount = $request->product_vat_amount[$i];
+                    $workorderDetail = new WorkOrderDetails();
+                    $workorderDetail->workorder_id = $workorder->id;
+                    $workorderDetail->admin_id = $workorder->admin_id;
+                    $workorderDetail->product_id = $productId;
+                    $workorderDetail->product_name = $name;
+                    $workorderDetail->qty =  $qty;
+                    $workorderDetail->product_price = $price;
+                    $workorderDetail->product_vat_amount = $productVatAmount;
+                    $workorderDetail->product_vat = $productVat;
+                    $workorderDetail->total_price = $total;
+                    $workorderDetail->save();
                 }
             }
             if ((Auth::user()->user_type === 'Employee')) {
                 $data = [
-                    'message' => 'Your Staff ' . Auth::user()->name . '  Create A Invoice ' . $purchase->invoice_no,
+                    'message' => 'Your Staff ' . Auth::user()->name . '  Create A Invoice ' . $workorder->invoice_no,
 
                 ];
                 User::find(Auth::user()->admin_id)->notify(new Usernotification($data));
             }
 
             DB::commit();
-            if ($request->has('purchase')) {
+            if ($request->has('workorder')) {
                 Toastr::success("WorkOrder Created Successfully  Done. Add  Another WorkOrder", "Success");
                 return redirect()->back();
             } else {
@@ -295,7 +216,7 @@ class WorkOrderController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Category   $purchase
+     * @param  \App\Models\Category   $workorder
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -304,14 +225,14 @@ class WorkOrderController extends Controller
         try {
             $User = $this->User;
             if ($User->user_type == 'Superadmin') {
-                $purchase = WorkOrder::with('shop', 'user', 'supplier', 'purchasedetails.product')->findOrFail(decrypt($id));
+                $workorder = WorkOrder::with('shop', 'user', 'supplier', 'purchasedetails.product')->findOrFail(decrypt($id));
             } elseif ($User->user_type == 'Admin') {
-                $purchase = WorkOrder::with('shop', 'user', 'supplier', 'purchasedetails.product')->whereadmin_id($this->User->id)->findOrFail(decrypt($id));
+                $workorder = WorkOrder::with('shop', 'user', 'supplier', 'purchasedetails.product')->whereadmin_id($this->User->id)->findOrFail(decrypt($id));
             } else {
-                $purchase = WorkOrder::with('shop', 'user', 'supplier', 'purchasedetails.product')->whereadmin_id($this->User->admin_id)->findOrFail(decrypt($id));
+                $workorder = WorkOrder::with('shop', 'user', 'supplier', 'purchasedetails.product')->whereadmin_id($this->User->admin_id)->findOrFail(decrypt($id));
             }
 
-            return view('backend.common.work-orders.show', compact('purchase'));
+            return view('backend.common.work-orders.show', compact('workorder'));
         } catch (\Exception $e) {
             $response = ErrorTryCatch::createResponse(false, 500, 'Internal Server Error.', null);
             Toastr::error($response['message'], "Error");
@@ -322,7 +243,7 @@ class WorkOrderController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Category   $purchase
+     * @param  \App\Models\Category   $workorder
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -341,7 +262,7 @@ class WorkOrderController extends Controller
             if (empty($paymentInfo)) {
                 $paymentInfo = [];
             }
-            return view('backend.common.work-orders.edit', compact('paymentInfo'))->with('purchase', $data);
+            return view('backend.common.work-orders.edit', compact('paymentInfo'))->with('workorder', $data);
         } catch (\Exception $e) {
             DB::rollBack();
             $response = ErrorTryCatch::createResponse(false, 500, 'Internal Server Error.', null);
@@ -386,26 +307,26 @@ class WorkOrderController extends Controller
 
         try {
             DB::beginTransaction();
-            $purchase = WorkOrder::find($id);
-            $shop = $purchase->shop_id;
-            $supplier = $purchase->supplier_id;
-            $purchase->shop_id = $shop;
-            $purchase->supplier_id = $supplier;
-            $purchase->total_vat = $request->total_vat;
-            $purchase->reference = $request->reference;
-            $purchase->total_quantity = $request->total_quantity ?: 0;
-            $purchase->total_discount = $request->total_discount ?: 0;
-            $purchase->extra_discount_percent = $request->extra_discount_percent ?: 0;
-            $purchase->sub_total = ($request->total_amount) - (($purchase->total_vat) + ($request->total_discount));
-            $purchase->payment_method = $request->payment_method;
-            $purchase->paid = $request->paid ?: 0;
-            $purchase->due = ($request->total_amount) - ($purchase->paid);
-            $purchase->grand_total = $request->total_amount;
-            $purchase->description = $request->description;
-            $purchase->created_user_id = $this->User->id;
-            $purchase->updated_user_id = $this->User->id;
-            $purchase->save();
-            if ($purchase) {
+            $workorder = WorkOrder::find($id);
+            $shop = $workorder->shop_id;
+            $supplier = $workorder->supplier_id;
+            $workorder->shop_id = $shop;
+            $workorder->supplier_id = $supplier;
+            $workorder->total_vat = $request->total_vat;
+            $workorder->reference = $request->reference;
+            $workorder->total_quantity = $request->total_quantity ?: 0;
+            $workorder->total_discount = $request->total_discount ?: 0;
+            $workorder->extra_discount_percent = $request->extra_discount_percent ?: 0;
+            $workorder->sub_total = ($request->total_amount) - (($workorder->total_vat) + ($request->total_discount));
+            $workorder->payment_method = $request->payment_method;
+            $workorder->paid = $request->paid ?: 0;
+            $workorder->due = ($request->total_amount) - ($workorder->paid);
+            $workorder->grand_total = $request->total_amount;
+            $workorder->description = $request->description;
+            $workorder->created_user_id = $this->User->id;
+            $workorder->updated_user_id = $this->User->id;
+            $workorder->save();
+            if ($workorder) {
                 $purchaseProducts = $request->product_id;
                 for ($i = 0; $i < count($purchaseProducts); $i++) {
                     $productId = $request->product_id[$i];
@@ -488,7 +409,7 @@ class WorkOrderController extends Controller
 
                     }
 
-                        $purchaseId = $purchase->id;
+                        $purchaseId = $workorder->id;
                         $purchaseCheck = PurchaseDetails::wherepurchase_id($purchaseId)->whereproduct_id($productId)->first();
                         if ($purchaseCheck) {
                             $purchaseCheck->qty =  $qty;
@@ -501,7 +422,7 @@ class WorkOrderController extends Controller
                         } else {
                             $purchaseDetail = new PurchaseDetails();
                             $purchaseDetail->purchase_id = $purchaseId;
-                            $purchaseDetail->admin_id = $purchase->admin_id;
+                            $purchaseDetail->admin_id = $workorder->admin_id;
                             $purchaseDetail->product_id = $productId;
                             $purchaseDetail->product_name = $name;
                             $purchaseDetail->qty =  $qty;
@@ -526,8 +447,8 @@ class WorkOrderController extends Controller
                 $oldPaid= $supplierDue->paid;
                 $oldBalance= $oldDue-$oldPaid;
                 $supplierDue->payment_method =  $request->payment_method;
-                $supplierDue->paid = $purchase->paid;
-                $supplierDue->due = $purchase->sub_total;
+                $supplierDue->paid = $workorder->paid;
+                $supplierDue->due = $workorder->sub_total;
                 $supplierDue->phone_number = $request->phone_number;
                 $supplierDue->transaction_number = $request->transaction_number;
                 $supplierDue->bank_name = $request->bank_name;
@@ -544,9 +465,9 @@ class WorkOrderController extends Controller
 
                            if($supplier){
                             $supplierNewDue=Supplier::find($supplierDue->supplier_id);
-                            $supplierNewDue->total_due += $purchase->sub_total;
-                            $supplierNewDue->total_paid +=$purchase->paid;
-                            $supplierNewDue->total_balance += $purchase->sub_total-$purchase->paid;
+                            $supplierNewDue->total_due += $workorder->sub_total;
+                            $supplierNewDue->total_paid +=$workorder->paid;
+                            $supplierNewDue->total_balance += $workorder->sub_total-$workorder->paid;
                             $supplierNewDue->save();
 
                            }
@@ -556,14 +477,14 @@ class WorkOrderController extends Controller
 
             if ((Auth::user()->user_type === 'Employee')) {
                 $data = [
-                    'message' => 'Your Staff ' . Auth::user()->name . '  Update A Invoice ' . $purchase->invoice_no,
+                    'message' => 'Your Staff ' . Auth::user()->name . '  Update A Invoice ' . $workorder->invoice_no,
 
                 ];
                 User::find(Auth::user()->admin_id)->notify(new Usernotification($data));
             }
 
             DB::commit();
-            if ($request->has('purchase')) {
+            if ($request->has('workorder')) {
                 Toastr::success("WorkOrder Update Successfully  Done. Add  Another WorkOrder", "Success");
                 return redirect()->back();
             } else {
@@ -580,18 +501,18 @@ class WorkOrderController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Category   $purchase
+     * @param  \App\Models\Category   $workorder
      * @return \Illuminate\Http\Response
      */
-    public function destroy(WorkOrder  $purchase)
+    public function destroy(WorkOrder  $workorder)
     {
         //
     }
     public function updateStatus(Request $request)
     {
-        $purchase = WorkOrder::findOrFail($request->id);
-        $purchase->status = $request->status;
-        if ($purchase->save()) {
+        $workorder = WorkOrder::findOrFail($request->id);
+        $workorder->status = $request->status;
+        if ($workorder->save()) {
             return 1;
         }
         return 0;
@@ -617,7 +538,7 @@ class WorkOrderController extends Controller
             }
             $results = array();
             foreach ($data as  $v) {
-                $results[] = ['id' => $v->id, 'value' => $v->product_full_name . ' (' . $v->hs_code . ')', 'price' => $v->purchase_price, 'saleprice' => $v->sale_price, 'averageprice' => $v->average_price, 'tax' => $v->vat, 'sku' => $v->sku, 'hs_code' => $v->hs_code, 'date' => $v->expire_date];
+                $results[] = ['id' => $v->id, 'value' => $v->product_full_name . ' (' . $v->hs_code . ')', 'price' => $v->purchase_price, 'saleprice' => $v->sale_price, 'vat' => $v->vat, 'sku' => $v->sku, 'hs_code' => $v->hs_code];
             }
 
             return response()->json($results);
@@ -631,14 +552,14 @@ class WorkOrderController extends Controller
          try {
             $User = $this->User;
             if ($User->user_type == 'Superadmin') {
-                $purchase = WorkOrder::with('shop', 'user', 'supplier', 'purchasedetails')->findOrFail(decrypt($id));
+                $workorder = WorkOrder::with('shop', 'user', 'supplier', 'purchasedetails')->findOrFail(decrypt($id));
             } elseif ($User->user_type == 'Admin') {
-                $purchase = WorkOrder::with('shop', 'user', 'supplier', 'purchasedetails')->whereadmin_id($this->User->id)->findOrFail(decrypt($id));
+                $workorder = WorkOrder::with('shop', 'user', 'supplier', 'purchasedetails')->whereadmin_id($this->User->id)->findOrFail(decrypt($id));
             } else {
-                $purchase = WorkOrder::with('shop', 'user', 'supplier', 'purchasedetails')->whereadmin_id($this->User->admin_id)->findOrFail(decrypt($id));
+                $workorder = WorkOrder::with('shop', 'user', 'supplier', 'purchasedetails')->whereadmin_id($this->User->admin_id)->findOrFail(decrypt($id));
             }
 
-            $pdf = PDF::loadView('backend.common.work-orders.pdf', compact('purchase'));
+            $pdf = PDF::loadView('backend.common.work-orders.pdf', compact('workorder'));
             return $pdf->stream('purchase_invoice_' . now() . '.pdf');
         } catch (\Exception $e) {
             $response = ErrorTryCatch::createResponse(false, 500, 'Internal Server Error.', null);
@@ -652,14 +573,14 @@ class WorkOrderController extends Controller
         try {
             $User = $this->User;
             if ($User->user_type == 'Superadmin') {
-                $purchase = WorkOrder::with('shop', 'user', 'supplier', 'purchasedetails')->findOrFail(decrypt($id));
+                $workorder = WorkOrder::with('shop', 'user', 'supplier', 'purchasedetails')->findOrFail(decrypt($id));
             } elseif ($User->user_type == 'Admin') {
-                $purchase = WorkOrder::with('shop', 'user', 'supplier', 'purchasedetails')->whereadmin_id($this->User->id)->findOrFail(decrypt($id));
+                $workorder = WorkOrder::with('shop', 'user', 'supplier', 'purchasedetails')->whereadmin_id($this->User->id)->findOrFail(decrypt($id));
             } else {
-                $purchase = WorkOrder::with('shop', 'user', 'supplier', 'purchasedetails')->whereadmin_id($this->User->admin_id)->findOrFail(decrypt($id));
+                $workorder = WorkOrder::with('shop', 'user', 'supplier', 'purchasedetails')->whereadmin_id($this->User->admin_id)->findOrFail(decrypt($id));
             }
 
-            return view('backend.common.work-orders.chalan', compact('purchase'));
+            return view('backend.common.work-orders.chalan', compact('workorder'));
         } catch (\Exception $e) {
             $response = ErrorTryCatch::createResponse(false, 500, 'Internal Server Error.', null);
             Toastr::error($response['message'], "Error");

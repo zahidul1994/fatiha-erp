@@ -37,7 +37,7 @@
         <div class="row">
           <div class="col-md-4 col-sm-1">
             <label for="date">Date *</label>
-            {!! Form::date('date', date('Y-m-d'), ['id' => 'date', 'class' => 'form-control', 'required', 'tabindex' => 1,'autofocus']) !!}
+            {!! Form::date('date', date('Y-m-d'), ['id' => 'date', 'class' => 'form-control', 'required', 'tabindex' => 1,'autofocus','max'=>date('Y-m-d')]) !!}
 
           </div>
           <div class="col-md-4 col-sm-1">
@@ -67,32 +67,37 @@
                 <p class="text-center pa-box">
                   <span id="Cachback"></span>
                   <span class="d-block">Payable Amount</span>
-                   <strong data-format="0[.]0000" data-formula="(SUM(F1:F500)-O1)"></strong>
+                   <strong data-format="0[.]00" data-formula="(SUM(F1:F500)*CR1)"></strong>
                 </p>
               </div>
             </div>
           </div>
           <div class="card-body pt-0 pr-0">
-
             <div class="d-flex mb-1">
-              <div class="w-25 pe-2 align-self-center">Vat</div>
-              <div class="w-75 align-self-center">
+              <div class="w-35 pe-2 align-self-center">Broker Bonus</div>
+              <div class="w-65 align-self-center">
+              <div class="col-md-12"> <input type="number" name="broker_bonus"  id="broker_bonus" class="form-control text-end py-1 px-1"  step="any" min="0" max="99999999999999"></div>
+              </div>
+            </div>
+            <div class="d-flex mb-1">
+              <div class="w-35 pe-2 align-self-center">Total Vat</div>
+              <div class="w-65 align-self-center">
               <div class="col-md-12"> <input type="number" name="total_vat"  id="total_vat" class="form-control text-end py-1 px-1" readonly  data-format="0[.]00" data-formula="SUM(V1:V500)" step="any" min="0" max="99999999999999"></div>
               </div>
             </div>
             
             <div class="d-flex mb-1">
-              <div class="w-25 pe-2 align-self-center">Paid A</div>
-              <div class="w-75 align-self-center">
-                    <div class="col-md-12">{!! Form::number('paid', null, ['id' => 'total_paid', 'class' => 'form-control text-end py-1 px-1','step'=>'any','min'=>0,'max'=>9999999999999, 'tabindex' => 8,  'onkeypress'=>"getQty()" ]) !!}</div>
+              <div class="w-35 pe-2 align-self-center">Convert Rate</div>
+              <div class="w-65 align-self-center">
+                    <div class="col-md-12">{!! Form::number('convert_rate', Helper::adminSetup()->default_converted_rate?:null, ['id' => 'convert_rate', 'class' => 'form-control text-end py-1 px-1','step'=>'any','min'=>0,'max'=>999, 'tabindex' => 8, 'data-cell'=>"CR1", 'data-format'=>"0[.]00" ,'keydown'=>"calculateFx()",'onblur'=>"calculateFx()"  ]) !!}</div>
                 </div>
             </div>
 
             <div class="d-flex mb-1">
-              <div class="w-25 pe-2 align-self-center">Grand Total</div>
-              <div class="w-75 align-self-center">
+              <div class="w-35 pe-2 align-self-center">Grand Total</div>
+              <div class="w-65 align-self-center">
                 <input type="hidden" name="total_quantity" data-format="0[.]00" data-formula="(SUM(Q1:Q5000))" >
-                <input type="number" name="total_amount"  id="grand_total" class="form-control text-end py-1 px-1" readonly data-cell="G1" data-format="0[.]00"  step="any" min="0" max="99999999999999">
+                <input type="number" name="total_amount"  data-formula="(SUM(F1:F500)*CR1)" class="form-control text-end py-1 px-1" readonly data-cell="G1" data-format="0[.]00"  step="any" min="0" max="99999999999999">
                 </div>
             </div>
 
@@ -137,17 +142,13 @@
             <tr style="font-weight:900;background:peru; color:black">
               <th class="px-1 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Product Name
               </th>
-              <th class="px-1 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Sale Price
+              <th class="px-1 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Quotation Price
               </th>
               <th class="px-1 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Quantity
               </th>
               <th class="px-1 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Vat(%)
               </th>
               <th class="px-1 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Vat Val
-              </th>
-              <th class="px-1 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Discount(%)
-              </th>
-              <th class="px-1 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Dis Val
               </th>
               <th class="px-1 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total
               </th>
@@ -166,8 +167,6 @@
          <th> <strong data-format="0[.]00" data-formula="(SUM(Q1:Q50000))"></strong></th>
           <th> <strong data-format="0[.]00" data-formula="(SUM(T1:T5000))"></strong></th>
           <th> <strong data-format="0[.]00" data-formula="(SUM(V1:V5000))"></strong></th>
-          <th> <strong data-format="0[.]00" data-formula="(SUM(D1:D5000))"></strong></th>
-          <th> <strong data-format="0[.]00" data-formula="(SUM(N1:N5000))"></strong></th>
           <th> <strong data-format="0[.]0000" data-formula="(SUM(F1:F5000))"></strong></th>
           <th></th>
         </tfoot>
@@ -178,7 +177,7 @@
     </div>
     <div class="row">
       <div class="col-md-9"></div><div class="col-md-3 mt-3"><button class="btn btn-success" type="submit" tabindex="10">Save</button>
-         <button class="btn btn-info" name="sale" type="submit" tabindex="11">Save & Sale</button>
+         <button class="btn btn-info" name="quotation" type="submit" tabindex="11">Save & Quotation</button>
         </div>
     </div>
    </div>

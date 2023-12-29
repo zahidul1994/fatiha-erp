@@ -1,5 +1,5 @@
 @extends('backend.layouts.master')
-@section('title', 'Create Workorder')
+@section('title', 'Create Quotation')
 @push('css')
 <link href="{{ asset('backend/assets/select2/css/select2.min.css') }}" rel="stylesheet" />
 <link href="{{ asset('backend/assets/css/jquery-ui.min.css') }}" rel="stylesheet" />
@@ -149,6 +149,10 @@
 <script>
   $('.select2').select2();
   $(document).ready(function () {
+    $( "#formReset" ).on( "click", function() {
+         calculateFx()
+      });
+
     $("#add_item").autocomplete({
     source: function (request, response) {
         if (!$('#customerId').val()) {
@@ -200,7 +204,7 @@
                 var i = ++$counter;
                 $form = $('#dynamic').calx();
                 $form.calx('update');
-                getQty();
+                calculateFx();
                 }
                 else{
                     $itemlist   = $('#itemlist');
@@ -209,20 +213,17 @@
                 var i = ++$counter;
                $itemlist.append( '<tr>\
                         <td style="width:250px; vertical-align: top; padding-top: 17px;"><input class="form-control input-sm" type="hidden" id="pid" name="product_id[]" value="'+row.id+'" data-format="0" >\ '+row.value+' \<input type="hidden" name="product_name[]" value="'+row.value+'"></td>\
-                        <td style="width:120px;"><input class="form-control input-sm text-end" placeholder="0.00" tabindex="10" name="product_price[]" data-cell="P'+i+'" value="'+row.price+'" data-format=""><i class="text-black-50">&nbsp;</i><input type="hidden" name="avg_price[]" value="'+row.value+'"></td>\
-                        <td style="width:120px;"><input class="form-control input-sm text-end pquentity" required  type="number" step="any" min=1 max=999999999 required id="id'+row.id+'" data-format="" data-format="0[.]00" onblur="getQty(' + i + ',this);"   name="product_quantity[]"  data-cell="Q'+i+'"><i class="text-black-50">'+'S -' +row.stock+'</i></td> \
-                        <td style="width:80px;"><input type="number" step="any" min=0 max=999999999 class="form-control input-sm text-end" onblur="getVat(' + i + ',this);" placeholder="0.00" name="product_vat[]" data-cell="T'+i+'" readonly value="'+row.vat+'" data-format="0[.]0000"><i class="text-black-50">&nbsp;</i></td>\
+                        <td style="width:80px;"><input class="form-control input-sm text-end" placeholder="0.00" tabindex="10" name="product_price[]" data-cell="P'+i+'" value="'+row.price+'" data-format=""><i class="text-black-50">&nbsp;</i></td>\
+                        <td style="width:180px;"><input class="form-control input-sm text-end pquentity" required  type="number" step="any" min=1 max=999999999 required id="id'+row.id+'" data-format="" data-format="0[.]00" keydown="calculateFx(' + i + ',this);" onblur="calculateFx(' + i + ',this);"  name="product_quantity[]"  data-cell="Q'+i+'"><i class="text-black-50">&nbsp;</i></td> \
+                        <td style="width:80px;"><input type="number" step="any" min=0 max=999999999 class="form-control input-sm text-end"  keydown="calculateFx(' + i + ',this);" onblur="calculateFx(' + i + ',this);"  placeholder="0.00" name="product_vat[]" data-cell="T'+i+'"  value="'+row.vat+'" data-format="0[.]0000"><i class="text-black-50">&nbsp;</i></td>\
                           <td style="width:100px;"><input name="product_vat_amount[]" type="number" step="any" min=0 max=999999999 class="form-control input-sm text-end" placeholder="0.00" readonly data-cell="V' + i + '" data-formula="(P' + i + '/100*T' + i +')*Q' +i + ' " data-format="0[.]00"><i class="text-black-50">&nbsp;</i></td>\
-                            <td style="width:80px;"><input type="number" step="any" min=0 max=999999999 class="form-control input-sm text-end" onblur="getVat(' + i + ',this);" placeholder="0.00" name="product_discount[]" data-cell="D'+i+'" value="'+row.discount+'" data-format="0[.]0000"><i class="text-black-50">&nbsp;</i></td>\
-                          <td style="width:100px;"><input name="product_discount_amount[]" type="number" step="any" min=0 max=999999999 class="form-control input-sm text-end" placeholder="0.00" readonly data-cell="N' + i + '" data-formula="(P' + i + '/100*D' + i +')*Q' +i + ' " data-format="0[.]00"><i class="text-black-50">&nbsp;</i></td>\
-                        <td style="width:160px;"><input type="number" readonly step="any" min=1 max=999999999 class="form-control input-sm text-end" placeholder="0.00" name="product_total_price[]"  data-cell="F'+i+'" data-format="0[.]00" data-formula="((Q'+i+')*((P'+i+')+(V'+i+'))-(N'+i+'))"><i class="text-black-50">&nbsp;</i></td>\
-                    <td class="text-center"><button class="btn-remove btn btn-sm btn-danger"><i class="fa fa-times fa-fw"></i></button></td>\
+                        <td style="width:160px;"><input type="number" readonly step="any" min=1 max=999999999 class="form-control input-sm text-end" placeholder="0.00" name="product_total_price[]"  data-cell="F'+i+'" data-format="0[.]00" data-formula="((Q'+i+')*((P'+i+')+(V'+i+')))"><i class="text-black-50">&nbsp;</i></td>\<td class="text-center"><button class="btn-remove btn btn-sm btn-danger"><i class="fa fa-times fa-fw"></i></button></td>\
                     </tr>');
 
                  $("#id"+row.id).val(1);
                 $form = $('#dynamic').calx();
                 $form.calx('update');
-                  getQty();
+                calculateFx();
                 }
 
 
@@ -232,13 +233,9 @@
         $('#itemlist').on('click', '.btn-remove', function(){
                 $(this).parent().parent().remove();
                 $form.calx('update');
-
-                getQty();
+                calculateFx();
             });
     }
-});
-$( "#formReset" ).on( "click", function() {
-        calculateFx()
 });
 
 
@@ -250,16 +247,7 @@ $('#clear').click(function (e) {
   Swal.fire('Form Reset Successfully');
 
 });
-$("#total_paid, other_discount").keyup(function() {
-  var ttotal = $("#grand_total").val() -$("#total_paid").val();
-  if(ttotal>0){
-    $("#Cachback").html('<strong>Due TK: ' + ttotal.toFixed(2) + '</strong>');
-  }else{
-    var ctotal =$("#total_paid").val()-$("#grand_total").val();
-    $("#Cachback").html('<strong>Change TK: ' + ctotal.toFixed(2) + '</strong>');
-  }
 
-  });
 
 
 $('#print').click(function (e) {
@@ -275,16 +263,8 @@ $('.multisteps-form__content').append('<input type="hidden" name="print">');
 //onkeyup
 function calculateFx() {
   $form = $('#dynamic').calx();
- $form.calx('getCell', 'G1').setFormula('SUM(F1:F5000)-(O1)');
-  $form.calx('getCell', 'Z1').setFormula('L1/(SUM(Q1:Q5000))');
-  $form.calx('getCell', 'G1','Z1').calculate();
-  $form.calx('update');
+    $form.calx('update');
 }
-//onkeyup
-function getVat() {
-  calculateFx()
-}
-
 
 </script>
 

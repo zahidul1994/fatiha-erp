@@ -22,15 +22,11 @@ return new class extends Migration
             $table->unsignedBigInteger('broker_id')->nullable();
             $table->unsignedBigInteger('customer_id')->nullable();
             $table->float('total_vat',16,2)->default(0);
-			$table->float('discount',16,2)->default(0);
-			$table->float('other_discount',16,2)->default(0);
-            $table->float('total_discount',16,2)->default(0);
             $table->float('sub_total',16,2)->default(0);
             $table->float('paid',16,2)->default(0);
             $table->float('pay_amount',16,2)->default(0);
-            $table->float('change_amount',16,2)->default(0);
             $table->float('due',16,2)->default(0);
-            $table->float('extra_discount_percent',16,2)->default(0);
+            $table->float('broker_bonus',16,2)->default(0);
             $table->float('total_quantity',16,2)->default(0);
             $table->float('grand_total',16,2)->default(0);
             $table->bigInteger('created_user_id');

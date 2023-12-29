@@ -116,6 +116,7 @@ class SetupController extends Controller
             $setting->default_vat = $request->default_vat;
             $setting->default_discount = $request->default_discount;
             $setting->default_supplier_id = $request->default_supplier_id;
+            $setting->default_converted_rate = $request->default_converted_rate;
             $setting->sms_status = $request->sms_status;
             $setting->sms_text = $request->sms_text;
             $setting->bin_number = $request->bin_number;

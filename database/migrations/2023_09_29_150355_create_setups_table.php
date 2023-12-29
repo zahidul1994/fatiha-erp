@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('default_unit',50)->nullable();
             $table->float('default_vat',10,0)->default(0);
             $table->float('default_discount',10,0)->default(0);
+            $table->float('default_converted_rate',10,0)->default(100);
             $table->unsignedBigInteger('default_supplier_id')->nullable();
             $table->unsignedBigInteger('default_customer_id')->nullable();
             $table->string('sms_user')->default('biz1994');
