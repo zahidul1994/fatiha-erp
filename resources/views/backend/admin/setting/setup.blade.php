@@ -32,6 +32,13 @@
 
                             </div>
                             <div class="form-group">
+                                <label class="form-control-label">Owner Name * </label>
+                                    {!! Form::text('owner_name',null, ['id' => 'owner_name','class' => 'form-control','required','placeholder'=>'Owner Name'
+                                    ]) !!}
+                                    @if ($errors->has('owner_name')) <span class="text-danger alert">{{ $errors->first('owner_name') }}</span> @endif
+
+                            </div>
+                            <div class="form-group">
                                 <label class="form-control-label">Web Address</label>
 
                                     {!! Form::text('web_address',null, ['id' => 'web_address','class' => 'form-control'

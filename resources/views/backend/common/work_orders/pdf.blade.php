@@ -112,7 +112,7 @@
                     <th width="5%">Port/Shipment</th>
                     <th width="5%"> Vat (%)</th>
                     <th width="15%"> Vat Amount </th>
-                   <th width="20%" class="text-right"> Amount </th>
+                   <th width="20%" class="text-right"> Total Value <small>(including SP and VAT)</small> </th>
                 </tr>
             </thead>
             <tbody>
