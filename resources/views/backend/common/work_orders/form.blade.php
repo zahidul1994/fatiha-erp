@@ -49,10 +49,16 @@
         {!! Form::select('borker_id',Helper::brokerPluckValue(), Helper::adminSetup()->default_broker_id?:null, ['id' => 'borker_id', 'class' => 'form-control select2', 'tabindex' => 2]) !!}
         
           </div>
+          <div class="col-md-12 col-sm-1">
+            <label for="bin_no">BIN No * </label>
+            {!! Form::text('bin_no', null, ['id' => 'bin_no','class' =>
+              'form-control','required','placeholder'=>'BIN No'
+              ]) !!}
+          </div>
           
           <div class="col-md-12 col-sm-1 mt-1">
             <label for="note">Note</label>
-            {!! Form::textarea('description', null, ['id' => 'note', 'class' => 'form-control','rows'=>2, 'tabindex' =>6]) !!}
+            {!! Form::textarea('description', null, ['id' => 'note', 'class' => 'form-control','rows'=>2,'placeholder'=>'Note ', 'tabindex' =>6]) !!}
           </div>
         </div>
       </div>
