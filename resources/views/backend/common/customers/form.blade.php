@@ -2,31 +2,32 @@
     <div class="col-md-12">
         <div class="form-group">
             <label for="customer_name" class="form-control-label">Customer Name  *  </label>
-            {!! Form::text('customer_name', null, ['id' => 'customer_name', 'class' => 'form-control', 'required']) !!}
+            {!! Form::text('customer_name', null, ['id' => 'customer_name', 'class' => 'form-control', 'required','placeholder'=>'Customer Name']) !!}
             @if ($errors->has('customer_name'))
             <span class="text-danger alert">{{ $errors->first('customer_name') }}</span>
             @endif
         </div>
     </div>
 
-    <div class="col-md-12">
+    <div class="col-md-6">
         <div class="form-group">
             <label for="customer_phone" class="form-control-label">Customer Phone * </label>
-            {!! Form::tel('customer_phone', null, ['id' => 'customer_phone', 'class' => 'form-control', 'required']) !!}
+            {!! Form::tel('customer_phone', null, ['id' => 'customer_phone', 'class' => 'form-control','placeholder'=>'Customer Phone Number','required']) !!}
             @if ($errors->has('customer_phone'))
             <span class="text-danger alert">{{ $errors->first('customer_phone') }}</span>
             @endif
         </div>
     </div>
-    <div class="col-md-12">
+    <div class="col-md-6">
         <div class="form-group">
             <label for="customer_email" class="form-control-label">Customer Email *</label>
-            {!! Form::email('customer_email', null, ['id' => 'customer_email', 'class' => 'form-control','required']) !!}
+            {!! Form::email('customer_email', null, ['id' => 'customer_email', 'class' => 'form-control','required','placeholder'=>'Customer Email']) !!}
             @if ($errors->has('customer_email'))
             <span class="text-danger alert">{{ $errors->first('customer_email') }}</span>
             @endif
         </div>
     </div>
+    
     <div class="col-md-12">
         <div class="form-group">
             <label for="address" class="form-control-label">Customer Address *</label>
@@ -39,10 +40,10 @@
    
     <div class="col-md-6">
         <div class="form-group">
-            <label for="birth_date" class="form-control-label">Birth  Date</label>
-            {!! Form::date('birth_date', null, ['id' => 'birth_date', 'class' => 'form-control']) !!}
-            @if ($errors->has('birth_date'))
-            <span class="text-danger alert">{{ $errors->first('birth_date') }}</span>
+            <label for="bin_number" class="form-control-label">BIN Number</label>
+            {!! Form::text('bin_number', null, ['id' => 'bin_number', 'class' => 'form-control','placeholder'=>'BIN Number']) !!}
+            @if ($errors->has('bin_number'))
+            <span class="text-danger alert">{{ $errors->first('bin_number') }}</span>
             @endif
         </div>
     </div>   

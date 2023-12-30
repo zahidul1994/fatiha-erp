@@ -112,11 +112,11 @@ class WorkOrderController extends Controller
             [
                 'customer_id' => 'required',
                 'convert_rate' => 'required|min:1',
-                'total_vat' => 'required|numeric|between:1,9999999999999',
-                'total_amount' => 'required|numeric|between:1,9999999999999',
+                'total_vat' => 'required',
+                'total_amount' => 'required',
                 'product_id.*' => 'required',
                 'product_quantity.*' => 'required',
-                'product_price.*' => 'required|numeric|between:1,9999999999999',
+                'product_price.*' => 'required',
                 'product_total_price' => 'required',
 
             ],
@@ -125,14 +125,9 @@ class WorkOrderController extends Controller
 
                 'customer_id.required' => "The Customer name field is required",
                 'payment_method.required' => "The Payment Method name field is required",
-                'paid.max' => "The WorkOrder name Maximum Length 190",
                 'total_amount.required' => "The Total amount name field is required",
-                'total_amount.min' => "The Total amount Minimum Length 1",
-                'total_amount.max' => "The Total amount Maximum Length 99999999",
                 'product_id.required' => "The  Product name field is required",
                 'product_price.required' => "The  Product Price name field is required",
-                'product_price.min' => "The Product Price Minimum Length 1",
-                'product_price.max' => "The Product Price  Maximum Length 99999999",
                 'product_quantity.required' => "The Product  Quantity name field is required",
                 'product_total_price.required' => "The Product  Quantity name field is required",
             ]
@@ -154,7 +149,6 @@ class WorkOrderController extends Controller
            $broker = $request->broker_id;
             $date = date('Y-m-d');
             $workorder->customer_id = $customer;
-            $workorder->bin_no = $request->bin_no;
             $workorder->broker_id = $broker;
             $workorder->date = $request->date ?: $date;
             $workorder->total_vat = $request->total_vat;
@@ -553,7 +547,7 @@ class WorkOrderController extends Controller
             } else {
                 $workorder = WorkOrder::with('user','customer','workorderdetails')->whereadmin_id($this->User->admin_id)->findOrFail(decrypt($id));
             }
-
+// dd($workorder);
             $pdf = PDF::loadView('backend.common.work_orders.pdf', compact('workorder'));
             return $pdf->stream('work_order_invoice_' . now() . '.pdf');
         } catch (\Exception $e) {
