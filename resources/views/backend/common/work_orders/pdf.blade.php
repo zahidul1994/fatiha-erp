@@ -69,7 +69,7 @@
 
 <body>
         <div>
-        <strong style="font-weight:100;">{{@$workorder->created_at->format('l jS \o\f F Y h:i:s A')}}</strong>
+       <small> <strong style="font-weight:100;">{{@$workorder->created_at->format('l jS \o\f F Y h:i:s A')}}</strong></small>
         </div>
         <div style="text-align: right; margin-top: -35px;">
     <img src="{{url($setup->printing_logo)}}" width="110px">
@@ -166,12 +166,23 @@
         <div>
             <strong style="font-weight:100;">Terms & Conditions</strong>
             <br>
-            <strong style="font-weight:100;">
+            <strong style="font-weight:80;">
                {!!@$setup->print_first_note !!}</strong>  <br>
             <h4>
                 {{ @$setup->print_second_note }}</h4>
         </div>
- 
+        <br><br>
+
+        <strong style="font-weight:100;">{{ @$setup->company_name }}</strong>  <br>
+        <strong>{{ @$setup->owner_name }}</strong><br><small>Proprieter</small>
+        
+        <div class="border"></div>
+        <hr>
+        <h1>{{ @$setup->company_name }}</h1>
+        <h6>Phone No : {{ @$setup->office_phone }} , Email Address : {{ @$setup->office_email }}</h6>
+   <h6>{{ @$setup->company_address }}</h6>
+
+    </div>
 </body>
 
 </html>
