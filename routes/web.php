@@ -18,10 +18,7 @@ use App\Http\Controllers\PublicSslCommerzPaymentController;
 // Route::fallback(function () {
 //     abort(404);
 // });
-Route::get('sub',function () {
-   Helper::subcategoryGenerate();
-   dd('Subcategory done');
-});
+
 
 Route::get('/', [HomeController::class,'index']);
 

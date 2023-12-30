@@ -565,7 +565,7 @@
                     </div>
                     <span class="nav-link-text ms-1">Users & Setup</span>
                 </a>
-                <div class="collapse  {{Request::is(Request::segment(1) .'/roles*') ? 'show' : ''}} {{Request::is(Request::segment(1) .'/users*') ? 'show' : ''}}"
+                <div class="collapse  {{Request::is(Request::segment(1) .'/roles*') ? 'show' : ''}} {{Request::is(Request::segment(1) .'/users*') ? 'show' : ''}} {{Request::is(Request::segment(1) .'/currency*') ? 'show' : ''}} {{Request::is(Request::segment(1) .'/ports*') ? 'show' : ''}}"
                     id="dashboardsExamples">
                     <ul class="nav ms-4">
 
@@ -577,6 +577,26 @@
                                 <span class="sidenav-normal">Business Setup </span>
                             </a>
                         </li>
+                        @can('currency-list')
+                        <li class="nav-item {{Request::is(Request::segment(1) .'/currency*') ? 'active' : ''}}">
+                            <a class="nav-link " href="{{route(Request::segment(1) . '.currency.index')}}">
+                                <span class="sidenav-mini-icon"> C </span>
+                                <i class="fa fa-street-view text-info text-lg opacity-10"></i>
+                                <span class="sidenav-normal">Currency </span>
+                            </a>
+                        </li>
+                        @endcan
+                        @can('port-list')
+                        <li class="nav-item {{Request::is(Request::segment(1) .'/ports*') ? 'active' : ''}}">
+                            <a class="nav-link " href="{{route(Request::segment(1) . '.ports.index')}}">
+                                <span class="sidenav-mini-icon"> C </span>
+                                <i class="fa fa-street-view text-info text-lg opacity-10"></i>
+                                <span class="sidenav-normal">Ports </span>
+                            </a>
+                        </li>
+                        @endcan
+
+
                         <li class="nav-item">
                             <a class="nav-link {{Request::is(Request::segment(1) .'/roles*') ? 'active' : ''}}"
                                 href="{{route(Request::segment(1) . '.roles.index')}}">

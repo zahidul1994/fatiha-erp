@@ -26,6 +26,12 @@ class PermissionTableSeeder extends Seeder
               'customer-create',
               'customer-edit',
               'customer-delete',
+
+              'currency-list',
+              'currency-create',
+              'currency-edit',
+              'currency-delete',
+
               'customer-due-list',
               'customer-due-create',
               'customer-due-edit',
@@ -62,7 +68,10 @@ class PermissionTableSeeder extends Seeder
               'stock-transfer-create',
               'stock-transfer-edit',
               'stock-transfer-delete',
-
+              'port-list',
+              'port-create',
+              'port-edit',
+              'port-delete',
 
               'purchase-list',
               'purchase-create',

@@ -18,8 +18,8 @@ return new class extends Migration
             $table->string('name')->nullable();
             $table->string('refer_code')->nullable();
             $table->string('phone',60)->nullable();
-             $table->string('email')->nullable();
-             $table->string('address',500)->nullable();
+            $table->string('email')->nullable();
+            $table->string('address',500)->nullable();
             $table->string('comment')->nullable();
             $table->tinyInteger('status')->default(0);
             $table->unsignedBigInteger('created_user_id');

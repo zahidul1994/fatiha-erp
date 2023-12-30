@@ -128,6 +128,21 @@ class Helper
 
         return $collection->pluck('name', 'name');
     }
+    public static function symbolIcon()
+    {
+        $data = [
+            ['name' => '৳'],
+            ['name' => '$'],
+            ['name' => '€'],
+            ['name' => '₹'],
+            ['name' => 'ی'],
+            
+        ];
+
+        $collection = new Collection($data);
+
+        return $collection->pluck('name', 'name');
+    }
 
     public static function adminPluckValue()
     {
@@ -293,32 +308,7 @@ class Helper
             return Customer::wherestatus(1)->whereadmin_id(Auth::user()->admin_id)->pluck('customer_name', 'id');
         }
     }
-    public static function getAveragePrice($productId, $price, $qty, $shop)
-    {
-
-        $final_qty = (float) $qty;
-        $previous_average_purchase_price = Product::find($productId)->average_price;
-        $shop_current_stock_qty_info = ShopCurrentStock::whereshop_id($shop)
-        ->whereproduct_id($productId)->first();
-
-        if ((!empty($shop_current_stock_qty_info))) {
-            $shop_current_stock_qty =
-                $shop_current_stock_qty_info->stock_qty;
-            $total_current_stock_qty = $shop_current_stock_qty;
-            if (!empty($previous_average_purchase_price)) {
-                $previous_sub_total =(float) $previous_average_purchase_price *
-                    $total_current_stock_qty;
-                $current_invoice_sub_total =(float) $price *$qty;
-                $sum_sub_total =$previous_sub_total + $current_invoice_sub_total;
-                $sum_qty = $total_current_stock_qty + $final_qty;
-
-                $purchase_average_price =(float) $sum_sub_total / (float) $sum_qty;
-            }
-        } else {
-            $purchase_average_price = (float) ($price / $qty);
-        }
-        return $purchase_average_price;
-    }
+   
 
 
 
@@ -336,22 +326,5 @@ class Helper
     {
         return 'not_found.webp';
     }
-    public static function subcategoryGenerate()
-    {
-        $categoryes=Category::get();
-        foreach($categoryes as $category){
-            $cateinfo=DB::connection('mysql2')->table('categories')->where('category_name',$category->category_name)->first();
-            if($cateinfo){
-            $subcategries=DB::connection('mysql2')->table('subcategories')->where('category_id', $cateinfo->id)->get();
-            foreach($subcategries as $sub){
-                $subcategri= new SubCategory();
-                $subcategri->superadmin_id=1;
-                $subcategri->category_id=$category->id;
-                $subcategri->sub_category_name=$sub->subcategory_name;
-                $subcategri->slug=Str::slug($sub->subcategory_name);
-                $subcategri->save();
-            }
-            }
-        }
-    }
+   
 }

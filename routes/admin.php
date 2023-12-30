@@ -7,6 +7,8 @@ use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\WalletController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\WarehouseController;
+use App\Http\Controllers\Admin\CurrencyController;
+use App\Http\Controllers\Admin\PortController;
 use App\Http\Controllers\Admin\SetupController;
 Route::group([
   'as' => 'admin.',
@@ -35,6 +37,12 @@ Route::get('warehouse-pdf/{id}', [WarehouseController::class, 'warehousePdf'])->
 Route::resource('shops', ShopController::class);
 Route::post('shop-status', [ShopController::class, 'updateStatus'])->name('shopStatus');
 Route::get('shop-pdf/{id}', [ShopController::class, 'shopPdf'])->name('shopPdf');
+
+## currency
+Route::resource('currency', CurrencyController::class);
+
+## port
+Route::resource('ports', PortController::class);
 
 ## wallet
 Route::resource('wallets', WalletController::class);
