@@ -246,7 +246,7 @@ class ProductController extends Controller
 
             ]
         );
-        // try {
+         try {
             DB::beginTransaction();
             $product = new Product();
             $product->product_name = $request->product_name;
@@ -317,12 +317,12 @@ class ProductController extends Controller
                 Toastr::success("Product Created Successfully", "Success");
                 return redirect()->route(request()->segment(1) . '.products.index');
             }
-        // } catch (\Exception $e) {
-        //     DB::rollBack();
-        //     $response = ErrorTryCatch::createResponse(false, 500, 'Internal Server Error.', null);
-        //     Toastr::error($response['message'], "Error");
-        //     return back();
-        // }
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $response = ErrorTryCatch::createResponse(false, 500, 'Internal Server Error.', null);
+            Toastr::error($response['message'], "Error");
+            return back();
+        }
     }
 
     /**
