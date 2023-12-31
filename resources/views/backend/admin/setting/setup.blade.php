@@ -32,6 +32,13 @@
 
                             </div>
                             <div class="form-group">
+                                <label class="form-control-label">Owner Name * </label>
+                                    {!! Form::text('owner_name',null, ['id' => 'owner_name','class' => 'form-control','required','placeholder'=>'Owner Name'
+                                    ]) !!}
+                                    @if ($errors->has('owner_name')) <span class="text-danger alert">{{ $errors->first('owner_name') }}</span> @endif
+
+                            </div>
+                            <div class="form-group">
                                 <label class="form-control-label">Web Address</label>
 
                                     {!! Form::text('web_address',null, ['id' => 'web_address','class' => 'form-control'
@@ -195,7 +202,7 @@
                                 </div>
                                 <div class="form-group col-md-12">
                                     <label for="print_first_note" class="form-control-label">Print First Note *</label>
-                                    {!! Form::text('print_first_note',null, ['id' =>'print_first_note', 'class'
+                                    {!! Form::textarea('print_first_note',null, ['id' =>'print_first_note', 'class'
                                     => 'form-control']) !!}
                                     @if ($errors->has('print_first_note'))
                                     <span class="text-danger alert">{{ $errors->first('print_first_note') }}</span>
@@ -313,7 +320,7 @@
 $('.select2').select2();
 
     var route_prefix = "/image";
-        $('textarea[name=description]').ckeditor({
+        $('textarea[name=print_first_note]').ckeditor({
 
             width: '100%',
             extraAllowedContent: 'a[rel]',
@@ -323,6 +330,17 @@ $('.select2').select2();
 
             allowedContent: true
         });
+
+        $('textarea[name=description]').ckeditor({
+
+width: '100%',
+extraAllowedContent: 'a[rel]',
+ extraPlugins: 'uicolor,colorbutton,colordialog,font',
+  format_tags: 'p;h1;h2;h3;h4;h5;h6;pre;address;div',
+  removePlugins: 'image,pwimage,about,blockquotes,link',
+
+allowedContent: true
+});
 
     $('#deleteAccount').click(function (e) {
         alert();

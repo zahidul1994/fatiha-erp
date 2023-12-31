@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('card_number');
             $table->string('customer_phone')->nullable();
             $table->string('customer_email')->nullable();
+            $table->string('bin_number')->nullable();
             $table->string('address',500)->nullable();
             $table->float('discount',16,2)->default(0);
             $table->float('total_due',30,2)->default(0);

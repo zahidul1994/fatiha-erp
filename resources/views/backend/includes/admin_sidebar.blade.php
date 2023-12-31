@@ -581,7 +581,7 @@
                         <li class="nav-item {{Request::is(Request::segment(1) .'/currency*') ? 'active' : ''}}">
                             <a class="nav-link " href="{{route(Request::segment(1) . '.currency.index')}}">
                                 <span class="sidenav-mini-icon"> C </span>
-                                <i class="fa fa-street-view text-info text-lg opacity-10"></i>
+                                <i class="fa fa-money-bill-alt text-info text-lg opacity-10"></i>
                                 <span class="sidenav-normal">Currency </span>
                             </a>
                         </li>
@@ -590,7 +590,7 @@
                         <li class="nav-item {{Request::is(Request::segment(1) .'/ports*') ? 'active' : ''}}">
                             <a class="nav-link " href="{{route(Request::segment(1) . '.ports.index')}}">
                                 <span class="sidenav-mini-icon"> C </span>
-                                <i class="fa fa-street-view text-info text-lg opacity-10"></i>
+                                <i class="fa fa-ship text-info text-lg opacity-10"></i>
                                 <span class="sidenav-normal">Ports </span>
                             </a>
                         </li>

@@ -108,6 +108,7 @@ class SetupController extends Controller
             $setting->company_logo = 'storage/files/shares/uploads/' .  Auth::id().'/'. $name;
         }
             $setting->company_name = $request->company_name;
+            $setting->owner_name = $request->owner_name;
             $setting->web_address = $request->web_address;
             $setting->default_shop_id = $request->default_shop_id;
             $setting->default_customer_id = $request->default_customer_id;
