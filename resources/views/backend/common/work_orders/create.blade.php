@@ -152,7 +152,32 @@
     $( "#formReset" ).on( "click", function() {
          calculateFx()
       });
+//branch_id change
+$('#customerId').change(function(){
+  $('#bin_number').empty();
+ $.ajax({
+        type: "GET",
+        url: url + '/get-customer-info/'+$(this).val(),
+        dataType: "JSON",
+        success:function(data) {
+         if(data){
+            $('#bin_number').val(data.bin_number);  
+            }},
+    });
+  });
 
+$('#currencyId').change(function(){
+  $('#convert_rate').empty();
+ $.ajax({
+        type: "GET",
+        url: url + '/get-currency-info/'+$(this).val(),
+        dataType: "JSON",
+        success:function(data) {
+         if(data){
+            $('#convert_rate').val(data.currency_rate);  
+            }},
+    });
+  });
     $("#add_item").autocomplete({
     source: function (request, response) {
         if (!$('#customerId').val()) {

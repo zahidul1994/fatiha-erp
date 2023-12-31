@@ -11,6 +11,7 @@ use App\Models\Setup;
 use App\Models\Slider;
 use App\Models\Wallet;
 use App\Models\Country;
+use App\Models\Currency;
 use App\Models\Package;
 use App\Models\Payment;
 use App\Models\Product;
@@ -150,6 +151,17 @@ class Helper
             return Port::wherestatus(1)->whereadmin_id(Auth::id())->pluck('port_name', 'port_name');
         } else {
             return Port::wherestatus(1)->whereadmin_id(Auth::user()->admin_id)->pluck('port_name', 'port_name');
+        }
+    }
+    public static function currencyPluckValue()
+    {
+
+        if (Auth::user()->user_type == 'SuperAdmin') {
+            return Currency::wherestatus(1)->select(DB::raw("CONCAT(currency_name,' - ',currency_symbol) AS name"),'id','currency_name')->pluck('name', 'currency_name'); 
+        } elseif (Auth::user()->user_type == 'Admin') {
+            return Currency::wherestatus(1)->select(DB::raw("CONCAT(currency_name,' - ',currency_symbol) AS name"),'id','currency_name')->pluck('name', 'currency_name');
+        } else {
+            return Currency::wherestatus(1)->select(DB::raw("CONCAT(currency_name,' - ',currency_symbol) AS name"),'id','currency_name')->pluck('name', 'currency_name');
         }
     }
 

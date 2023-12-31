@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Helpers\Helper;
+use App\Models\Currency;
 use App\Models\Customer;
 use App\Models\Supplier;
 use App\Models\CustomerDue;
@@ -14,12 +15,12 @@ use Illuminate\Http\Request;
 
 class OnChangeController extends Controller
 {
-    public function getSubCategory($id){
-        return SubCategory::wherestatus(1)->wherecategory_id($id)->get(['id','sub_category_name']);
+    public function getCustomer($id){
+        return Customer::select('bin_number')->find($id);
     }
 
-    public function getSupplierDue($id){
-         return Supplier::find($id)->total_balance;
+    public function getCurrency($id){
+         return Currency::select('currency_rate')->wherecurrency_name($id)->first();
 
     }
     public function getCustomerDue($id){

@@ -45,7 +45,7 @@ class WorkOrderController extends Controller
     public function index(Request $request)
     {
         
-        // try {
+     try {
             $User = $this->User;
             if ($User->user_type == 'Superadmin') {
                 $data = WorkOrder::with('user','customer')->latest();
@@ -74,11 +74,11 @@ class WorkOrderController extends Controller
                 ['name' => 'List'],
             ];
             return view('backend.common.work_orders.index', compact('breadcrumbs'));
-        // } catch (\Exception $e) {
-        //     $response = ErrorTryCatch::createResponse(false, 500, 'Internal Server Error.', null);
-        //     Toastr::error($response['message'], "Error");
-        //     return back();
-        // }
+        } catch (\Exception $e) {
+            $response = ErrorTryCatch::createResponse(false, 500, 'Internal Server Error.', null);
+            Toastr::error($response['message'], "Error");
+            return back();
+        }
     }
 
 

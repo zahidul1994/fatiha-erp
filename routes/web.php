@@ -39,8 +39,8 @@ Route::post('login', [LoginController::class,'login'])->name('login');
 ##get agent value
 
 ##get proudct value
-Route::get('get-sub-category/{id}', [OnChangeController::class,'getSubCategory'])->name('getSubCategory');
-Route::get('get-supplier-due/{id}', [OnChangeController::class,'getSupplierDue'])->name('getSupplierDue');
+Route::get('get-customer-info/{id}', [OnChangeController::class,'getCustomer'])->name('getCustomer');
+Route::get('get-currency-info/{id}', [OnChangeController::class,'getCurrency'])->name('getCurrency');
 Route::get('get-customer-due/{id}', [OnChangeController::class,'getCustomerDue'])->name('getCustomerDue');
 Route::get('get-admin-information/{id}', [OnChangeController::class,'getAdminInformation'])->name('getAdminInformation');
 
