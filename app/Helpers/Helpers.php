@@ -16,7 +16,7 @@ use App\Models\Payment;
 use App\Models\Product;
 use App\Models\Profile;
 use App\Models\Setting;
-use App\Models\Category;
+use App\Models\Port;
 use App\Models\Customer;
 use App\Models\Discount;
 use App\Models\Expense;
@@ -24,7 +24,6 @@ use App\Models\ExpenseHead;
 use App\Models\Supplier;
 use Illuminate\Support\Str;
 use App\Models\ShopCurrentStock;
-use App\Models\SubCategory;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Log;
@@ -143,6 +142,16 @@ class Helper
 
         return $collection->pluck('name', 'name');
     }
+    public static function portPluckValue()
+    {
+        if (Auth::user()->user_type == 'SuperAdmin') {
+            return Port::wherestatus(1)->pluck('port_name', 'port_name');
+        } elseif (Auth::user()->user_type == 'Admin') {
+            return Port::wherestatus(1)->whereadmin_id(Auth::id())->pluck('port_name', 'port_name');
+        } else {
+            return Port::wherestatus(1)->whereadmin_id(Auth::user()->admin_id)->pluck('port_name', 'port_name');
+        }
+    }
 
     public static function adminPluckValue()
     {
@@ -161,12 +170,7 @@ class Helper
             return Vat::pluck('vat', 'vat');
         });
     }
-    public static function categoryPluckValue()
-    {
-        return Cache::rememberForever('categorypluck', function () {
-            return Category::pluck('category_name', 'id');
-        });
-    }
+    
     public static function expenseHeadPluckValue()
     {
         return Cache::rememberForever('expenseHeadpluck', function () {
