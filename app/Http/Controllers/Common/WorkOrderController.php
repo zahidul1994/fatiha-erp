@@ -106,7 +106,7 @@ class WorkOrderController extends Controller
      */
     public function store(Request $request)
     {
-       
+    //    $request->dd();
         $this->validate(
             $request,
             [
@@ -118,6 +118,8 @@ class WorkOrderController extends Controller
                 'product_quantity.*' => 'required',
                 'product_price.*' => 'required',
                 'product_total_price' => 'required',
+                'currency_name' => 'required',
+                'port_name' => 'required',
 
             ],
 
@@ -152,12 +154,16 @@ class WorkOrderController extends Controller
             $workorder->broker_id = $broker;
             $workorder->date = $request->date ?: $date;
             $workorder->total_vat = $request->total_vat;
+            $workorder->currency_name = $request->currency_name;
+            $workorder->port_name = $request->port_name;
             $workorder->total_quantity = $request->total_quantity ?: 0;
+            $workorder->convert_rate = $request->convert_rate ?: 0;
             $workorder->broker_bonus = $request->broker_bonus ?: 0;
             $workorder->grand_total = $request->total_amount;
             $workorder->description = $request->description;
             $workorder->created_user_id = $this->User->id;
             $workorder->updated_user_id = $this->User->id;
+            $workorder->created_at =  $date.date('H:i:s');
             $workorder->save();
             if ($workorder) {
                 $products = $request->product_id;
@@ -191,11 +197,11 @@ class WorkOrderController extends Controller
             }
 
             DB::commit();
-            if ($request->has('workorder')) {
-                Toastr::success("Work Order Created Successfully  Done. Add  Another Work Order", "Success");
+            if ($request->has('quotation')) {
+                Toastr::success("Quotation  Created Successfully  Done. Add  Another Quotation", "Success");
                 return redirect()->back();
             } else {
-                Toastr::success("WorkOrder Created Successfully", "Success");
+                Toastr::success("Quotation Created Successfully", "Success");
                 return redirect()->route(request()->segment(1) . '.work-orders.index');
             }
         } catch (\Exception $e) {

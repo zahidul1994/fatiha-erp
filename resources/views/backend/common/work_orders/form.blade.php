@@ -46,7 +46,7 @@
           </div>
           <div class="col-md-4 col-sm-1">
             <label for="borker_id">Broker * </label>
-        {!! Form::select('borker_id',Helper::brokerPluckValue(), Helper::adminSetup()->default_broker_id?:null, ['id' => 'borker_id', 'class' => 'form-control select2', 'tabindex' => 3]) !!}
+        {!! Form::select('broker_id',Helper::brokerPluckValue(), Helper::adminSetup()->default_broker_id?:null, ['id' => 'borker_id', 'class' => 'form-control select2', 'tabindex' => 3]) !!}
         
           </div>
           <div class="col-md-4 col-sm-1">
@@ -60,7 +60,7 @@
           </div>
           <div class="col-md-4 col-sm-1">
             <label for="currencyId">Select Currency * </label>
-        {!! Form::select('currency_name',Helper::currencyPluckValue(), null, ['id' => 'currencyId', 'class' => 'form-control select2','class' => 'form-control select2', 'placeholder'=>'Select One ', 'tabindex' => 5]) !!}
+        {!! Form::select('currency_name',Helper::currencyPluckValue(), null, ['id' => 'currencyId', 'class' => 'form-control select2','class' => 'form-control select2', 'placeholder'=>'Select One ', 'tabindex' => 5,'required']) !!}
         
           </div>
           <div class="col-md-12 col-sm-1 mt-1">
@@ -102,7 +102,7 @@
             <div class="d-flex mb-1">
               <div class="w-35 pe-2 align-self-center">Convert Rate</div>
               <div class="w-65 align-self-center">
-                    <div class="col-md-12">{!! Form::number('convert_rate', null, ['id' => 'convert_rate', 'class' => 'form-control text-end py-1 px-1 convert_rate','step'=>'any','min'=>0,'max'=>999, 'tabindex' => 8, 'data-cell'=>"CR1",'keydown'=>"calculateFx()",'onblur'=>"calculateFx()"  ]) !!}</div>
+                    <div class="col-md-12">{!! Form::number('convert_rate', null, ['id' => 'convert_rate', 'class' => 'form-control text-end py-1 px-1 convert_rate','step'=>'any','min'=>0,'max'=>999, 'tabindex' => 8, 'data-cell'=>"CR1",'keydown'=>"calculateFx()",'onblur'=>"calculateFx()",'required']) !!}</div>
                 </div>
             </div>
 

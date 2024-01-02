@@ -108,7 +108,7 @@
                     <th width="5%"> Qty </th>
                     <th width="10%"> Unit Price </th>
                     <th width="10%">Total Value</th>
-                    <th width="5%">Rate Of <small>(doller/euro)</small></th>
+                    <th width="5%">Rate Of <small>({{ (@$workorder->currency_name) }})</small></th>
                     <th width="5%">Port/Shipment</th>
                     <th width="5%"> Vat (%)</th>
                     <th width="15%"> Vat Amount </th>
@@ -127,8 +127,8 @@
                     <td>{{ @$work->qty }}</td>
                     <td>{{ (@$work->product_price) }}</td>
                     <td>{{$totalValue}}</td>
-                    <td>145</td>
-                    <td>CTG/Sea Shipment</td>
+                    <td>{{ (@$workorder->convert_rate) }}</td>
+                    <td>{{ (@$workorder->port_name) }}</td>
                     <td>{{(@$work->product_vat) }}</td>
                     <td>{{ (@$work->product_vat_amount) }}</td>
                    <td>{{ (@$work->product_total_price) }}</td>

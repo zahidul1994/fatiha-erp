@@ -3,26 +3,27 @@
 namespace App\Helpers;
 use Carbon\Carbon;
 use App\Models\Vat;
+use App\Models\Port;
 use App\Models\Shop;
+use App\Models\Unit;
 use App\Models\User;
 use App\Models\Brand;
-use App\Models\Unit;
 use App\Models\Setup;
+use App\Models\Broker;
 use App\Models\Slider;
 use App\Models\Wallet;
 use App\Models\Country;
-use App\Models\Currency;
+use App\Models\Expense;
 use App\Models\Package;
 use App\Models\Payment;
 use App\Models\Product;
 use App\Models\Profile;
 use App\Models\Setting;
-use App\Models\Port;
+use App\Models\Currency;
 use App\Models\Customer;
 use App\Models\Discount;
-use App\Models\Expense;
-use App\Models\ExpenseHead;
 use App\Models\Supplier;
+use App\Models\ExpenseHead;
 use Illuminate\Support\Str;
 use App\Models\ShopCurrentStock;
 use Illuminate\Support\Facades\DB;
@@ -317,11 +318,11 @@ class Helper
     public static function brokerPluckValue()
     {
         if (Auth::user()->user_type == 'SuperAdmin') {
-            return Customer::wherestatus(1)->pluck('customer_name', 'id');
+            return Broker::wherestatus(1)->pluck('broker_name', 'id');
         } elseif (Auth::user()->user_type == 'Admin') {
-            return Customer::wherestatus(1)->whereadmin_id(Auth::id())->pluck('customer_name', 'id');
+            return Broker::wherestatus(1)->whereadmin_id(Auth::id())->pluck('broker_name', 'id');
         } else {
-            return Customer::wherestatus(1)->whereadmin_id(Auth::user()->admin_id)->pluck('customer_name', 'id');
+            return Broker::wherestatus(1)->whereadmin_id(Auth::user()->admin_id)->pluck('broker_name', 'id');
         }
     }
    
