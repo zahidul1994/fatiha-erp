@@ -313,35 +313,35 @@
             <td style="width:120px;"><input class="form-control input-sm text-end"
                     placeholder="0.00" tabindex="10" name="product_price[]"
                     data-cell="P{{$loop->index+1}}"
-                    value="{{ @$order->sale_price}}"
-                    onblur="getQty({{$loop->index+1}},this);" data-format=""><i
+                    value="{{ @$order->product_price}}"
+                    onblur="calculateFx({{$loop->index+1}},this);"  keydown="calculateFx({{$loop->index+1}},this);" data-format=""><i
                     class="text-black-50">&nbsp;</i></td>
 
-            <td style="width:120px;" ><input
+            <td style="width:180px;" ><input
                     class="form-control input-sm text-end pquentity" required
-                    type="number" readonly step="any" min=1 max=999999999 required
+                    type="number"  step="any" min=1 max=999999999 required
                     id="id{{ @$order->product_id}}" data-format=""
-                    data-format="0[.]00" onblur="getQty({{$loop->index+1}},this);"
+                    data-format="0[.]00" onblur="calculateFx({{$loop->index+1}},this);"  keydown="calculateFx({{$loop->index+1}},this);" 
                     value="{{ @$order->qty}}" name="product_quantity[]"
-                    data-cell="Q{{$loop->index+1}}"><i class="text-black-50"></i>
+                    data-cell="Q{{$loop->index+1}}"><i class="text-black-50">&nbsp;</i>
             </td>
 
             <td style="width:80px;"><input type="number" step="any" min=0 max=999999999
-                    class="form-control input-sm text-end" readonly
-                    onblur="calculateFx({{$loop->index+1}},this);" placeholder="0.00"
+                    class="form-control input-sm text-end" 
+                    onblur="calculateFx({{$loop->index+1}},this);"  keydown="calculateFx({{$loop->index+1}},this);"  placeholder="0.00"
                     name="product_vat[]" data-cell="T{{$loop->index+1}}"
-                    value="{{ @$order->vat_percent}}" data-format="0[.]0000"><i
+                    value="{{ @$order->product_vat}}" data-format="0[.]0000"><i
                     class="text-black-50">&nbsp;</i> </td>
 
             <td style="width:100px;"><input name="product_vat_amount[]"
-                    value="{{ @$order->vat_amount}}" type="number" step="any" min=0
+                    value="{{ @$order->product_vat_amount}}" type="number" step="any" min=0
                     max=999999999 class="form-control input-sm text-end"
                     placeholder="0.00" readonly data-cell="V{{$loop->index+1}}"
                     data-formula="(P{{$loop->index+1}}/100*T{{$loop->index+1}})*Q{{$loop->index+1}}"
                     data-format="0[.]00"><i class="text-black-50">&nbsp;</i></td>
 
             <td style="width:160px;"><input type="number"
-                    value="{{@$order->sale_price}}" step="any" min=1 max=999999999
+                    value="{{@$order->product_total_price}}" step="any" min=1 max=999999999
                     class="form-control input-sm text-end" placeholder="0.00"
                     name="product_total_price[]" readonly
                     data-cell="F{{$loop->index+1}}" data-format="0[.]00"
@@ -371,8 +371,14 @@
 
     </div>
     <div class="row">
-      <div class="col-md-9"></div><div class="col-md-3 mt-3"><button class="btn btn-success" type="submit" tabindex="10">Save</button>
-         <button class="btn btn-info" name="quotation" type="submit" tabindex="11">Save & Quotation</button>
+      
+      <div class="col-md-6">
+        </div>
+      <div class="col-md-3 mt-3">
+        {!! Form::select('status',['Quotation'=>'Quotation','WorkOrder'=>'WorkOrder','Reject'=>'Reject'], null, ['id' => 'currencyId', 'class' => 'form-control select2','class' => 'form-control', 'tabindex' => 9,'required']) !!}
+        </div>
+        <div class="col-md-3 mt-3"><button class="btn btn-success" type="submit" tabindex="10">Save & Update</button>
+        
         </div>
     </div>
    </div>
