@@ -43,11 +43,11 @@ class SupplierController extends Controller
             $User = $this->User;
 
             if ($User->user_type == 'Superadmin') {
-                $data = Supplier::with('user', 'supplierdue')->latest();
+                $data = Supplier::with('user')->latest();
             } elseif ($User->user_type == 'Admin') {
-                $data = Supplier::with('user', 'supplierdue')->whereadmin_id($this->User->id)->latest();
+                $data = Supplier::with('user')->whereadmin_id($this->User->id)->latest();
             } else {
-                $data = Supplier::with('user', 'supplierdue')->whereadmin_id($this->User->admin_id)->latest();
+                $data = Supplier::with('user')->whereadmin_id($this->User->admin_id)->latest();
             }
             if ($request->ajax()) {
 

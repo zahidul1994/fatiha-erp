@@ -1,5 +1,5 @@
 <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-6">
         <div class="form-group">
             <label for="supplier_name" class="form-control-label">Supplier Name  *  </label>
             {!! Form::text('supplier_name', null, ['id' => 'supplier_name', 'class' => 'form-control', 'required']) !!}
@@ -8,8 +8,9 @@
             @endif
         </div>
     </div>
+    
 
-    <div class="col-md-12">
+    <div class="col-md-6">
         <div class="form-group">
             <label for="supplier_phone" class="form-control-label">Supplier Phone * </label>
             {!! Form::tel('supplier_phone', null, ['id' => 'supplier_phone', 'class' => 'form-control', 'required']) !!}
@@ -18,55 +19,89 @@
             @endif
         </div>
     </div>
-    <div class="col-md-12">
+    <div class="col-md-6">
         <div class="form-group">
-            <label for="supplier_email" class="form-control-label">Supplier Email </label>
-            {!! Form::email('supplier_email', null, ['id' => 'supplier_email', 'class' => 'form-control']) !!}
+            <label for="supplier_email" class="form-control-label">Supplier Email * </label>
+            {!! Form::email('supplier_email', null, ['id' => 'supplier_email', 'class' => 'form-control','required']) !!}
             @if ($errors->has('supplier_email'))
             <span class="text-danger alert">{{ $errors->first('supplier_email') }}</span>
             @endif
         </div>
     </div>
-    <div class="col-md-12">
-        <div class="form-group">
-            <label for="address" class="form-control-label">Supplier Address *</label>
-            {!! Form::textarea('address', null, ['id' => 'address', 'class' => 'form-control','required','rows'=>1]) !!}
-            @if ($errors->has('address'))
-            <span class="text-danger alert">{{ $errors->first('address') }}</span>
-            @endif
-        </div>
-    </div>
-    @if (Request::segment(3)=='create')
     <div class="col-md-6">
         <div class="form-group">
-            <label for="due" class="form-control-label">Supplier Previous Due </label>
-            {!! Form::number('due', null, ['id' => 'due', 'class' => 'form-control','step'=>'any','max'=>99999999]) !!}
-            @if ($errors->has('due'))
-            <span class="text-danger alert">{{ $errors->first('due') }}</span>
-            @endif
+            <label for="supplier_country" class="form-control-label">Supplier Country * </label>
+            {!! Form::select('supplier_country', Helper::countryPluckValue(), null, ['id' => 'supplier_country', 'class' =>
+            'form-control select2', 'required']) !!}
+             @if ($errors->has('supplier_country'))
+             <span class="text-danger alert">{{ $errors->first('supplier_country') }}</span>
+             @endif
         </div>
     </div>
-   
-    <div class="col-md-6">
-        <div class="form-group">
-            <label for="paid" class="form-control-label">Supplier Previous Payment </label>
-            {!! Form::number('paid', null, ['id' => 'paid', 'class' => 'form-control','step'=>'any','max'=>99999999]) !!}
-            @if ($errors->has('paid'))
-            <span class="text-danger alert">{{ $errors->first('paid') }}</span>
-            @endif
-        </div>
-    </div>
-    @endif
+    
     <div class="col-md-12">
         <div class="form-group">
-            <label for="description" class="form-control-label">Description (About Supplier)</label>
-            {!! Form::textarea('description', null, ['id' => 'description', 'class' => 'form-control','rows'=>2]) !!}
-            @if ($errors->has('description'))
-            <span class="text-danger alert">{{ $errors->first('description') }}</span>
+            <label for="supplier_address" class="form-control-label"> Supplier Address</label>
+            {!! Form::textarea('supplier_address', null, ['id' => 'supplier_address', 'class' => 'form-control','rows'=>1]) !!}
+            @if ($errors->has('supplier_address'))
+            <span class="text-danger alert">{{ $errors->first('supplier_address') }}</span>
             @endif
         </div>
     </div>
-   
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="bank_account_name" class="form-control-label">Bank Account Name  *  </label>
+            {!! Form::text('bank_account_name', null, ['id' => 'bank_account_name', 'class' => 'form-control', 'required']) !!}
+            @if ($errors->has('bank_account_name'))
+            <span class="text-danger alert">{{ $errors->first('bank_account_name') }}</span>
+            @endif
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="bank_account_number" class="form-control-label">Bank Account Number  *  </label>
+            {!! Form::text('bank_account_number', null, ['id' => 'bank_account_number', 'class' => 'form-control', 'required']) !!}
+            @if ($errors->has('bank_account_number'))
+            <span class="text-danger alert">{{ $errors->first('bank_account_number') }}</span>
+            @endif
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="swift_code" class="form-control-label">SWIFT Code  *  </label>
+            {!! Form::text('swift_code', null, ['id' => 'swift_code', 'class' => 'form-control', 'required']) !!}
+            @if ($errors->has('swift_code'))
+            <span class="text-danger alert">{{ $errors->first('swift_code') }}</span>
+            @endif
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="bank_currency" class="form-control-label">Bank Currency  *  </label>
+            {!! Form::select('bank_currency',Helper::currencyPluckValue(), null, ['id' => 'bank_currency', 'class' => 'form-control select2','class' => 'form-control select2', 'placeholder'=>'Select One ', 'required']) !!}
+            @if ($errors->has('bank_currency'))
+            <span class="text-danger alert">{{ $errors->first('bank_currency') }}</span>
+            @endif
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="bank_name" class="form-control-label">Bank Name  *  </label>
+            {!! Form::text('bank_name', null, ['id' => 'bank_name', 'class' => 'form-control', 'required']) !!}
+            @if ($errors->has('bank_name'))
+            <span class="text-danger alert">{{ $errors->first('bank_name') }}</span>
+            @endif
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="bank_address" class="form-control-label"> Bank Address</label>
+            {!! Form::textarea('bank_address', null, ['id' => 'bank_address', 'class' => 'form-control','rows'=>1]) !!}
+            @if ($errors->has('bank_address'))
+            <span class="text-danger alert">{{ $errors->first('bank_address') }}</span>
+            @endif
+        </div>
+    </div>
     <div class="col-md-12">
         <div class="form-group">
             <label for="status" class="form-control-label">Status * </label>
