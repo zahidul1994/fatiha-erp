@@ -112,6 +112,11 @@ class PermissionTableSeeder extends Seeder
               'user-edit',
               'user-delete',
 
+              'requisition-list',
+              'requisition-create',
+              'requisition-edit',
+              'requisition-delete',
+
               'product-report',
               'purchase-report',
               'sale-report',

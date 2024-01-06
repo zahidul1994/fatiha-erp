@@ -173,7 +173,7 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
+       
         if (Auth::user()->user_type == "Admin") {
             $adminId = Auth::id();
             $employeeId = NULL;

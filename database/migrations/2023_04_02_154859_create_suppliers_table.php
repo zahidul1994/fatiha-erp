@@ -18,6 +18,7 @@ return new class extends Migration
             $table->bigInteger('employee_id')->unsigned()->nullable();
             $table->foreign('employee_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('supplier_name');
+            $table->string('card_number');
             $table->string('supplier_phone')->nullable();
             $table->string('supplier_email')->nullable();
             $table->string('supplier_country')->nullable();

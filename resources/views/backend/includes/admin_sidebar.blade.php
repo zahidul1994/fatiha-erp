@@ -1,10 +1,12 @@
-<aside class="sidenav bg-white  navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4 "
+<aside
+    class="sidenav bg-white  navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4 "
     id="sidenav-main">
     <div class="sidenav-header">
         <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
             aria-hidden="true" id="iconSidenav"></i>
-        <a class="navbar-brand m-0" href="{{url('/')}} " >
-            <img src="{{ asset(Auth::user()->image) }}" class="navbar-brand-img border-radius-sm shadow-sm" alt="main_logo">
+        <a class="navbar-brand m-0" href="{{url('/')}} ">
+            <img src="{{ asset(Auth::user()->image) }}" class="navbar-brand-img border-radius-sm shadow-sm"
+                alt="main_logo">
             <br>
             <span class="ms-1 font-weight-bold">{{Auth::user()->name}}</span>
         </a>
@@ -39,8 +41,9 @@
                         <li class="nav-item">
                             <a class="nav-link {{Request::is(Request::segment(1) .'/work-orders*') ? 'active' : ''}}"
                                 href="{{route(Request::segment(1) . '.work-orders.index')}}">
-                                 <span class="sidenav-mini-icon">W </span>
-                                 <i class="ni ni-curved-next text-danger text-lg opacity-10"></i> <span class="sidenav-normal">Work Order </span>
+                                <span class="sidenav-mini-icon">W </span>
+                                <i class="ni ni-curved-next text-danger text-lg opacity-10"></i> <span
+                                    class="sidenav-normal">Work Order </span>
                             </a>
                         </li>
                         @endcan
@@ -49,11 +52,12 @@
                             <a class="nav-link {{Request::is(Request::segment(1) .'/sales*') ? 'active' : ''}}"
                                 href="{{route(Request::segment(1) . '.sales.index')}}">
                                 <span class="sidenav-mini-icon">S </span>
-                                <i class="fa fa-cart-plus text-info text-lg opacity-10"></i> <span class="sidenav-normal">Sale </span>
+                                <i class="fa fa-cart-plus text-info text-lg opacity-10"></i> <span
+                                    class="sidenav-normal">Sale </span>
                             </a>
                         </li>
-                        @endcan                      
-                        
+                        @endcan
+
                     </ul>
                 </div>
 
@@ -68,7 +72,8 @@
                     </div>
                     <span class="nav-link-text ms-1">Purchase</span>
                 </a>
-                <div class="collapse {{Request::is(Request::segment(1) .'/purchases*') ? 'show' : ''}} {{Request::is(Request::segment(1) .'/purchase-returns*') ? 'show' : ''}}" id="purchases">
+                <div class="collapse {{Request::is(Request::segment(1) .'/purchases*') ? 'show' : ''}} {{Request::is(Request::segment(1) .'/purchase-returns*') ? 'show' : ''}}"
+                    id="purchases">
                     <ul class="nav ms-4">
                         @can('purchase-list')
                         <li class="nav-item">
@@ -84,8 +89,9 @@
                         <li class="nav-item">
                             <a class="nav-link {{Request::is(Request::segment(1) .'/purchase-returns*') ? 'active' : ''}}"
                                 href="{{route(Request::segment(1) . '.purchase-returns.index')}}">
-                                 <span class="sidenav-mini-icon">PR </span>
-                                 <i class="ni ni-curved-next text-danger text-lg opacity-10"></i> <span class="sidenav-normal">Purchase Return </span>
+                                <span class="sidenav-mini-icon">PR </span>
+                                <i class="ni ni-curved-next text-danger text-lg opacity-10"></i> <span
+                                    class="sidenav-normal">Purchase Return </span>
                             </a>
                         </li>
                         @endcan
@@ -93,11 +99,50 @@
                     </ul>
                 </div>
             </li>
-        @endcan
-        @can('product-list')
+            @endcan
+
+            @can('requisition-list')
             <li class="nav-item">
-                <a data-bs-toggle="collapse" href="#products" class="nav-link" aria-controls="products"
-                    role="button" aria-expanded="false">
+                <a data-bs-toggle="collapse" href="#requisitions" class="nav-link" aria-controls="requisitions" role="button"
+                    aria-expanded="false">
+                    <div class="icon icon-shape icon-sm text-center d-flex align-items-center justify-content-center">
+                        <i class="ni ni-basket text-primary text-lg opacity-10"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Requisition</span>
+                </a>
+                <div class="collapse {{Request::is(Request::segment(1) .'/requisitions*') ? 'show' : ''}} {{Request::is(Request::segment(1) .'/requisitions-returns*') ? 'show' : ''}}"
+                    id="requisitions">
+                    <ul class="nav ms-4">
+                        @can('requisition-list')
+                        <li class="nav-item">
+                            <a class="nav-link {{Request::is(Request::segment(1) .'/requisitions*') ? 'active' : ''}}"
+                                href="{{route(Request::segment(1) . '.requisitions.index')}}">
+                                <span class="sidenav-mini-icon"> R </span>
+                                <i class="ni ni-basket text-info text-lg opacity-10"></i>
+                                <span class="sidenav-normal">Requisition </span>
+                            </a>
+                        </li>
+                        @endcan
+                        @can('purchase-return-list')
+                        <li class="nav-item">
+                            <a class="nav-link {{Request::is(Request::segment(1) .'/purchase-returns*') ? 'active' : ''}}"
+                                href="{{route(Request::segment(1) . '.purchase-returns.index')}}">
+                                <span class="sidenav-mini-icon">PR </span>
+                                <i class="ni ni-curved-next text-danger text-lg opacity-10"></i> <span
+                                    class="sidenav-normal">Purchase Return </span>
+                            </a>
+                        </li>
+                        @endcan
+
+                    </ul>
+                </div>
+            </li>
+            @endcan
+
+            @can('product-list')
+            <li class="nav-item">
+                <a data-bs-toggle="collapse" href="#products" class="nav-link" aria-controls="products" role="button"
+                    aria-expanded="false">
                     <div class="icon icon-shape icon-sm text-center d-flex align-items-center justify-content-center">
                         <i class="fa fa-cubes text-primary text-lg opacity-10"></i>
                     </div>
@@ -154,8 +199,8 @@
             @endcan
             @can('shop-list')
             <li class="nav-item">
-                <a data-bs-toggle="collapse" href="#shops" class="nav-link" aria-controls="products"
-                    role="button" aria-expanded="false">
+                <a data-bs-toggle="collapse" href="#shops" class="nav-link" aria-controls="products" role="button"
+                    aria-expanded="false">
                     <div class="icon icon-shape icon-sm text-center d-flex align-items-center justify-content-center">
                         <i class="ni ni-shop text-primary text-lg opacity-10"></i>
                     </div>
@@ -190,7 +235,7 @@
                                 href="{{route(Request::segment(1) . '.shop-current-stocks.index')}}">
                                 <span class="sidenav-mini-icon"> ST </span>
                                 <i class="fa fa-database text-info text-lg opacity-10"></i>
-                                <span class="sidenav-normal">Shop  Stock </span>
+                                <span class="sidenav-normal">Shop Stock </span>
                             </a>
                         </li>
                         @endcan
@@ -198,8 +243,8 @@
                         <li class="nav-item">
                             <a class="nav-link {{Request::is(Request::segment(1) .'/stock-adjustments*') ? 'active' : ''}}"
                                 href="{{route(Request::segment(1) . '.stock-adjustments.index')}}">
-                                 <span class="sidenav-mini-icon"> SA </span>
-                                 <i class="fa fa-balance-scale text-info text-lg opacity-10"></i>
+                                <span class="sidenav-mini-icon"> SA </span>
+                                <i class="fa fa-balance-scale text-info text-lg opacity-10"></i>
                                 <span class="sidenav-normal">Stock Adjustment</span>
                             </a>
                         </li>
@@ -219,9 +264,9 @@
                     </ul>
                 </div>
             </li>
-@endcan
+            @endcan
 
-             @can('supplier-list')
+            @can('supplier-list')
             <li class="nav-item">
                 <a data-bs-toggle="collapse" href="#suppliers" class="nav-link" aria-controls="visaes" role="button"
                     aria-expanded="false">
@@ -230,7 +275,8 @@
                     </div>
                     <span class="nav-link-text ms-1">Suppliers</span>
                 </a>
-                <div class="collapse  {{Request::is(Request::segment(1) .'/suppliers*') ? 'show' : ''}}  {{Request::is(Request::segment(1) .'/supplier-due*') ? 'show' : ''}}" id="suppliers">
+                <div class="collapse  {{Request::is(Request::segment(1) .'/suppliers*') ? 'show' : ''}}  {{Request::is(Request::segment(1) .'/supplier-due*') ? 'show' : ''}}"
+                    id="suppliers">
                     <ul class="nav ms-4">
                         @can('supplier-list')
                         <li class="nav-item">
@@ -258,9 +304,9 @@
                     </ul>
                 </div>
             </li>
-       @endcan
+            @endcan
 
-@can('customer-list')
+            @can('customer-list')
             <li class="nav-item">
                 <a data-bs-toggle="collapse" href="#customers" class="nav-link" aria-controls="saleId" role="button"
                     aria-expanded="false">
@@ -299,11 +345,11 @@
                     </ul>
                 </div>
             </li>
-@endcan
+            @endcan
             @can('stock-transfer-list')
             <li class="nav-item">
-                <a data-bs-toggle="collapse" href="#stocktransfers" class="nav-link" aria-controls="stocktransfers" role="button"
-                    aria-expanded="false">
+                <a data-bs-toggle="collapse" href="#stocktransfers" class="nav-link" aria-controls="stocktransfers"
+                    role="button" aria-expanded="false">
                     <div class="icon icon-shape icon-sm text-center d-flex align-items-center justify-content-center">
                         <i class="fa fa-exchange text-primary text-lg opacity-10"></i>
                     </div>
@@ -312,7 +358,7 @@
                 <div class="collapse {{Request::is(Request::segment(1) .'/stock-transfers*') ? 'show' : ''}}"
                     id="stocktransfers">
                     <ul class="nav ms-4">
-                     @can('stock-transfer-list')
+                        @can('stock-transfer-list')
                         <li class="nav-item">
                             <a class="nav-link {{Request::is(Request::segment(1) .'/stock-transfers*') ? 'active' : ''}}"
                                 href="{{route(Request::segment(1) . '.stock-transfers.index')}}">
@@ -326,7 +372,7 @@
                 </div>
             </li>
             @endcan
-@can('damage-product-list')
+            @can('damage-product-list')
             <li class="nav-item">
                 <a data-bs-toggle="collapse" href="#damages" class="nav-link" aria-controls="damages" role="button"
                     aria-expanded="false">
@@ -338,7 +384,7 @@
                 <div class="collapse {{Request::is(Request::segment(1) .'/damage-products*') ? 'show' : ''}}"
                     id="damages">
                     <ul class="nav ms-4">
-                     @can('damage-product-list')
+                        @can('damage-product-list')
                         <li class="nav-item">
                             <a class="nav-link {{Request::is(Request::segment(1) .'/damage-products*') ? 'active' : ''}}"
                                 href="{{route(Request::segment(1) . '.damage-products.index')}}">
@@ -351,9 +397,9 @@
                     </ul>
                 </div>
             </li>
-     @endcan
+            @endcan
 
-     @can('expense-list')
+            @can('expense-list')
 
             <li class="nav-item">
                 <a data-bs-toggle="collapse" href="#dashboardsAccounts" class="nav-link"
@@ -412,7 +458,7 @@
                 <div class="collapse {{Request::is(Request::segment(1) .'/purchase-report*') ? 'show' : ''}}{{Request::is(Request::segment(1) .'/product-report*') ? 'show' : ''}}{{Request::is(Request::segment(1) .'/analytics-report*') ? 'show' : ''}}{{Request::is(Request::segment(1) .'/activity-log-report*') ? 'show' : ''}}{{Request::is(Request::segment(1) .'/sale-report*') ? 'show' : ''}}{{Request::is(Request::segment(1) .'/damage-product-report*') ? 'show' : ''}}{{Request::is(Request::segment(1) .'/expense-report*') ? 'show' : ''}}{{Request::is(Request::segment(1) .'/damage-report*') ? 'show' : ''}}{{Request::is(Request::segment(1) .'/sale-return-report*') ? 'show' : ''}}{{Request::is(Request::segment(1) .'/purchase-return-report*') ? 'show' : ''}}"
                     id="dashboardsReport">
                     <ul class="nav ms-4">
-                       <li class="nav-item">
+                        <li class="nav-item">
                             <a class="nav-link {{Request::is(Request::segment(1) .'/analytics-report*') ? 'active' : ''}}"
                                 href="{{route(Request::segment(1) . '.analyticsReport')}}">
                                 <span class="sidenav-mini-icon">AnR</span>
@@ -556,7 +602,7 @@
                     </ul>
                 </div>
             </li>
-              @can('user-list')
+            @can('user-list')
             <li class="nav-item">
                 <a data-bs-toggle="collapse" href="#dashboardsExamples" class="nav-link"
                     aria-controls="dashboardsExamples" role="button" aria-expanded="false">
@@ -626,7 +672,7 @@
                     </ul>
                 </div>
             </li>
-         @endcan
+            @endcan
 
         </ul>
     </div>

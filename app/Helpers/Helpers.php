@@ -26,6 +26,7 @@ use App\Models\Supplier;
 use App\Models\ExpenseHead;
 use Illuminate\Support\Str;
 use App\Models\ShopCurrentStock;
+use App\Models\WorkOrder;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Log;
@@ -63,6 +64,11 @@ class Helper
     {
 
         return ShopCurrentStock::whereproduct_id($id)->first();
+    }
+    public static function getWorkorder($id)
+    {
+
+        return WorkOrder::find($id);
     }
 
     public static function getSlider()

@@ -113,115 +113,66 @@ class SupplierController extends Controller
      */
     public function store(Request $request)
     {
-        if ($this->User->user_type == 'Admin') {
-            $this->validate(
-                $request,
-                [
 
-                    'supplier_phone' => 'required|min:9|max:30',
-                    'address' => 'required|min:1|max:198',
-                    'email' => 'max:198',
-                    'supplier_name' => [
-                        'required', 'min:1',
-                        'max:198', Rule::unique('suppliers')->where(function ($query) {
-                            return $query->where('admin_id', Auth::user()->id);
-                        })
-                    ]
-                ],
-                [
-                    'supplier_name.unique' => "The Supplier name field need to be unique",
-                    'supplier_name.required' => "The Supplier name field is required",
-                    'supplier_name.min' => "The Supplier name Minimum field length 1",
-                    'supplier_name.max' => "The Supplier name Maximum field length 100",
-                    'supplier_phone.required' => "The Supplier phone field is required",
-                    'supplier_phone.min' => "The Supplier phone Minimum field length 1",
-                    'supplier_phone.max' => "The Supplier phone Maximum field length 100",
-
-
-
-
-                ]
-            );
+        if (Auth::user()->user_type == "Admin") {
+            $adminId = Auth::id();
+            $employeeId = NULL;
         } else {
-            $this->validate(
-                $request,
-                [
-                    'supplier_phone' => 'required|min:9|max:30',
-                    'address' => 'required|min:1|max:198',
-                    'email' => 'max:198',
-                    'supplier_name' => [
-                        'required', 'min:1',
-                        'max:198', Rule::unique('suppliers')->where(function ($query) {
-                            return $query->where('admin_id', Auth::user()->admin_id);
-                        })
-                    ]
-                ],
-                [
-                    'supplier_name.unique' => "The Supplier name field need to be unique",
-                    'supplier_name.required' => "The Supplier name field is required",
-                    'supplier_name.min' => "The Supplier name Minimum field length 1",
-                    'supplier_name.max' => "The Supplier name Maximum field length 100",
-                    'supplier_phone.required' => "The Supplier phone field is required",
-                    'supplier_phone.min' => "The Supplier phone Minimum field length 1",
-                    'supplier_phone.max' => "The Supplier phone Maximum field length 100",
-
-
-
-                ]
-            );
+            $adminId = Auth::user()->admin_id;
+            $employeeId = Auth::id();
         }
 
-        try {
+        $this->validate(
+            $request,
+            [
+
+                'supplier_name' => 'required|min:9|max:30',
+                'supplier_name' => 'required|min:1|max:198',
+                'supplier_country' => 'required',
+                'supplier_address' => 'required|min:1|max:450',
+                'supplier_phone' => ['required', 'numeric','min:1', Rule::unique('suppliers')->where(function ($query) use ($adminId) {
+                        return $query->where('admin_id',$adminId);
+                    })
+                ],
+                'supplier_email' => ['required', 'email','min:1',
+                    'max:198', Rule::unique('suppliers')->where(function ($query) use ($adminId) {
+                        return $query->where('admin_id',$adminId);
+                    })
+                ]
+            ],
+           
+        );
+
+        // try {
             DB::beginTransaction();
             $supplier = new Supplier();
             $supplier->supplier_name = $request->supplier_name;
             $supplier->supplier_phone = $request->supplier_phone;
             $supplier->supplier_email = $request->supplier_email;
-            $supplier->address = $request->address;
-            $supplier->description = $request->description;
-            if ($this->User->user_type == "Admin") {
-                $supplier->admin_id = $this->User->id;
-                $prefix = Helper::getAdmin(Auth::id())->invoice_slug;
-            } else {
-                $supplier->admin_id = $this->User->admin_id;
-                $supplier->employee_id = $this->User->id;
-                $prefix = Helper::getAdmin(Auth::user()->admin_id)->invoice_slug;
-            }
-            $supplier->created_user_id = $this->User->id;
+            $supplier->supplier_address = $request->supplier_address;
+            $supplier->bank_account_name = $request->bank_account_name;
+             $supplier->admin_id = $adminId;
+             $supplier->employee_id = $employeeId;
+            $prefix =  Helper::getAdmin( $adminId)->invoice_slug;
+           $supplier->card_number = IdGenerator::generate(['table' => 'suppliers', 'field' => 'card_number', 'length' =>12, 'prefix' => $prefix, 'reset_on_prefix_change' => true]);
+           $supplier->created_user_id = $this->User->id;
             $supplier->updated_user_id = $this->User->id;
-            $supplier->total_due = $request->due?:0;
-            $supplier->total_paid = $request->paid?:0;
-            $supplier->total_balance =  $supplier->total_due-$supplier->total_paid;
+            $supplier->bank_account_name = $request->bank_account_name;
+            $supplier->bank_account_number = $request->bank_account_number;
+            $supplier->swift_code =  $request->swift_code;
+            $supplier->bank_currency =  $request->bank_currency;
+            $supplier->bank_name =  $request->bank_name;
+            $supplier->bank_address =  $request->bank_address;
             $supplier->save();
-            $paid = $request->paid;
-            $due = $request->due;
-            if(!is_null($paid) || !is_null($due)){
-            $supplierdue = new SupplierDue();
-            $supplierdue->invoice_no = IdGenerator::generate(['table' => 'supplier_dues', 'field' => 'invoice_no', 'length' => 8, 'prefix' => $prefix, 'reset_on_prefix_change' => true]);
-            $supplierdue->supplier_id = $supplier->id;
-            $supplierdue->payment_method = 'Cash';
-            $supplierdue->paid = $paid;
-            $supplierdue->due = $due;
-            $supplierdue->note = 'Supplier Previous Summations';
-            if ($this->User->user_type == "Admin") {
-                $supplierdue->admin_id = $this->User->id;
-            } else {
-                $supplierdue->admin_id = $this->User->admin_id;
-                $supplierdue->employee_id = $this->User->id;
-            }
-            $supplierdue->created_user_id = $this->User->id;
-            $supplierdue->updated_user_id = $this->User->id;
-            $supplierdue->save();
-           }
             DB::commit();
             Toastr::success("Supplier Created Successfully", "Success");
             return redirect()->route(request()->segment(1) . '.suppliers.index');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            $response = ErrorTryCatch::createResponse(false, 500, 'Internal Server Error.', null);
-            Toastr::error($response['message'], "Error");
-            return back();
-        }
+        // } catch (\Exception $e) {
+        //     DB::rollBack();
+        //     $response = ErrorTryCatch::createResponse(false, 500, 'Internal Server Error.', null);
+        //     Toastr::error($response['message'], "Error");
+        //     return back();
+        // }
     }
 
     /**
@@ -283,60 +234,35 @@ class SupplierController extends Controller
 
     public function update(Request $request, $id)
     {
-        if ($this->User->user_type == 'Admin') {
-            $this->validate(
-                $request,
-                [
-                    'supplier_phone' => 'required|min:9|max:30',
-                    'address' => 'required|min:1|max:198',
-                    'email' => 'max:198',
-                    'status' => 'required|min:0|max:100',
-                    'supplier_name' => [
-                        'required', 'min:1',
-                        'max:198', Rule::unique('suppliers')->ignore($id, 'id')->where(function ($query) {
-                            return $query->where('admin_id', Auth::user()->id);
-                        })
-                    ]
-                ],
-                [
-                    'supplier_name.unique' => "The Supplier name field need to be unique",
-                    'supplier_name.required' => "The Supplier name field is required",
-                    'supplier_name.min' => "The Supplier name Minimum field length 1",
-                    'supplier_name.max' => "The Supplier name Maximum field length 100",
-                    'supplier_phone.required' => "The Supplier phone field is required",
-                    'supplier_phone.min' => "The Supplier phone Minimum field length 1",
-                    'supplier_phone.max' => "The Supplier phone Maximum field length 100",
-
-
-
-                ]
-            );
+        if (Auth::user()->user_type == "Admin") {
+            $adminId = Auth::id();
+            $employeeId = NULL;
         } else {
-            $this->validate(
-                $request,
-                [
-                    'supplier_phone' => 'required|min:9|max:30',
-                    'address' => 'required|min:1|max:198',
-                    'email' => 'email|max:198',
-                    'supplier_name' => [
-                        'required', 'min:1',
-                        'max:198', Rule::unique('suppliers')->ignore($id, 'id')->where(function ($query) {
-                            return $query->where('admin_id', Auth::user()->admin_id);
-                        })
-                    ]
-                ],
-                [
-                    'supplier_name.unique' => "The Supplier name field need to be unique",
-                    'supplier_name.required' => "The Supplier name field is required",
-                    'supplier_name.min' => "The Supplier name Minimum field length 1",
-                    'supplier_name.max' => "The Supplier name Maximum field length 100",
-                    'supplier_phone.required' => "The Supplier phone field is required",
-                    'supplier_phone.min' => "The Supplier phone Minimum field length 1",
-                    'supplier_phone.max' => "The Supplier phone Maximum field length 100",
-
-                ]
-            );
+            $adminId = Auth::user()->admin_id;
+            $employeeId = Auth::id();
         }
+
+        $this->validate(
+            $request,
+            [
+
+                'supplier_name' => 'required|min:9|max:30',
+                'supplier_name' => 'required|min:1|max:198',
+                'supplier_country' => 'required',
+                'supplier_address' => 'required|min:1|max:450',
+                'supplier_phone' => ['required', 'numeric','min:1', Rule::unique('suppliers')->ignore($id, 'id')->where(function ($query) use ($adminId) {
+                        return $query->where('admin_id',$adminId);
+                    })
+                ],
+                'supplier_email' => ['required', 'email','min:1',
+                    'max:198', Rule::unique('suppliers')->ignore($id, 'id')->where(function ($query) use ($adminId) {
+                        return $query->where('admin_id',$adminId);
+                    })
+                ]
+            ],
+           
+        );
+       
 
         try {
             DB::beginTransaction();
@@ -344,16 +270,17 @@ class SupplierController extends Controller
             $supplier->supplier_name = $request->supplier_name;
             $supplier->supplier_phone = $request->supplier_phone;
             $supplier->supplier_email = $request->supplier_email;
-            $supplier->address = $request->address;
-            $supplier->description = $request->description;
-            if ($this->User->user_type == "Admin") {
-                $supplier->admin_id = $this->User->id;
-            } else {
-                $supplier->admin_id = $this->User->admin_id;
-                $supplier->employee_id = $this->User->id;
-            }
+            $supplier->supplier_address = $request->supplier_address;
+            $supplier->bank_account_name = $request->bank_account_name;
+             $supplier->admin_id = $adminId;
+             $supplier->employee_id = $employeeId;
             $supplier->updated_user_id = $this->User->id;
-            $supplier->status = $request->status;
+            $supplier->bank_account_name = $request->bank_account_name;
+            $supplier->bank_account_number = $request->bank_account_number;
+            $supplier->swift_code =  $request->swift_code;
+            $supplier->bank_currency =  $request->bank_currency;
+            $supplier->bank_name =  $request->bank_name;
+            $supplier->bank_address =  $request->bank_address;
             $supplier->save();
             DB::commit();
             Toastr::success("Supplier Update Successfully", "Success");

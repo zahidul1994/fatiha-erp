@@ -317,7 +317,7 @@ class WorkOrderController extends Controller
             }
             $workorder->customer_id = $customer;
             $workorder->broker_id = $broker;
-            $workorder->date = $request->date ?: $date;
+            $workorder->date = $request->date;
             $workorder->total_vat = $request->total_vat;
             $workorder->currency_name = $request->currency_name;
             $workorder->port_name = $request->port_name;

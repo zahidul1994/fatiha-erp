@@ -23,6 +23,7 @@ use App\Http\Controllers\Common\StockAdjustmentController;
 use App\Http\Controllers\Common\ShopCurrentStockController;
 use App\Http\Controllers\Common\WorkOrderController;
 use App\Http\Controllers\Common\BrokerController;
+use App\Http\Controllers\Common\RequisitionController;
 use App\Http\Controllers\Common\ReportController;
 
 
@@ -100,6 +101,11 @@ Route::resource('brokers', BrokerController::class);
 Route::post('find-work-order-product', [WorkOrderController::class, 'findWorkOrderProduct']);
 Route::resource('work-orders', WorkOrderController::class);
 Route::get('work-order-pdf/{id}', [WorkOrderController::class, 'workOrderPdf'])->name('workOrderPdf');
+
+
+##requisition 
+Route::resource('requisitions', RequisitionController::class);
+Route::get('requisition-pdf/{id}', [RequisitionController::class, 'requisitionPdf'])->name('requisitionPdf');
 
 ##sale
 Route::resource('sales', SaleController::class);
