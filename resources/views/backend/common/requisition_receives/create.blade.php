@@ -537,10 +537,20 @@
                 </div>
 
               </div>
+              <style>
+                .fxd{
+                  position:fixed;
+                  width: 74%;
+                  left: 280px;
+  bottom: 0;
+  text-align: center;
+                }
+              </style>
+            
               <div class="row">
-                <div class="fixed-bottom bg-success table-responsive">
-             <table  class="table">
-                    {{--  <table  class="table "> --}}
+                <div class=" table-responsive" >
+             <table class="table bg-success fxd">
+                  
                    
                       <tbody>
 
