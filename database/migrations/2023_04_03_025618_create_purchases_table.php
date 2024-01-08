@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('reference')->nullable();
             $table->unsignedBigInteger('warehouse_id')->nullable();
             $table->unsignedBigInteger('supplier_id')->nullable();
+            $table->unsignedBigInteger('work_order_id')->nullable();
             $table->enum('type', ['Direct','Requisition'])->default('Direct');
             $table->unsignedBigInteger('requisition_id')->nullable();
             $table->string('date');

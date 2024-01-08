@@ -18,9 +18,7 @@ return new class extends Migration
              $table->unsignedBigInteger('admin_id');
              $table->unsignedBigInteger('product_id');
              $table->string('product_name');
-            $table->float('already_return_qty',16,2)->default(0);
-            $table->string('product_name')->nullable();
-            $table->string('hs_code',50)->nullable();
+           $table->string('hs_code',50)->nullable();
             $table->string('unit',30)->default('PCS');
             $table->string('weight_size')->nullable();
             $table->string('sku')->nullable();
@@ -58,8 +56,8 @@ return new class extends Migration
             $table->float('carrying_value',16,2)->default(0);
             $table->float('lc_value',16,2)->default(0);
             $table->float('other_cost',16,2)->default(0);
-            $table->float('purchase_price',16,2)->default(0);
             $table->float('qty',16,2);
+            $table->float('already_return_qty',16,2)->default(0);
             $table->float('purchase_price',16,2)->default(0);
             $table->float('product_total_price',16,2)->default(0);
             $table->timestamps();

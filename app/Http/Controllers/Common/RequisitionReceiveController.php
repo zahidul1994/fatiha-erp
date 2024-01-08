@@ -13,6 +13,11 @@ use App\Models\RequisitionDetails;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\Product;
+use App\Models\Purchase;
+use App\Models\PurchaseDetails;
+use App\Models\Warehouse;
+use App\Models\WarehouseStock;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Support\Facades\Auth;
 use App\Notifications\Usernotification;
@@ -42,7 +47,7 @@ class RequisitionReceiveController extends Controller
     public function index(Request $request)
     {
 
-        try {
+        // try {
 
             $User = $this->User;
             if ($User->user_type == 'Superadmin') {
@@ -72,11 +77,11 @@ class RequisitionReceiveController extends Controller
                 ['name' => 'List'],
             ];
             return view('backend.common.requisition_receives.index', compact('breadcrumbs'));
-        } catch (\Exception $e) {
-            $response = ErrorTryCatch::createResponse(false, 500, 'Internal Server Error.', null);
-            Toastr::error($response['message'], "Error");
-            return back();
-        }
+        // } catch (\Exception $e) {
+        //     $response = ErrorTryCatch::createResponse(false, 500, 'Internal Server Error.', null);
+        //     Toastr::error($response['message'], "Error");
+        //     return back();
+        // }
     }
 
 
@@ -108,65 +113,137 @@ class RequisitionReceiveController extends Controller
      */
     public function update(Request $request,$id)
     {
-        $request->dd();
+       
 
         $this->validate(
             $request,
             [
+                'date' => 'required',
                 'supplier_id' => 'required',
+                'status' => 'required',
                 'total_quantity' => 'required|min:1',
-                'product_quantity.*' => 'required',
-                'product_name.*' => 'required',
+                'grand_total' => 'required|min:1',
+                'unit_price.*' => 'required',
+                'vat.*' => 'required',
+                'total_duty.*' => 'required',
+                
             ]
         );
 
         // try {
             DB::beginTransaction();
-            $requisition = new Requisition();
+            $purchase = new Purchase();
             if (Auth::user()->user_type == 'Admin') {
-                $requisition->admin_id  = Auth::id();
+                $purchase->admin_id  = Auth::id();
                 $prefix = Helper::getAdmin(Auth::id())->invoice_slug;
             } else {
-                $requisition->admin_id  = Auth::user()->admin_id;
-                $requisition->employee_id  = Auth::id();
+                $purchase->admin_id  = Auth::user()->admin_id;
+                $purchase->employee_id  = Auth::id();
                 $prefix = Helper::getAdmin(Auth::user()->admin_id)->invoice_slug;
             }
-            $requisition->invoice_no = IdGenerator::generate(['table' => 'requisitions', 'field' => 'invoice_no', 'length' => 8, 'prefix' => $prefix, 'reset_on_prefix_change' => true]);
+            $purchase->invoice_no = IdGenerator::generate(['table' => 'purchases', 'field' => 'invoice_no', 'length' => 8, 'prefix' => $prefix, 'reset_on_prefix_change' => true]);
             $supplier = $request->supplier_id;
+            $warehouse = $request->warehouse_id;
             $date = date('Y-m-d');
-            $requisition->supplier_id = $supplier;
-            $requisition->work_order_id = $request->work_order_id;
-            $requisition->date = $request->date ?: $date;
-            $requisition->total_quantity = $request->total_quantity;
-            $requisition->description = $request->description;
-            $requisition->created_user_id = $this->User->id;
-            $requisition->updated_user_id = $this->User->id;
-            $requisition->created_at =  $date . date('H:i:s');
-            $requisition->save();
-            if ($requisition) {
-                if($requisition->work_order_id){
-                    $order=WorkOrder::find($request->work_order_id);
-                    $order->requisition_status='Yes';
-                    $order->save();
-                }
+            $purchase->supplier_id = $supplier;
+            $purchase->warehouse_id = $warehouse;
+            $purchase->work_order_id = $request->work_order_id;
+            $purchase->date = $request->date ?: $date;
+            $purchase->total_quantity = $request->total_quantity;
+            $purchase->grand_total = $request->grand_total;
+            $purchase->paid = $request->paid?:0;
+            $purchase->due = $request->due?:0;
+            $purchase->description = $request->description;
+            $purchase->created_user_id = $this->User->id;
+            $purchase->updated_user_id = $this->User->id;
+            $purchase->created_at =  $date . date('H:i:s');
+            $purchase->save();
+            if ($purchase) {
+                // if($purchase->work_order_id){
+                //     $order=WorkOrder::find($request->work_order_id);
+                //     $order->requisition_status='Yes';
+                //     $order->save();
+                // }
                
                 $products = $request->product_id;
                 for ($i = 0; $i < count($products); $i++) {
                     $productId = $request->product_id[$i];
                     $name = $request->product_name[$i];
                     $qty = $request->product_quantity[$i];
-                    $requisitionDetail = new RequisitionDetails();
-                    $requisitionDetail->requisition_id = $requisition->id;
-                    $requisitionDetail->admin_id = $requisition->admin_id;
-                    $requisitionDetail->product_id = $productId;
-                    $requisitionDetail->product_name = $name;
-                    $requisitionDetail->qty =  $qty;
-                    $requisitionDetail->save();
+                    $purchaseDetail = new PurchaseDetails();
+                    $purchaseDetail->purchase_id = $purchase->id;
+                    $purchaseDetail->admin_id = $purchase->admin_id;
+                    $purchaseDetail->product_id = $productId;
+                    $purchaseDetail->product_name = $name;
+                    $purchaseDetail->qty =  $qty;
+                    $purchaseDetail->weight_size = $request->weight_size[$i];
+                    $purchaseDetail->unit = $request->unit[$i];
+                    $purchaseDetail->hs_code = $request->hs_code[$i];
+                    $purchaseDetail->unit_price = $request->unit_price[$i];
+                    $purchaseDetail->govt_price = $request->govt_price[$i];
+                    $purchaseDetail->insurance_before = $request->insurance_before[$i];
+                    $purchaseDetail->insurance_before_value = $request->insurance_before_value[$i];
+                    $purchaseDetail->clearing_before = $request->clearing_before[$i];
+                    $purchaseDetail->clearing_before_value = $request->clearing_before_value[$i];
+                    $purchaseDetail->convert_rate = $request->convert_rate[$i];
+                    $purchaseDetail->duty_assessment_value = $request->duty_assessment_value[$i];
+                    $purchaseDetail->cd = $request->cd[$i];
+                    $purchaseDetail->cd_value = $request->cd_value[$i];
+                    $purchaseDetail->rd = $request->rd[$i];
+                    $purchaseDetail->rd_value = $request->rd_value[$i];
+                    $purchaseDetail->cd_rd_total = $request->cd_rd_total[$i];
+                    $purchaseDetail->sd = $request->sd[$i];
+                    $purchaseDetail->sd_value = $request->sd_value[$i];
+                    $purchaseDetail->vat = $request->vat[$i];
+                    $purchaseDetail->vat_value = $request->vat_value[$i];
+                    $purchaseDetail->ait = $request->ait[$i];
+                    $purchaseDetail->ait_value = $request->ait_value[$i];
+                    $purchaseDetail->at = $request->at[$i];
+                    $purchaseDetail->at_value = $request->at_value[$i];
+                    $purchaseDetail->atv = $request->atv[$i];
+                    $purchaseDetail->atv_value = $request->atv_value[$i];
+                    $purchaseDetail->total_duty = $request->total_duty[$i];
+                    $purchaseDetail->insurance_after = $request->insurance_after[$i];
+                    $purchaseDetail->insurance_after_value = $request->insurance_after_value[$i];
+                    $purchaseDetail->bank_charge = $request->bank_charge[$i];
+                    $purchaseDetail->bank_charge_value = $request->bank_charge_value[$i];
+                    $purchaseDetail->clearing_after = $request->clearing_after[$i];
+                    $purchaseDetail->clearing_after_value = $request->clearing_after_value[$i];
+                    $purchaseDetail->carrying_charge = $request->carrying_charge[$i];
+                    $purchaseDetail->carrying_value = $request->carrying_value[$i];
+                    $purchaseDetail->lc_value = $request->lc_value[$i];
+                    $purchaseDetail->other_cost = $request->other_cost[$i];
+                    $purchaseDetail->purchase_price = $request->purchase_price[$i];
+                    $purchaseDetail->save();
+
+
+                    $checkStock = WarehouseStock::whereproduct_id($productId)->wherewarehouse_id($warehouse)->first();
+                    if ($checkStock) {
+                          $warehouseStock=$checkStock;
+                          $warehouseStock->stock_qty += $qty;
+                    }else{
+                        $product=Product::find($productId);
+                        $warehouseStock=new WarehouseStock();
+                        $warehouseStock->stock_qty= $qty;
+                        $warehouseStock->last_sale_price =$product->sale_price;
+                        $warehouseStock->discount = $product->discount;
+                        $warehouseStock->expire_date = $product->expire_date;
+                        
+                       }
+                        
+                        $warehouseStock->product_id = $productId;
+                        $warehouseStock->warehouse_id = $warehouse;
+                        $warehouseStock->product_name =  $name;
+                        $warehouseStock->hs_code = $request->hs_code[$i];
+                        $warehouseStock->last_purchase_price = $request->purchase_price[$i];
+                        $warehouseStock->last_purchase_vat = $request->vat[$i];
+                        $warehouseStock->save();
+                    } 
                 }
-            }
+
             if ((Auth::user()->user_type === 'Employee')) {
                 $data = [
-                    'message' => 'Your Staff ' . Auth::user()->name . '  Create A Invoice ' . $requisition->invoice_no,
+                    'message' => 'Your Staff ' . Auth::user()->name . '  Create A Invoice ' . $purchase->invoice_no,
 
                 ];
                 User::find(Auth::user()->admin_id)->notify(new Usernotification($data));
@@ -191,17 +268,17 @@ class RequisitionReceiveController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Category   $requisition
+     * @param  \App\Models\Category   $purchase
      * @return \Illuminate\Http\Response
      */
    
     public function reject($id)
     {
-        $requisition = Requisition::findOrFail(decrypt($id));
-        $requisition->status = 'Reject';
-        if ($requisition->save()) {
+        $purchase = Requisition::findOrFail(decrypt($id));
+        $purchase->status = 'Reject';
+        if ($purchase->save()) {
             Toastr::warning("Requisition Reject", "Warning");
-                return redirect()->route(request()->segment(1) . '.requisition-receive.index');
+                return redirect()->route(request()->segment(1) . '.purchase-receive.index');
         }
         return 0;
     }
