@@ -21,7 +21,13 @@
   input[type=number] {
     -moz-appearance: textfield;
   }
-
+  .fxd{
+                  position:fixed;
+                  width: 74%;
+                  left: 280px;
+  bottom: 0;
+  text-align: center;
+                }
 </style>
 @endpush
 @section('content')
@@ -535,10 +541,12 @@
                 </div>
 
               </div>
+             
+            
               <div class="row">
-                <div class="fixed-bottom bg-success table-responsive">
-             <table  class="table">
-                    {{--  <table  class="table "> --}}
+                <div class=" table-responsive" >
+             <table class="table bg-success fxd">
+                  
                    
                       <tbody>
 
