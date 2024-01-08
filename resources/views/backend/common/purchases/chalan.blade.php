@@ -66,8 +66,8 @@
 <body onload="window.print()">
     <div class="container">
     <div class="invoice" style="text-align: center;">
-        <strong style="font-size: 1.3em;text-transform:uppercase; font-weight:900;"><b>{{$purchase->shop->shop_name}} </b></strong> <br>
-                 Address:  {{$purchase->shop->shop_address}}
+        <strong style="font-size: 1.3em;text-transform:uppercase; font-weight:900;"><b>{{$purchase->warehouse->warehose_name}} </b></strong> <br>
+                 Address:  {{$purchase->warehouse->warehouse_address}}
                  <br>
                       Chalan Copy         
        
@@ -78,7 +78,7 @@
                 <strong style="font-weight:100;"> No: <b> {{ @$purchase->invoice_no }}</b> </strong><br>
                 <strong style="font-weight:100;">Date: {{@$purchase->created_at->format('m-d-Y ')}}</strong><br>
                 <strong style="font-weight:100;">
-                   Phone: {{$purchase->shop->shop_phone}}
+                   Phone: {{$purchase->warehouse->warehouse_phone}}
                 </strong><br>
                
             </div>

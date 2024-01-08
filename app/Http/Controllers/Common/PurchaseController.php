@@ -649,11 +649,11 @@ class PurchaseController extends Controller
         try {
             $User = $this->User;
             if ($User->user_type == 'Superadmin') {
-                $purchase = Purchase::with('shop', 'user', 'supplier', 'purchasedetails')->findOrFail(decrypt($id));
+                $purchase = Purchase::with('warehouse', 'user', 'supplier', 'purchasedetails')->findOrFail(decrypt($id));
             } elseif ($User->user_type == 'Admin') {
-                $purchase = Purchase::with('shop', 'user', 'supplier', 'purchasedetails')->whereadmin_id($this->User->id)->findOrFail(decrypt($id));
+                $purchase = Purchase::with('warehouse', 'user', 'supplier', 'purchasedetails')->whereadmin_id($this->User->id)->findOrFail(decrypt($id));
             } else {
-                $purchase = Purchase::with('shop', 'user', 'supplier', 'purchasedetails')->whereadmin_id($this->User->admin_id)->findOrFail(decrypt($id));
+                $purchase = Purchase::with('warehouse', 'user', 'supplier', 'purchasedetails')->whereadmin_id($this->User->admin_id)->findOrFail(decrypt($id));
             }
 
             return view('backend.common.purchases.chalan', compact('purchase'));
