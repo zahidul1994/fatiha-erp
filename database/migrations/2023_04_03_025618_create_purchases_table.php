@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreign('employee_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('invoice_no');
             $table->string('reference')->nullable();
-            $table->unsignedBigInteger('shop_id')->nullable();
+            $table->unsignedBigInteger('warehouse_id')->nullable();
             $table->unsignedBigInteger('supplier_id')->nullable();
             $table->enum('type', ['Direct','Requisition'])->default('Direct');
             $table->unsignedBigInteger('requisition_id')->nullable();
@@ -27,13 +27,12 @@ return new class extends Migration
             $table->float('total_vat',16,2)->default(0);
             $table->float('total_discount',16,2)->default(0);
             $table->float('total_quantity',16,2)->default(0);
-            $table->float('extra_discount_percent',16,2)->default(0);
             $table->float('sub_total',16,2)->default(0);
             $table->string('payment_method')->default('Cash');
             $table->float('paid',16,2)->default(0);
             $table->float('due',16,2)->default(0);
             $table->float('grand_total',16,2)->default(0);
-           $table->bigInteger('created_user_id');
+            $table->bigInteger('created_user_id');
             $table->bigInteger('updated_user_id');
             $table->mediumText('description')->nullable();
             $table->tinyInteger('status')->default(1);

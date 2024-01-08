@@ -39,7 +39,7 @@
           <div class="row">
             @include('partial.formerror')
             {!! Form::model($requisition, [
-            'route' => [Request::segment(1) . '.requisition-receive.store', $requisition->id],
+            'route' => [Request::segment(1) . '.requisition-receive.update', $requisition->id],
             'method' => 'PATCH',
             'id' => 'formReset'
             ]) !!}
@@ -473,9 +473,7 @@
                       
                                 <div class="col-md-4">
                                   <label for="carrying_charge" class="mt-4">Carrying Charge (%)*</label>
-                                  {!! Form::number('carrying_charge[]', @$product->carrying_charge?:null, ['id' => 'carrying_charge','class' =>
-                                  'form-control','required','data-cell'=>"CRRING$loopKey",'data-format'=>"0[.]00", 'keydown'=>"calculateFx()",
-                                  'onblur'=>"calculateFx()",'placeholder'=>'Carrying Charge'
+                                  {!! Form::number('carrying_charge[]', @$product->carrying_charge?:null, ['id' => 'carrying_charge','class' =>'form-control','required','data-cell'=>"CRRING$loopKey",'data-format'=>"0[.]00", 'keydown'=>"calculateFx()",'step'=>'any', 'onblur'=>"calculateFx()"
                                   ]) !!}
                                   @if ($errors->has('carrying_charge')) <span class="text-danger alert">{{ $errors->first('carrying_charge')
                                     }}</span>
@@ -565,7 +563,7 @@
                     <th>Paid:</th>
                     <td id="paid">
                       {!! Form::number('paid', null, ['id' => 'paid','class' =>
-                                'form-control','required','data-cell'=>"PD1",'data-format'=>"0[.]00", 'keydown'=>"calculateFx()",'step' => 'any',
+                                'form-control','data-cell'=>"PD1",'data-format'=>"0[.]00", 'keydown'=>"calculateFx()",'step' => 'any',
                                 'onblur'=>"calculateFx()",'placeholder'=>'Paid Amount','min' => '0',
                             'max' => '9999999999999999',
                                 ]) !!}
