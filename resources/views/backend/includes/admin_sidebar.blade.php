@@ -110,7 +110,7 @@
                     </div>
                     <span class="nav-link-text ms-1">Requisition</span>
                 </a>
-                <div class="collapse {{Request::is(Request::segment(1) .'/requisitions*') ? 'show' : ''}} {{Request::is(Request::segment(1) .'/requisitions-returns*') ? 'show' : ''}}"
+                <div class="collapse {{Request::is(Request::segment(1) .'/requisitions*') ? 'show' : ''}} {{Request::is(Request::segment(1) .'/requisition-receive*') ? 'show' : ''}}"
                     id="requisitions">
                     <ul class="nav ms-4">
                         @can('requisition-list')
@@ -123,13 +123,13 @@
                             </a>
                         </li>
                         @endcan
-                        @can('purchase-return-list')
+                        @can('requisition-edit')
                         <li class="nav-item">
-                            <a class="nav-link {{Request::is(Request::segment(1) .'/purchase-returns*') ? 'active' : ''}}"
-                                href="{{route(Request::segment(1) . '.purchase-returns.index')}}">
-                                <span class="sidenav-mini-icon">PR </span>
+                            <a class="nav-link {{Request::is(Request::segment(1) .'/requisition-receive*') ? 'active' : ''}}"
+                                href="{{route(Request::segment(1) . '.requisition-receive.index')}}">
+                                <span class="sidenav-mini-icon">RR </span>
                                 <i class="ni ni-curved-next text-danger text-lg opacity-10"></i> <span
-                                    class="sidenav-normal">Purchase Return </span>
+                                    class="sidenav-normal">Requisition Receive </span>
                             </a>
                         </li>
                         @endcan

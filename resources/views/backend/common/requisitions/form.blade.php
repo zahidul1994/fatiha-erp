@@ -48,7 +48,7 @@
           </div>
           <div class="col-md-4 col-sm-1">
             <label for="supplierId">Supplier * </label>
-          {!! Form::select('supplier_id',Helper::supplierPluckValue(), Helper::adminSetup()->default_supplier_id?:null, ['id' => 'supplierId','required', 'class' => 'form-control select2','placeholder'=>'Select Customer', 'tabindex' =>3]) !!}
+          {!! Form::select('supplier_id',Helper::supplierPluckValue(), Helper::adminSetup()->default_supplier_id?:null, ['id' => 'supplierId','required', 'class' => 'form-control select2','placeholder'=>'Select Suppllier', 'tabindex' =>3]) !!}
           </div>
       
           

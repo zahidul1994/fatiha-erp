@@ -24,6 +24,7 @@ use App\Http\Controllers\Common\ShopCurrentStockController;
 use App\Http\Controllers\Common\WorkOrderController;
 use App\Http\Controllers\Common\BrokerController;
 use App\Http\Controllers\Common\RequisitionController;
+use App\Http\Controllers\Common\RequisitionReceiveController;
 use App\Http\Controllers\Common\ReportController;
 
 
@@ -106,7 +107,10 @@ Route::get('work-order-pdf/{id}', [WorkOrderController::class, 'workOrderPdf'])-
 ##requisition 
 Route::resource('requisitions', RequisitionController::class);
 Route::get('requisition-pdf/{id}', [RequisitionController::class, 'requisitionPdf'])->name('requisitionPdf');
-
+Route::get('requisition-receive', [RequisitionReceiveController::class, 'index'])->name('requisition-receive.index');
+Route::patch('requisition-receive/{id}', [RequisitionReceiveController::class, 'index'])->name('requisition-receive.store');
+Route::get('requisition-reject/{id}', [RequisitionReceiveController::class, 'reject'])->name('requisition-reject');
+Route::get('requisition-purchase/{id}', [RequisitionReceiveController::class, 'purchase'])->name('requisition-purchase');
 ##sale
 Route::resource('sales', SaleController::class);
 Route::post('find-customer', [SaleController::class, 'findCustomer'])->name('findCustomer');

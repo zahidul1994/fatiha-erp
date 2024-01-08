@@ -26,6 +26,7 @@ use App\Models\Supplier;
 use App\Models\ExpenseHead;
 use Illuminate\Support\Str;
 use App\Models\ShopCurrentStock;
+use App\Models\Warehouse;
 use App\Models\WorkOrder;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
@@ -150,6 +151,16 @@ class Helper
 
         return $collection->pluck('name', 'name');
     }
+    public static function warehousePluckValue()
+    {
+        if (Auth::user()->user_type == 'SuperAdmin') {
+            return Warehouse::wherestatus(1)->pluck('warehouse_name', 'id');
+        } elseif (Auth::user()->user_type == 'Admin') {
+            return Warehouse::wherestatus(1)->whereadmin_id(Auth::id())->pluck('warehouse_name', 'id');
+        } else {
+            return Warehouse::wherestatus(1)->whereadmin_id(Auth::user()->admin_id)->pluck('warehouse_name', 'id');
+        }
+    }
     public static function portPluckValue()
     {
         if (Auth::user()->user_type == 'SuperAdmin') {
@@ -244,6 +255,11 @@ class Helper
         } else {
             return Product::wherestatus(1)->whereadmin_id(Auth::user()->admin_id)->pluck('product_full_name', 'id');
         }
+    }
+    public static function getProduct($id)
+    {
+
+        return Product::find($id);
     }
     public static function getProductName($id)
     {

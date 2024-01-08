@@ -175,24 +175,24 @@
                     </div>
 
                     <div class="col-md-4 col-sm-1">
-                      <label for="work_order_id">Workorder Invoice * </label>
+                      <label for="work_order_id">Workorder Invoice  </label>
                       {!!
-                      Form::text('work_order_id',Helper::getWorkorder($requisition->work_order_id)->invoice_no?:null,
-                      ['id' => 'work_order_id', 'readonly','class' => 'form-control', 'tabindex' => 2]) !!}
+                      Form::text('work_order_id',@Helper::getWorkorder($requisition->work_order_id)->invoice_no?:null,
+                      ['id' => 'work_order_id', 'readonly','class' => 'form-control']) !!}
 
                     </div>
                     <div class="col-md-4 col-sm-1">
                       <label for="supplierId">Supplier * </label>
                       {!! Form::select('supplier_id',Helper::supplierPluckValue(), null, ['id' =>
                       'supplierId','required', 'class' => 'form-control select2','placeholder'=>'Select Customer',
-                      'tabindex' =>3]) !!}
+                      'tabindex' =>2]) !!}
                     </div>
 
 
                     <div class="col-md-9 col-sm-1 mt-1">
                       <label for="note">Note</label>
                       {!! Form::textarea('description', null, ['id' => 'note', 'class' =>
-                      'form-control','rows'=>1,'placeholder'=>'Note ', 'tabindex' =>4]) !!}
+                      'form-control','rows'=>1,'placeholder'=>'Note ', 'tabindex' =>3]) !!}
                     </div>
                     <div class="col-md-3 col-sm-1 mt-1">
                       <label for="note">Total Quantity</label>
@@ -282,7 +282,7 @@
               </div>
               <div class="row">
                 <div class="col-md-9"></div>
-                <div class="col-md-3 mt-3"><button class="btn btn-success" type="submit" tabindex="5">Save & Update</button>
+                <div class="col-md-3 mt-3"><button class="btn btn-success" type="submit" tabindex="4">Save & Update</button>
                 
                 </div>
               </div>

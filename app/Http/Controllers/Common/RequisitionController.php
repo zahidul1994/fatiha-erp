@@ -118,7 +118,7 @@ class RequisitionController extends Controller
             ]
         );
 
-        try {
+        // try {
             DB::beginTransaction();
             $requisition = new Requisition();
             if (Auth::user()->user_type == 'Admin') {
@@ -142,6 +142,12 @@ class RequisitionController extends Controller
             $requisition->created_at =  $date . date('H:i:s');
             $requisition->save();
             if ($requisition) {
+                if($requisition->work_order_id){
+                    $order=WorkOrder::find($request->work_order_id);
+                    $order->requisition_status='Yes';
+                    $order->save();
+                }
+               
                 $products = $request->product_id;
                 for ($i = 0; $i < count($products); $i++) {
                     $productId = $request->product_id[$i];
@@ -172,12 +178,12 @@ class RequisitionController extends Controller
                 Toastr::success("Requisition Created Successfully", "Success");
                 return redirect()->route(request()->segment(1) . '.requisitions.index');
             }
-        } catch (\Exception $e) {
-            DB::rollBack();
-            $response = ErrorTryCatch::createResponse(false, 500, 'Internal Server Error.', null);
-            Toastr::error($response['message'], "Error");
-            return back();
-        }
+        // } catch (\Exception $e) {
+        //     DB::rollBack();
+        //     $response = ErrorTryCatch::createResponse(false, 500, 'Internal Server Error.', null);
+        //     Toastr::error($response['message'], "Error");
+        //     return back();
+        // }
     }
 
     /**

@@ -25,7 +25,7 @@ return new class extends Migration
             $table->bigInteger('created_user_id');
             $table->bigInteger('updated_user_id');
             $table->mediumText('description')->nullable();
-            $table->enum('status',['Pending','Accept','Reject'])->default('Pending');
+            $table->enum('status',['Pending','Partial','Receive','Reject'])->default('Pending');
             $table->enum('purchase_status',['Yes','No'])->default('No');
             $table->softDeletes();
             $table->timestamps();
