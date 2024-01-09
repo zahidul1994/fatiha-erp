@@ -107,6 +107,7 @@ Route::get('work-order-pdf/{id}', [WorkOrderController::class, 'workOrderPdf'])-
 ##requisition 
 Route::resource('requisitions', RequisitionController::class);
 Route::get('requisition-pdf/{id}', [RequisitionController::class, 'requisitionPdf'])->name('requisitionPdf');
+Route::get('requisition-print/{id}', [RequisitionController::class, 'requisitionPrint'])->name('requisitionPrint');
 Route::get('requisition-receive', [RequisitionReceiveController::class, 'index'])->name('requisition-receive.index');
 Route::patch('requisition-receive/{id}', [RequisitionReceiveController::class, 'update'])->name('requisition-receive.update');
 Route::get('requisition-reject/{id}', [RequisitionReceiveController::class, 'reject'])->name('requisition-reject');

@@ -62,8 +62,6 @@
             padding: 30 1.5rem;
         }
 
-
-
     </style>
 </head>
 

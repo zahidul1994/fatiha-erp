@@ -58,6 +58,7 @@ class RequisitionController extends Controller
                     ->addColumn('action', function ($data) use ($User) {
                         $btn = '<a href=' . route(request()->segment(1) . '.requisitions.show', (encrypt($data->id))) . ' class="btn btn-success btn-sm waves-effect" style="width:30px; padding: 5px"><i class="fa fa-eye"></i></a>';
                         $btn .= '<a href=' . route(request()->segment(1) . '.workOrderPdf', (encrypt($data->id))) . ' class="btn btn-info btn-sm waves-effect" style="width:30px; padding: 5px;  margin-left:2px"><i class="fas fa-file-pdf"></i></a>';
+                        $btn .= '<a href=' . route(request()->segment(1) . '.requisitionPrint', (encrypt($data->id))) . ' class="btn btn-primary btn-sm waves-effect" style="width:30px; padding: 5px;  margin-left:2px"><i class="fa fa-receipt"></i></a>';
                         $btn .= '<a href=' . route(request()->segment(1) . '.requisitions.edit', (encrypt($data->id))) . ' class="btn btn-warning btn-sm waves-effect" style="width:30px; padding: 5px;  margin-left:2px"><i class="fa fa-edit"></i></a>';
                         return $btn;
                     })
@@ -194,6 +195,7 @@ class RequisitionController extends Controller
      */
     public function show($id)
     {
+       
 
         try {
             $User = $this->User;
@@ -360,4 +362,26 @@ class RequisitionController extends Controller
             return back();
         }
     }
+
+    public function requisitionPrint($id)
+    {
+
+        try {
+            $User = $this->User;
+            if ($User->user_type == 'Superadmin') {
+                $requisition = Requisition::with('user', 'supplier', 'requisitiondetails')->findOrFail(decrypt($id));
+            } elseif ($User->user_type == 'Admin') {
+                $requisition = Requisition::with('user', 'supplier', 'requisitiondetails')->whereadmin_id($this->User->id)->findOrFail(decrypt($id));
+            } else {
+                $requisition = Requisition::with('user', 'supplier', 'requisitiondetails')->whereadmin_id($this->User->admin_id)->findOrFail(decrypt($id));
+            }
+
+            return view('backend.common.requisitions.chalan', compact('requisition'));
+        } catch (\Exception $e) {
+            $response = ErrorTryCatch::createResponse(false, 500, 'Internal Server Error.', null);
+            Toastr::error($response['message'], "Error");
+            return back();
+        }
+    }
+
 }
