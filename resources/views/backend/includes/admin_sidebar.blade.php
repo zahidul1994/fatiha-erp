@@ -197,7 +197,7 @@
                 </div>
             </li>
             @endcan
-            @can('shop-list')
+            @can('warehouse-list')
             <li class="nav-item">
                 <a data-bs-toggle="collapse" href="#shops" class="nav-link" aria-controls="products" role="button"
                     aria-expanded="false">
@@ -206,7 +206,7 @@
                     </div>
                     <span class="nav-link-text ms-1">Warehouse </span>
                 </a>
-                <div class="collapse {{Request::is(Request::segment(1) .'/warehouses*') ? 'show' : ''}}  {{Request::is(Request::segment(1) .'/shops*') ? 'show' : ''}} {{Request::is(Request::segment(1) .'/shop-current-stocks*') ? 'show' : ''}} {{Request::is(Request::segment(1) .'/stock-adjustments*') ? 'show' : ''}} {{Request::is(Request::segment(1) .'/product-discounts*') ? 'show' : ''}}"
+                <div class="collapse {{Request::is(Request::segment(1) .'/warehouses*') ? 'show' : ''}}  {{Request::is(Request::segment(1) .'/warehouse-stocks*') ? 'show' : ''}} {{Request::is(Request::segment(1) .'/shop-current-stocks*') ? 'show' : ''}} {{Request::is(Request::segment(1) .'/stock-adjustments*') ? 'show' : ''}} {{Request::is(Request::segment(1) .'/product-discounts*') ? 'show' : ''}}"
                     id="shops">
                     <ul class="nav ms-4">
                         @can('warehouse-list')
@@ -219,7 +219,18 @@
                             </a>
                         </li>
                         @endcan
-                        @can('product-list')
+
+                        @can('warehouse-stock-list')
+                        <li class="nav-item">
+                            <a class="nav-link {{Request::is(Request::segment(1) .'/warehouse-stocks*') ? 'active' : ''}}"
+                                href="{{route(Request::segment(1) . '.warehouse-stocks.index')}}">
+                                <span class="sidenav-mini-icon"> WS </span>
+                                <i class="fa fa-database text-info text-lg opacity-10"></i>
+                                <span class="sidenav-normal">Warehouse Stock </span>
+                            </a>
+                        </li>
+                        @endcan
+                        @can('shop-list')
                         <li class="nav-item">
                             <a class="nav-link {{Request::is(Request::segment(1) .'/shops*') ? 'active' : ''}}"
                                 href="{{route(Request::segment(1) . '.shops.index')}}">

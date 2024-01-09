@@ -231,6 +231,7 @@ class RequisitionReceiveController extends Controller
                         
                        }
                         
+                        $warehouseStock->admin_id =  $purchase->admin_id;
                         $warehouseStock->product_id = $productId;
                         $warehouseStock->warehouse_id = $warehouse;
                         $warehouseStock->product_name =  $name;
