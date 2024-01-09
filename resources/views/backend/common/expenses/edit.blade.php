@@ -1,5 +1,5 @@
 @extends('backend.layouts.master')
-@section('title', 'Update Wallet')
+@section('title', 'Update Expense')
 @push('css')
     <link href="{{ asset('backend/assets/select2/css/select2.min.css') }}" rel="stylesheet" />
     <style>
@@ -33,18 +33,14 @@
                             ]) !!}
 
                            <div class="row">
-                           <div class="col-md-3 col-sm-1">
+                           <div class="col-md-4 col-sm-1">
             <label for="date">Date *</label>
             {!! Form::date('date', date('Y-m-d'), ['id' => 'date', 'class' => 'form-control', 'required', 'tabindex' => 1,'autofocus']) !!}
 
           </div>
-<div class="col-md-3 col-sm-1 mt-1">
-            <label for="shop_id">Shop *</label>
-            {!! Form::select('shop_id',Helper::shopPluckValue(), null, ['id' => 'shop_id', 'class' => 'form-control select2', 'tabindex' => 3]) !!}
 
-          </div>
 
-    <div class="col-sm-6">
+    <div class="col-sm-8">
             <label for="expense_head_id" class="mt-2">Select Expense Head * </label>
              {!! Form::select('expense_head_id',Helper::expenseHeadPluckValue(), null, ['id' => 'expense_head_id', 'class' =>
              'form-control select2', 'required','placeholder'=>'Select One']) !!}

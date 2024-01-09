@@ -114,14 +114,12 @@ class ExpenseController extends Controller
             $request,
             [
 
-                'shop_id' => 'required',
                 'expense_amount' => 'required|numeric|between:1,99999999',
                 'payment_method' => 'required',
                 'expense_head_id' => 'required',
 
             ], [
 
-                'shop_id.required' => "The Shop name field is required",
                 'expense_amount.required' => "The  Expense Amount field is required",
                 'expense_amount.min' => "The Product Price Minimum Length 1",
                 'expense_amount.max' => "The Product Price  Maximum Length 99999999",
@@ -154,7 +152,6 @@ class ExpenseController extends Controller
             DB::beginTransaction();
             $expenses = new Expense();
             $expenses->date = $request->date;
-            $expenses->shop_id =$request->shop_id;
             $expenses->payment_method =  $request->payment_method;
             $expenses->expense_head_id =  $request->expense_head_id;
             $expenses->expense_amount =  $request->expense_amount;
@@ -247,14 +244,12 @@ class ExpenseController extends Controller
             $request,
             [
 
-                'shop_id' => 'required',
                 'expense_amount' => 'required|numeric|between:1,99999999',
                 'payment_method' => 'required',
                 'expense_head_id' => 'required',
 
             ], [
 
-                'shop_id.required' => "The Shop name field is required",
                 'expense_amount.required' => "The  Expense Amount field is required",
                 'expense_amount.min' => "The Product Price Minimum Length 1",
                 'expense_amount.max' => "The Product Price  Maximum Length 99999999",
@@ -290,7 +285,6 @@ class ExpenseController extends Controller
           try {
             DB::beginTransaction();
             $expenses->date = $request->date;
-            $expenses->shop_id =$request->shop_id;
             $expenses->payment_method =  $request->payment_method;
             $expenses->expense_head_id =  $request->expense_head_id;
             $expenses->expense_amount =  $request->expense_amount;
