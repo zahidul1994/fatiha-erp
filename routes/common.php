@@ -26,6 +26,7 @@ use App\Http\Controllers\Common\BrokerController;
 use App\Http\Controllers\Common\RequisitionController;
 use App\Http\Controllers\Common\RequisitionReceiveController;
 use App\Http\Controllers\Common\ReportController;
+use App\Http\Controllers\Common\WarehouseStockController;
 
 
 Route::resource('roles', RoleController::class);
@@ -84,6 +85,9 @@ Route::get('supplier-due-pdf/{id}', [SupplierDueController::class, 'supplierDueP
 
 ##shop current stock
 Route::resource('shop-current-stocks', ShopCurrentStockController::class);
+
+##warehouse stock
+Route::resource('warehouse-stocks', WarehouseStockController::class);
 
 ##customer
 Route::resource('customers', CustomerController::class);

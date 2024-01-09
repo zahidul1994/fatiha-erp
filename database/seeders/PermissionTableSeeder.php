@@ -133,6 +133,11 @@ class PermissionTableSeeder extends Seeder
               'warehouse-create',
               'warehouse-edit',
               'warehouse-delete',
+              'warehouse-stock-list',
+              'warehouse-stock-create',
+              'warehouse-stock-edit',
+              'warehouse-stock-delete',
+
               'wallet-list',
               'wallet-create',
               'wallet-edit',
